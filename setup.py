@@ -11,7 +11,7 @@ setuptools.setup(
     description="This is a package for creating chords and fretboard visualisation of scale in svg format.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/antscloud/",
+    url="https://github.com/antscloud/fretboardgtr/",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

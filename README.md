@@ -158,3 +158,7 @@ The ChordGtr class has the same set_color(), theme(), save(), draw() methods as 
   <img src="img/chord_name_background.svg" width=40%  height=auto />
 </p>
 
+
+## Todo 
+-enharmonics
+-list of scales ( Major, Minor, Dorian ..)

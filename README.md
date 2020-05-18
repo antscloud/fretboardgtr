@@ -12,7 +12,7 @@ This is a python package to draw fretboard (scales) and guitar chord diagram in 
 
 ## Example of use 
 
-    F=F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
+    F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
     F.customtuning(['F','A','D','G','B','E'])
     F.draw()
     F.save()
@@ -27,7 +27,7 @@ The number in the image represents the degree of the scale, 1 is the root so it'
 
 If you want to show the note name instead :
 
-    F=F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
+    F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
     F.customtuning(['F','A','D','G','B','E'])
     F.theme(show_note_name=True)
     F.draw()
@@ -46,7 +46,7 @@ For the second example you have to create a folder whit the name Test before. (C
   
 ## Create the object 
 
-    F=F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
+    F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
 If no root precised, C by default. 
 If no scale precised, CEG (C major chord) precised.
 
@@ -122,7 +122,7 @@ You can return to the default parameter by pass this argument : default_theme=Tr
     F.draw()
 Draw and fill the fretboard.
 
-You can add an optionnal parameter to the draw method `F.draw(fingering([1,2,3,4,5,6))` which draw the fingering like a guitar chord. All the theme parameters are not yet implemented. 
+You can add an optionnal parameter to the draw method `F.draw(fingering=[1,2,3,4,5,6])` which draw the fingering like a guitar chord. All the theme parameters are not yet implemented. 
 
 # ChordGtr
 
@@ -160,5 +160,8 @@ The ChordGtr class has the same set_color(), theme(), save(), draw() methods as 
 
 
 ## Todo 
--enharmonics
--list of scales ( Major, Minor, Dorian ..)
+- enharmonics
+
+- list of scales ( Major, Minor, Dorian ..)
+
+- fingering on scale like this fingering = [[5,8],[5,7],[5,7],[5,7],[5,8],[5,8]] to draw pentatonic for example.

@@ -134,7 +134,7 @@ You can add an optionnal parameter to the draw method `F.draw(fingering=[1,2,3,4
     F.draw()
     F.save()
     
-:warning: The default name of the svg is default.svg. Be careful to not have a file whit this name already existing.
+:warning: The default name of the svg is default.svg. Be careful to not have a file with this name already existing.
 
 <p align="center">
   <img src="img/chord_degree_name.svg" width=40%  height=auto />

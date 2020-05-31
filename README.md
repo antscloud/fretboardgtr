@@ -17,7 +17,7 @@ This is a python package to draw fretboard (scales) and guitar chord diagram in 
     F.draw()
     F.save()
     
-:warning: The default name of the svg is default.svg. Be careful to not have a file whit this name already existing.
+:warning: The default name of the svg is default.svg. Be careful to not have a file with this name already existing.
 
 <p align="center">
   <img src="img/scale_degree_name.svg" width=70%  height=auto />
@@ -42,7 +42,7 @@ If you want to show the note name instead :
     F.pathname('Test\Test.svg')
     
     
-For the second example you have to create a folder whit the name Test before. (Creation of the folder is not yet implemented)
+For the second example you have to create a folder with the name Test before. (Creation of the folder is not yet implemented)
   
 ## Create the object 
 
@@ -134,7 +134,7 @@ You can add an optionnal parameter to the draw method `F.draw(fingering=[1,2,3,4
     F.draw()
     F.save()
     
-:warning: The default name of the svg is default.svg. Be careful to not have a file whit this name already existing.
+:warning: The default name of the svg is default.svg. Be careful to not have a file with this name already existing.
 
 <p align="center">
   <img src="img/chord_degree_name.svg" width=40%  height=auto />

@@ -1,11 +1,51 @@
 from fretboardgtr.fretboardgtr import FretBoardGtr #First name : main folder, second name .py file and last : class name
+from fretboardgtr.constants import SCALES_DICT,CHORDS_DICT_ESSENTIAL
 import svgwrite
 
-class ScaleGtr(FretBoardGtr):
-    def __init__(self,scale=['C','E','G'],root='C'):
-        FretBoardGtr.__init__(self)
-        self.scale=scale
+class ScaleFromName:
+    
+    def __init__(self,root='C',mode='Ionian'):
         self.root=root
+        self.mode=mode
+        self.findscale()
+
+    def findscale(self):
+        chroma=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"]
+        index=chroma.index(self.root)
+        modearray=SCALES_DICT[self.mode]
+        scale=[0]*len(modearray)
+        for i in range(len(modearray)):
+            scale[i]=chroma[(index+modearray[i])%12]
+        self.results={'root':self.root,'scale':scale}
+
+class ChordFromName:
+    
+    def __init__(self,root='C',quality='M'):
+        self.root=root
+        self.quality=quality
+        self.findscale()
+
+    def findscale(self):
+        chroma=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"]
+        index=chroma.index(self.root)
+
+        qualityarray=CHORDS_DICT_ESSENTIAL[self.quality]
+        scale=[0]*len(qualityarray)
+        for i in range(len(qualityarray)):
+            scale[i]=chroma[(index+qualityarray[i])%12]
+        self.results={'root':self.root,'scale':scale}
+
+
+class ScaleGtr(FretBoardGtr):
+    def __init__(self,*args,scale=['C','E','G'],root='C'):
+        FretBoardGtr.__init__(self)
+        try:
+            if isinstance(args[0],ScaleFromName) or isinstance(args[0], ChordFromName):
+                self.scale=args[0].results['scale']
+                self.root=args[0].results['root']
+        except:
+            self.scale=scale
+            self.root=root
 
 
     def emptybox(self):
@@ -179,7 +219,7 @@ class ScaleGtr(FretBoardGtr):
             for j,v in enumerate(dot):
                 Y=self.wf*(1+len(self.tuning))
                 X=self.hf*(1/2+v-self.first_fret)+self._ol
-                t=svgwrite.text.Text(str(v)+"ft", insert=(X,Y),font_size=self.fontsize_fret,font_weight="bold",style="text-anchor:middle;dominant-baseline:central")
+                t=svgwrite.text.Text(str(v), insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_fret,font_weight="bold",style="text-anchor:middle")
                 self.dwg.add(t)
 
     def show_tuning(self):
@@ -193,7 +233,7 @@ class ScaleGtr(FretBoardGtr):
                 Y=self.wf*(1+i)+self._ol
                 X=self.hf*(self.last_fret-self.first_fret+3/2)+self._ol
 
-                t=svgwrite.text.Text(reverse_tun[i], insert=(X,Y),font_size=self.fontsize_bottom_tuning,font_weight="normal",style="text-anchor:middle;dominant-baseline:central")
+                t=svgwrite.text.Text(reverse_tun[i], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_bottom_tuning,font_weight="normal",style="text-anchor:middle")
                 self.dwg.add(t)
 
 
@@ -223,7 +263,7 @@ class ScaleGtr(FretBoardGtr):
                 Y=self.wf*(1+i)+self._ol
                 X=self.hf*(1/2)+self._ol
 
-                t=svgwrite.text.Text('X', insert=(X,Y),font_size=self.fontsize_cross,font_weight="bold",fill=self.cross_color,style="text-anchor:middle;dominant-baseline:central")
+                t=svgwrite.text.Text('X', insert=(X,Y),dy=["0.3em"], font_size=self.fontsize_cross,font_weight="bold",fill=self.cross_color,style="text-anchor:middle")
                 self.dwg.add(t)
                 #dwg.add(dwg.image("cross.svg",x=(i+1-0.3)*self.wf +self._ol,y=self.hf*(1/4-0.2)+self._ol,width=2*self.R))
 
@@ -235,13 +275,13 @@ class ScaleGtr(FretBoardGtr):
                 if fingering[i]==0:
 
                     self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=self.open_circle_color,stroke=self.open_circle_stroke_color,stroke_width=self.open_circle_stroke_width))
-                    t=svgwrite.text.Text(fingname[i], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle;dominant-baseline:central")
+                    t=svgwrite.text.Text(fingname[i], insert=(X,Y),dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle")
                     self.dwg.add(t)
 
                 else:
 
                     self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=self.fretted_circle_color,stroke=self.fretted_circle_stroke_color,stroke_width=self.fretted_circle_stroke_width))
-                    t=svgwrite.text.Text(fingname[i], insert=(X,Y),font_size=self.fontsize_text,fill=self.fretted_text_color,font_weight="bold",style="text-anchor:middle;dominant-baseline:central")
+                    t=svgwrite.text.Text(fingname[i], insert=(X,Y),dy=["0.3em"], font_size=self.fontsize_text,fill=self.fretted_text_color,font_weight="bold",style="text-anchor:middle")
                     self.dwg.add(t)
 
 
@@ -303,7 +343,7 @@ class ScaleGtr(FretBoardGtr):
                                 color_stroke=self.dic_color[inter[k]]
 
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=self.open_circle_color,stroke=color_stroke,stroke_width=self.open_circle_stroke_width))
-                            t=svgwrite.text.Text(notes_string[index], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle;dominant-baseline:central")
+                            t=svgwrite.text.Text(notes_string[index], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle")
                             self.dwg.add(t)
 
                         else:
@@ -312,7 +352,7 @@ class ScaleGtr(FretBoardGtr):
                                 color=self.dic_color[inter[k]]
 
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=color,stroke=self.fretted_circle_stroke_color,stroke_width=self.fretted_circle_stroke_width))
-                            t=svgwrite.text.Text(notes_string[index], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",fill=self.fretted_text_color,style="text-anchor:middle;dominant-baseline:central")
+                            t=svgwrite.text.Text(notes_string[index], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.fretted_text_color,style="text-anchor:middle")
                             self.dwg.add(t)
 
                     elif self.show_degree_name:
@@ -322,7 +362,7 @@ class ScaleGtr(FretBoardGtr):
                                 inter=FretBoardGtr.find_intervals(self.scale,self.root)
                                 color_stroke=self.dic_color[inter[k]]
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=self.open_circle_color,stroke=color_stroke,stroke_width=self.open_circle_stroke_width))
-                            t=svgwrite.text.Text(intervals[notes_from_root.index(notes_string[index])], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle;dominant-baseline:central")
+                            t=svgwrite.text.Text(intervals[notes_from_root.index(notes_string[index])], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle")
                             self.dwg.add(t)
 
                         else:
@@ -331,7 +371,7 @@ class ScaleGtr(FretBoardGtr):
                                 color=self.dic_color[inter[k]]
 
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=color,stroke=self.fretted_circle_stroke_color,stroke_width=self.fretted_circle_stroke_width))
-                            t=svgwrite.text.Text(intervals[notes_from_root.index(notes_string[index])], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",fill=self.fretted_text_color,style="text-anchor:middle;dominant-baseline:central")
+                            t=svgwrite.text.Text(intervals[notes_from_root.index(notes_string[index])], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.fretted_text_color,style="text-anchor:middle")
                             self.dwg.add(t)
                     else:
 

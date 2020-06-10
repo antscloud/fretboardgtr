@@ -1,4 +1,6 @@
 import svgwrite
+import os
+
 
 class FretBoardGtr():
 
@@ -311,5 +313,41 @@ class FretBoardGtr():
 
         return dot, nbdot
 
-    def save(self):
+    def save(self, extension='svg'):
+
+        upper_extension=extension.upper()
+        #test if there is a .svg
+        if len(self.path.split('.svg'))!=2:
+            raise ValueError('You need to add the .svg in the path file with the pathname method')
+        elif self.path.split('.svg')[1] != '':
+            raise ValueError('You need to add the .svg in the path file with the pathname method')
+
+        if os.path.isfile(self.path):
+            existing=True
+        else:
+            existing=False
+
         self.dwg.save()
+        if upper_extension=='SVG':
+            return
+
+        elif upper_extension in [ 'PNG', 'BMP', 'PPM' , 'JPG' , 'JPEG' , 'GIF'] :
+            from svglib.svglib import svg2rlg
+            from reportlab.graphics import renderPDF, renderPM
+
+            convertedurl=self.path.split('.svg')[0]+'.'+extension
+            drawing = svg2rlg(self.path)
+            renderPM.drawToFile(drawing, convertedurl, fmt=upper_extension)
+        elif upper_extension in ['PDF']:
+            from svglib.svglib import svg2rlg
+            from reportlab.graphics import renderPDF
+
+            convertedurl=self.path.split('.svg')[0]+'.'+extension
+            drawing = svg2rlg(self.path)
+            renderPDF.drawToFile(drawing, convertedurl)
+        else: 
+            raise ValueError('Unknown Format {}'.format(extension))
+        
+        if not existing and formatupper !='SVG':
+            print('removed')
+            os.remove(self.path)

@@ -348,6 +348,5 @@ class FretBoardGtr():
         else: 
             raise ValueError('Unknown Format {}'.format(extension))
         
-        if not existing and formatupper !='SVG':
-            print('removed')
+        if not existing and upper_extension !='SVG':
             os.remove(self.path)

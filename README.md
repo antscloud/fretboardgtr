@@ -59,7 +59,7 @@ You can specify an array with all the note in your tunings ( DADGAD, Drop D and 
 
     F.theme(show_note_name=True,color_scale=False)
 <p align="center">
-  <img src="img/scale_no_color.svg" width=70%  height=auto />
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/scale_no_color.svg" width=70%  height=auto />
 </p>
 
 You can highly customize the fretboard with all the following variables :  

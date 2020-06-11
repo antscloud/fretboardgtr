@@ -13,7 +13,7 @@ This is a python package to draw fretboard (scales) and guitar chord diagram in 
 ## Example of use 
 
     F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
-    F.customtuning(['F','A','D','G','B','E'])
+    F.customtuning(['E','A','D','G','B','E'])
     F.draw()
     F.save()
     
@@ -28,13 +28,13 @@ The number in the image represents the degree of the scale, 1 is the root so it'
 If you want to show the note name instead :
 
     F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
-    F.customtuning(['F','A','D','G','B','E'])
+    F.customtuning(['E','A','D','G','B','E'])
     F.theme(show_note_name=True)
     F.draw()
     F.save()
     
 <p align="center">
-  <img src="img/scale_note_name.svg" width=70%  height=auto />
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/scale_note_name.svg" width=70%  height=auto />
 </p>
 
 ## Name of the svg 
@@ -144,6 +144,10 @@ You can also just draw a scale diagramm with the root and the name of the scale.
     F.draw()
     F.save()
     
+<p align="center">
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/TestScaleName.svg" width=70%  height=auto />
+</p>
+    
 ## ScaleFromName
 
 You can also just draw a scale diagramm with the root and the type of the chord. The following type are availables : M, (b5), 11, 11#5, 11b5, 13, 13#5, 13b5, 5, 6, 6b5, 7, 7#5, 7b5, 7sus2, 7sus4, 9, 9#5, 9b5, 9sus2, 9sus4, aug, aug6, dim, dim(maj11), dim(maj13), dim(maj7), dim(maj9), dim11, dim13, dim6, dim7, dim9, m, m#5, m(maj11), m(maj11)#5, m(maj13), m(maj13)#5, m(maj7), m(maj7)#5, m(maj9), m(maj9)#5, m11, m11#5, m13, m13#5, m6, m6#5, m7, m7#5, m7b5, m9, m9#5, maj11, maj11#5, maj11b5, maj13, maj13#5, maj13b5, maj7, maj7#5, maj7b5, maj9, maj9#5, maj9b5, sus2, sus2(#5), sus2(b5), sus4, sus4(#5), sus4(b5).
@@ -155,7 +159,11 @@ You can also just draw a scale diagramm with the root and the type of the chord.
     F.pathname('TestChordName.svg')
     F.draw()
     F.save()
-   
+    
+ <p align="center">
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/TestChordName.svg" width=70%  height=auto />
+</p>
+
 ## Enharmonic
 
 You can tell that you want enharmonic notes, for example in the D# mode there is 3 flat notes, the setenharmonic function is call and turns the scale into the more appropriate enharmonic scale
@@ -167,6 +175,9 @@ You can tell that you want enharmonic notes, for example in the D# mode there is
     F.draw()
     F.save()
  
+  <p align="center">
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/TestScaleNameEnhar.svg" width=70%  height=auto />
+</p>
 
     
 # ChordGtr
@@ -182,7 +193,7 @@ You can tell that you want enharmonic notes, for example in the D# mode there is
 :warning: The default name of the svg is default.svg. Be careful to not have a file with this name already existing.
 
 <p align="center">
-  <img src="img/chord_degree_name.svg" width=40%  height=auto />
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/chord_degree_name.svg" width=30%  height=auto />
 </p>
 
 The use of root is for the color of notes. By default it is set to 'C'. But if no color it has no influence. 
@@ -197,6 +208,10 @@ The ChordGtr class has the same set_color(), theme(), save(), draw() methods as 
     F.draw()
     F.save()
     
+<p align="center">
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/lefthandchord.svg" width=30%  height=auto />
+</p>
+    
 ## background fill example
 
 
@@ -208,13 +223,14 @@ The ChordGtr class has the same set_color(), theme(), save(), draw() methods as 
     F.save()
 
 <p align="center">
-  <img src="img/chord_name_background.svg" width=40%  height=auto />
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/chord_name_background.svg" width=30%  height=auto />
 </p>
 
 
 ## Todo 
-- enharmonics
-
-- list of scales ( Major, Minor, Dorian ..)
-
+- ~~enharmonics~~
+- ~~list of scales ( Major, Minor, Dorian ..)~~
+- ~~baseline-dominant problem~~
+- ~~save format~~
+-- ~~lefthand~~
 - fingering on scale like this fingering = [[5,8],[5,7],[5,7],[5,7],[5,8],[5,8]] to draw pentatonic for example.

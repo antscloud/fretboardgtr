@@ -202,7 +202,7 @@ The ChordGtr class has the same set_color(), theme(), save(), draw() methods as 
 
 ## Lefthand Support 
 
-    F=ChordGtr(fingering=[18,3,2,0,1,0],root="C",lefthand=True)
+    F=ChordGtr(fingering=[3,3,2,0,1,0],root="C",lefthand=True)
     F.customtuning(['F','A','D','G','B','E'])
     F.pathname('lefthandchord.svg')
     F.draw()

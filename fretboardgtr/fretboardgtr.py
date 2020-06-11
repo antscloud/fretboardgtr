@@ -222,6 +222,73 @@ class FretBoardGtr():
 
         return notes
 
+    def setenharmonic(originalscale):
+        """
+        Function that modify the scale in order to not repeat note 
+        i.e. turns into enharmonic way if possible
+        >>> setenharmonic(['A#', 'C', 'D', 'D#', 'F', 'G', 'A'])
+            ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']
+        >>> setenharmonic(["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"])
+            ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+        >>> setenharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
+            ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F']
+        """
+        alter={
+                "Bb":"A#",
+                "Cb":"B",
+                "B#":"C",
+                "Db":"C#",
+                "Eb":"D#",
+                "Fb":"E",
+                "Gb":"F#",
+                "Ab":"G#"
+                }
+                
+        enharm={
+            'A#': 'Bb',
+            'B': 'Cb',
+            'F':'E#',
+            'C': 'B#',
+            'B#':'C',
+            'C#': 'Db',
+            'D#': 'Eb',
+            'E': 'Fb',
+            'F#': 'Gb',
+            'G#': 'Ab'
+        }
+        def testduplicate(scale):
+            temp_scale=[0]*len(scale)
+            for i,value in enumerate(scale):
+                if len(value[1:2])!='':
+                    temp_scale[i]=value[0]
+                else :
+                    temp_scale[i]=value
+            if len(temp_scale) != len(set(temp_scale)):
+                return True
+            else:
+                return False
+        
+        modified_scale=list(originalscale)
+        for i, val in enumerate(modified_scale):
+            if val in list(alter.keys()):
+                modified_scale[i]=alter[val]
+        if testduplicate(modified_scale):
+            for i,value in enumerate(modified_scale):
+                if len(value)==2:
+                    modified_scale[i]=enharm[value]
+                else :
+                    modified_scale[i]=value
+        if testduplicate(modified_scale):
+            if 'B' in modified_scale:
+                modified_scale[modified_scale.index('B')]=enharm['B']
+            elif 'F' in modified_scale:
+                modified_scale[modified_scale.index('F')]=enharm['F']
+            else:
+                pass
+            if testduplicate(modified_scale):
+                modified_scale=list(originalscale)
+        return modified_scale
+
 
     def minmax(self):
         '''
@@ -250,6 +317,23 @@ class FretBoardGtr():
         >>> find_intervals(scale=['C','E','G'],root='C')
         [1,3,5]
         '''
+
+        alter={
+        "Bb":"A#",
+        "Cb":"B",
+        "B#":"C",
+        "Db":"C#",
+        "Eb":"D#",
+        "Fb":"E",
+        "Gb":"F#",
+        "Ab":"G#"
+        }
+
+        #convert to all sharps : 
+        for i, value in enumerate(scale):
+            if value in list(alter.keys()):
+                scale[i]=alter[value]
+        
         chroma=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"]
         intervals=["1","b2","2","b3","3","4","b5","5","b6","6","b7","7"]
         intervals_dic={

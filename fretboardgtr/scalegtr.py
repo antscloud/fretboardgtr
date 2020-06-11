@@ -3,6 +3,11 @@ from fretboardgtr.constants import SCALES_DICT,CHORDS_DICT_ESSENTIAL
 import svgwrite
 
 class ScaleFromName:
+    """
+    Object that generate a results dictionnary containing the root and the scale as argument from root and mode strings.
+    >>> ScaleFromName(root='C',mode='Dorian').results
+        {'root': 'C', 'scale': ['C', 'D', 'D#', 'F', 'G', 'A', 'A#']}
+    """
     
     def __init__(self,root='C',mode='Ionian'):
         self.root=root
@@ -19,6 +24,11 @@ class ScaleFromName:
         self.results={'root':self.root,'scale':scale}
 
 class ChordFromName:
+    """
+    Object that generate a results dictionnary containing the root and the scale as argument from root and quality of chords strings.
+    >>> ChordFromName(root='C',quality='M').results
+        {'root': 'C', 'scale': ['C', 'E', 'G']}
+    """
     
     def __init__(self,root='C',quality='M'):
         self.root=root
@@ -37,8 +47,9 @@ class ChordFromName:
 
 
 class ScaleGtr(FretBoardGtr):
-    def __init__(self,*args,scale=['C','E','G'],root='C'):
+    def __init__(self,*args,scale=['C','E','G'],root='C', enharmonic=False):
         FretBoardGtr.__init__(self)
+        self.enharmonic=enharmonic
         try:
             if isinstance(args[0],ScaleFromName) or isinstance(args[0], ChordFromName):
                 self.scale=args[0].results['scale']
@@ -46,6 +57,9 @@ class ScaleGtr(FretBoardGtr):
         except:
             self.scale=scale
             self.root=root
+
+        if enharmonic: 
+            self.enharmonic_scale = FretBoardGtr.setenharmonic(self.scale)
 
 
     def emptybox(self):
@@ -298,6 +312,24 @@ class ScaleGtr(FretBoardGtr):
         chroma=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"]
         intervals=["1","b2","2","b3","3","4","b5","5","b6","6","b7","7"]
         notes_from_root=[0]*len(chroma)
+
+        alter={
+        "Bb":"A#",
+        "Cb":"B",
+        "B#":"C",
+        "C":"B#",
+        "Db":"C#",
+        "Eb":"D#",
+        "Fb":"E",
+        "Gb":"F#",
+        "Ab":"G#"
+        }
+
+        #inverse dictionnary
+        altersharp={}
+        for key, values in alter.items():
+            altersharp[values]=key
+
         if self.first_fret!=0:
             nb=1
         else:
@@ -324,7 +356,6 @@ class ScaleGtr(FretBoardGtr):
                         break
 
                     notes_string[j]=chroma[(chroma.index(nt)+j)%12]
-
                 for k in range(len(self.scale)):
 
                     try:
@@ -336,11 +367,16 @@ class ScaleGtr(FretBoardGtr):
                     X=self.hf*(12*l+index+1/2-self.first_fret)+self._ol
 
                     if self.show_note_name:
-
                         if (index+l)==0:
                             if self.open_color_scale:
                                 inter=FretBoardGtr.find_intervals(self.scale,self.root)
                                 color_stroke=self.dic_color[inter[k]]
+                            if self.enharmonic:
+                                if notes_string[index] in list(alter.values()):
+                                    if altersharp[notes_string[index]] in self.enharmonic_scale:
+                                        notes_string[index] = self.enharmonic_scale[self.enharmonic_scale.index(altersharp[notes_string[index]])]
+
+
 
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=self.open_circle_color,stroke=color_stroke,stroke_width=self.open_circle_stroke_width))
                             t=svgwrite.text.Text(notes_string[index], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.open_text_color,style="text-anchor:middle")
@@ -350,6 +386,11 @@ class ScaleGtr(FretBoardGtr):
                             if self.color_scale:
                                 inter=FretBoardGtr.find_intervals(self.scale,self.root)
                                 color=self.dic_color[inter[k]]
+                                
+                            if self.enharmonic: 
+                                if notes_string[index] in list(alter.values()):
+                                    if altersharp[notes_string[index]] in self.enharmonic_scale:
+                                        notes_string[index] = self.enharmonic_scale[self.enharmonic_scale.index(altersharp[notes_string[index]])]
 
                             self.dwg.add(self.dwg.circle((X,Y),r=self.R,fill=color,stroke=self.fretted_circle_stroke_color,stroke_width=self.fretted_circle_stroke_width))
                             t=svgwrite.text.Text(notes_string[index], insert=(X,Y), dy=["0.3em"], font_size=self.fontsize_text,font_weight="bold",fill=self.fretted_text_color,style="text-anchor:middle")

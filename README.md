@@ -13,7 +13,7 @@ This is a python package to draw fretboard (scales) and guitar chord diagram in 
 ## Example of use 
 
     F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
-    F.customtuning(['F','A','D','G','B','E'])
+    F.customtuning(['E','A','D','G','B','E'])
     F.draw()
     F.save()
     
@@ -28,7 +28,7 @@ The number in the image represents the degree of the scale, 1 is the root so it'
 If you want to show the note name instead :
 
     F=ScaleGtr(scale=["G","A","B","C","D","E","F#"],root="G")
-    F.customtuning(['F','A','D','G','B','E'])
+    F.customtuning(['E','A','D','G','B','E'])
     F.theme(show_note_name=True)
     F.draw()
     F.save()

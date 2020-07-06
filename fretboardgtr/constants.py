@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 SCALES_DICT = {
     'Ionian': [0, 2, 4, 5, 7, 9, 11],
     'Dorian': [0, 2, 3, 5, 7, 9, 10],

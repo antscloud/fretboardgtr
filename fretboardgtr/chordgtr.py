@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from fretboardgtr.fretboardgtr import FretBoardGtr #First name : main folder, second name .py file and last : class name
 import svgwrite
 
@@ -10,44 +11,10 @@ class ChordGtr(FretBoardGtr):
         self.lefthand=lefthand
 
 
-    def fingering(self,fingering):
+    def setfingering(self,fingering):
         self.fingering=fingering
 
-    def wheredot(self,minfret):
-
-        ''' Find where the dot on the fretboard are depends on the minimum fret
-        If the first finger is on the 2rd fret (for example a B) and there is nothing beside the function return the folowwings lists:
-        dot=[1,3]
-        nbdot=[1,1]
-        That leads to put a dot on the second fret and the fourth fret corresponding to the third and a fifth on the guitar.
-        '''
-
-        dot_fret=[0,3,5,7,9,12]
-        nbdot_fret=[2,1,1,1,1,2]
-
-        dot=[]
-        nbdot=[]
-
-        if self.gap>=12:
-
-            for i in range(1,(self.gap//12)*len(dot_fret)):
-                dot_fret.append(dot_fret[i]+12)
-                nbdot_fret.append(nbdot_fret[i])
-
-        for i in range(len(dot_fret)):
-                    if dot_fret[i]>=(minfret)%12 and dot_fret[i]<minfret%12+self.gap+1:
-                        dot.append(dot_fret[i]-minfret%12)
-                        nbdot.append(nbdot_fret[i])
-
-        if minfret==0:
-            dot.pop(0)
-            nbdot.pop(0)
-
-        return dot, nbdot
-
-
     def emptybox(self):
-
             self.dwg = svgwrite.Drawing(
             self.path,
             size=(self.wf*(len(self.tuning)+2),self.hf*6+self.hf*(self.gap-3)),
@@ -58,7 +25,7 @@ class ChordGtr(FretBoardGtr):
         self.dwg.add(
             self.dwg.rect(
                 insert=(self.wf+ self._ol, self.hf +self._ol),
-                size=((len(self.tuning)-1)*self.wf, (len(self.tuning)-2)*self.hf), #-2 evite case du bas du tuning
+                size=((len(self.tuning)-1)*self.wf, (self.gap+1)*(self.hf)), #-2 evite case du bas du tuning
                 rx=None, ry=None,
                 fill=self.background_color
             )
@@ -82,7 +49,7 @@ class ChordGtr(FretBoardGtr):
         minfret = min(v for v in fretfing if v > 0)
 
 
-        dot,nbdot = self.wheredot(minfret)
+        dot,nbdot = self.wheredot()
         if max(fretfing)>4:
             for i in range(len(dot)):
                 if nbdot[i]==1:
@@ -167,26 +134,12 @@ class ChordGtr(FretBoardGtr):
                     stroke_width=self.nut_height
                 )
             )
-    def show_fret(self):
-        '''
-        Show text under the frets for example 3ft if condition in fillfretboard
-        '''
-        dot=[3,5,7,9,12,15,17,19,21,24]
-        dot=[dot[v] for v in range(len(dot)) if dot[v]<=self.last_fret and dot[v]>=self.first_fret]
-        #self.first_fret=0
-        #self.last_fret=12
-        if self.show_ft:
-            for j,v in enumerate(dot):
-                Y=self.wf*(1+len(self.tuning))
-                X=self.hf*(1/2+v-self.first_fret)+self._ol
-                t=svgwrite.text.Text(str(v),dy=["0.3em"], insert=(X,Y),font_size=self.fontsize_text,font_weight="bold",style="text-anchor:middle")
-                self.dwg.add(t)
 
-    def show_tuning(self,fretfing):
+    def show_tuning(self):
         '''
         Show  tuning at the end of the neck.
         '''
-
+        fretfing=[0 if v == None else v for v in self.fingering]
         Max_after_conv=max([0 if v == None else v for v in self.fingering])
         if max(fretfing)>4:
             for i in range(len(self.tuning)):
@@ -224,6 +177,7 @@ class ChordGtr(FretBoardGtr):
         minfret = min(v for v in fretfing if v > 0)
 
         if max(fretfing)>4:
+            #print the number to the right of the minfret
 
             X=self.wf*(1+len(self.tuning))+self._ol
             Y=self.hf*(3/2)+self._ol
@@ -282,7 +236,7 @@ class ChordGtr(FretBoardGtr):
                     self.dwg.add(t)
 
             if self.show_tun:
-                self.show_tuning(fretfing)
+                self.show_tuning()
 
 
     def draw(self):

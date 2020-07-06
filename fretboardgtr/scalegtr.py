@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from fretboardgtr.fretboardgtr import FretBoardGtr #First name : main folder, second name .py file and last : class name
 from fretboardgtr.constants import SCALES_DICT,CHORDS_DICT_ESSENTIAL
 import svgwrite

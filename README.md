@@ -20,7 +20,7 @@ This is a python package to draw fretboard (scales) and guitar chord diagram in 
 :warning: The default name of the svg is default.svg. Be careful to not have a file with this name already existing.
 
 <p align="center">
-  <img src="img/scale_degree_name.svg" width=70%  height=auto />
+  <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/scale_degree_name.svg" width=70%  height=auto />
 </p>
 
 The number in the image represents the degree of the scale, 1 is the root so it's G, 2 is the major second so A and so on. 

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import svgwrite
 import os
 
@@ -135,12 +136,22 @@ class FretBoardGtr():
             }
         else:
 
-            for keys in kwargs:
-                    if keys in dic_name.keys():
-                        self.dic_color[dic_name[keys]]=kwargs[keys]
+            for keys,value in kwargs.items():
+                if keys in dic_name.keys():
+                    if type(value)==type(self.dic_color[dic_name[keys]]):
+                        self.dic_color[dic_name[keys]]=value
                     else:
-                        print(keys,'is not a valid attribute.')
+                        try:
+                            raise ValueError('{} ({}) is not a good format for {} attribute, use {} instead.'.format(value,str(type(value).__name__) ,keys,str(type(self.dic_color[dic_name[keys]]).__name__)))
+                        except Exception as e:
+                            print(e,'Modifications are not taken into accounts.')
+                else:
+                    try:
+                        raise ValueError('{} is not a valid attribute.'.format(keys))
+                    except Exception as e:
+                        print(e,'It is not taken into accounts.')
 
+                            
     def theme(self,default_theme=False,**kwargs):
         '''
         Set new attributes to the fretboard
@@ -186,11 +197,20 @@ class FretBoardGtr():
             for i in self.attribute_dic.keys():
                 setattr(self,i, self.attribute_dic[i])
         else:
-            for keys in kwargs:
+            for keys,value in kwargs.items():
                 if keys in self.attribute_dic.keys():
-                    setattr(self,keys,kwargs[keys])
+                    if type(value)==type(self.attribute_dic[keys]):
+                        setattr(self,keys,value)
+                    else:
+                        try:
+                            raise ValueError('{} ({}) is not a good format for {} attribute, use {} instead.'.format(value,str(type(value).__name__) ,keys,str(type(self.attribute_dic[keys]).__name__)))
+                        except Exception as e:
+                            print(e,' Modifications are not taken into accounts.')
                 else:
-                    print(keys,'is not a valid attribute.')
+                    try:
+                        raise ValueError('{} is not a valid attribute.'.format(keys))
+                    except Exception as e:
+                        print(e,'It is not taken into accounts.')
 
 
     def notesname(self):
@@ -222,6 +242,7 @@ class FretBoardGtr():
 
         return notes
 
+    @staticmethod
     def setenharmonic(originalscale):
         """
         Function that modify the scale in order to not repeat note 
@@ -256,6 +277,7 @@ class FretBoardGtr():
             'F#': 'Gb',
             'G#': 'Ab'
         }
+
         def testduplicate(scale):
             temp_scale=[0]*len(scale)
             for i,value in enumerate(scale):
@@ -293,15 +315,19 @@ class FretBoardGtr():
     def minmax(self):
         '''
         Return the min and the max of fingering without None and 0.
-        FretBoardGtr.minmax(fingering=[0,3,2,0,None,0])
+        FretBoardGtr.minmax()
         (2,3)
         '''
         fretfing=[0 if v == None else v for v in self.fingering]
-        return min(v for v in fretfing if v > 0),max(fretfing)
+        try :
+            return min(v for v in fretfing if v > 0),max(fretfing)
+        except ValueError:
+            return 0,max(fretfing)
 
     def dist(self):
         '''
         return the gap between the max fret and the min fret
+        3 if distance < 3
         >>> FretBoardGtr.dist(fingering=[0,3,2,0,None,0])
         1
         '''
@@ -365,15 +391,20 @@ class FretBoardGtr():
 
 
 
-    def wheredot(self,minfret):
+    def wheredot(self):
 
         ''' Find where the dot on the fretboard are depends on the minimum fret
         If the first finger is on the 2rd fret (for example a B) and there is nothing beside the function return the folowwings lists:
         dot=[1,3]
         nbdot=[1,1]
+        >>>F=FretBoardGtr()
+        >>>tupledot=F.wheredot()
+        ([2], [1])
+        Because on the 3rd fret and the 5th
         That leads to put a dot on the second fret and the fourth fret corresponding to the third and a fifth on the guitar.
         '''
-
+        minfret=self.minmax()[0]
+        dist=self.dist()
         dot_fret=[0,3,5,7,9,12]
         nbdot_fret=[2,1,1,1,1,2]
 

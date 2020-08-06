@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fretboardgtr", # Replace with your own username
-    version="0.0.3",
+    version="0.0.4",
     author="Ant Gib",
     author_email="ant.gib@protonmail.com",
     description="This is a package for creating chords and fretboard visualisation of scale in svg format.",

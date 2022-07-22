@@ -62,46 +62,51 @@ You can specify an array with all the note in your tunings ( DADGAD, Drop D and 
   <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/scale_no_color.svg" width=70%  height=auto />
 </p>
 
-You can highly customize the fretboard with all the following variables :  
-                wf = 50 (width of fret)  
-                hf = 70 (height of fret)  
-                R = 20  (radius of circle )  
-                background_color = 'rgb(255,255,255)'  
-                fretcolor = 'rgb(150,150,150)'  
-                strings_color = 'rgb(0,0,0)'  
-                nut_color = 'rgb(0,0,0)'  
-                fretsize = 3  
-                string_same_size = False (If False first string bigger than the last)  
-                string_size = 3  
-                dot_color = 'rgb(200,200,200)'  
-                dot_color_stroke = 'rgb(0,0,0)' (small dots on the neck)  
-                dot_width_stroke = 2 (small dots on the neck)  
-                dot_radius = 7 (small dots on the neck)  
-                fontsize_bottom_tuning = 15 (fontsize of the tuning)  
-                fontsize_text = 20 (Fontsize of text in circle)  
-                open_circle_color = 'rgb(255,255,255)' (for open string)  
-                open_circle_stroke_color = 'rgb(0,0,0)' (for open string)  
-                open_circle_stroke_width = 3 (for open string)  
-                open_text_color = 'rgb(0,0,0)' (for open string)  
-                cross_color = 'rgb(0,0,0)' (Cross when doesn't play string )  
-                fontsize_cross = 20 (Cross when doesn't play string )  
-                fretted_circle_color = 'rgb(0,0,0)' (for fretted string)  
-                fretted_circle_stroke_color = 'rgb(0,0,0)' (for fretted string)  
-                fretted_circle_stroke_width = 3 (for fretted string)  
-                fretted_text_color = 'rgb(255,255,255)' (for fretted string)  
-                nut_height = 7  
-                show_nut = True  
-                first_fret = 0  
-                last_fret = 12  
-                show_tun = True  
-                show_ft = True  
-                color_scale = True (for the Scale class)  
-                open_color_scale=False (for the Scale class)
-                show_note_name = False (if show_not_name==True, show_degree_name is not considered )  
-                show_degree_name = True  
-                color_chord=True (for the ChordGtr class)  
-                open_color_chord=True (for the ChordGtr class)  
-               
+You can highly customize the fretboard with all the following variables:
+
+
+
+
+| Variable / Example | Remarks |
+| ------------- | ------------- |
+|`wf = 50`								| width of fret |
+|`hf = 70`								| height of fret |
+|`R = 20`								| radius of circle |
+|`background_color = 'rgb(255,255,255)'`|
+|`fretcolor = 'rgb(150,150,150)'`		|
+|`strings_color = 'rgb(0,0,0)'`			|
+|`nut_color = 'rgb(0,0,0)'`				|
+|`fretsize = 3`							|
+|`string_same_size = False`				| if `False` then the lower strings thicker than the higher ones |
+|`string_size = 3`						| thickness of the string |
+|`dot_color = 'rgb(200,200,200)'`		| small dots on the neck |
+|`dot_color_stroke = 'rgb(0,0,0)'`		| small dots on the neck |
+|`dot_width_stroke = 2`					| small dots on the neck |
+|`dot_radius = 7`						| small dots on the neck |
+|`fontsize_bottom_tuning = 15`			| fontsize of the tuning |
+|`fontsize_text = 20`					| fontsize of text in circle |
+|`open_circle_color = 'rgb(255,255,255)'`| for open strings |
+|`open_circle_stroke_color = 'rgb(0,0,0)'`| for open strings |
+|`open_circle_stroke_width = 3`			| for open strings |
+|`open_text_color = 'rgb(0,0,0)'`		| for open strings |
+|`cross_color = 'rgb(0,0,0)'`			| cross when string isn't played |
+|`fontsize_cross = 20`					| cross when string isn't played |
+|`fretted_circle_color = 'rgb(0,0,0)'`	| for fretted string |
+|`fretted_circle_stroke_color = 'rgb(0,0,0)'`| for fretted string |
+|`fretted_circle_stroke_width = 3`		| for fretted string |
+|`fretted_text_color = 'rgb(255,255,255)'` | for fretted string |
+|`nut_height = 7`						| thickness of the nut |
+|`show_nut = True`						|
+|`first_fret = 0`						|
+|`last_fret = 12`						|
+|`show_tun = True`						| Display the tuning
+|`show_ft = True`						| Display the fret numbers
+|`color_scale = True`					| for the `Scale` class |
+|`open_color_scale=False`				| for the `Scale` class |
+|`show_note_name = False`				| if `show_note_name==True` then `show_degree_name` is not considered |
+|`show_degree_name = True`				|
+|`color_chord=True`						|for the `ChordGtr` class |
+|`open_color_chord=True`				|for the `ChordGtr` class |
                
   You can return to the default parameter by pass this argument : default_theme=True and execute. You can also recreate the object. 
   

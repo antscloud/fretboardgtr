@@ -1,7 +1,7 @@
 ﻿cssselect2==0.3.0
 lxml==4.9.1
 Pillow==9.3.0
-reportlab==3.5.42
+reportlab==3.5.55
 svglib==1.0.0
 svgwrite==1.4
 tinycss2==1.0.2

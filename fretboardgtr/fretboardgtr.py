@@ -1,6 +1,5 @@
 from __future__ import absolute_import
-import svgwrite
-import os
+from pathlib import Path
 
 
 class FretBoardGtr():
@@ -13,7 +12,7 @@ class FretBoardGtr():
         self.square_size=500 # not important here because redefined
 
         self.gap=3 # minimum distance between max fret and min fret
-        self.path="default.svg"
+        self.path = Path("default.svg")
 
         self.dic_color={
             "1":'rgb(231, 0, 0)',
@@ -75,12 +74,14 @@ class FretBoardGtr():
         for i in self.attribute_dic.keys():
             setattr(self,i, self.attribute_dic[i])
 
-    def pathname(self,path):
+    def pathname(self, path):
         """
         Take a parameter to set the path to save.
         >>> FretBoardGtr.pathname("test.svg")
+        >>> FretBoardGtr.pathname("test.png")
+        >>> FretBoardGtr.pathname("test")
         """
-        self.path=path
+        self.path = Path(path)
 
     def layout(self):
         square_x=self.hf*(len(self.tuning)+2)
@@ -428,40 +429,57 @@ class FretBoardGtr():
 
         return dot, nbdot
 
-    def save(self, extension='svg'):
+    def save(self, extension=None):
+        """Saves the drawing to path.
+        By default, drawing will be saved as SVG, in path specified by pathname.
+        If another extension is specified (e.g. '.png'), or if path is set to 'file.png',
+        the drawing will be saved as the corresponding format.
 
-        upper_extension=extension.upper()
-        #test if there is a .svg
-        if len(self.path.split('.svg'))!=2:
-            raise ValueError('You need to add the .svg in the path file with the pathname method')
-        elif self.path.split('.svg')[1] != '':
-            raise ValueError('You need to add the .svg in the path file with the pathname method')
+        >>> F.pathname('test.pdf'); F.save()
+        >>> F.pathname('test'); F.save('.pdf')
+        >>> F.pathname('test'); F.save('.pdf'); F.save('.png')
+        """
 
-        if os.path.isfile(self.path):
-            existing=True
-        else:
-            existing=False
+        if not hasattr(self, 'dwg'):
+            # Don't forget to draw before saving!
+            self.draw()
 
-        self.dwg.save()
+        if extension is None:
+            extension = self.path.suffix
+
+        if not extension.strip():
+            raise ValueError("Please specify an extension, either in self.path or as argument.")
+
+        if extension[0] != '.':
+            extension = '.' + extension  # For Pathlib
+
+        result_file = self.path.with_suffix(extension)
+
+        upper_extension=extension.upper()[1:]
+
         if upper_extension=='SVG':
+            self.dwg.filename = result_file
+            self.dwg.save()
             return
 
-        elif upper_extension in [ 'PNG', 'BMP', 'PPM' , 'JPG' , 'JPEG' , 'GIF'] :
-            from svglib.svglib import svg2rlg
-            from reportlab.graphics import renderPDF, renderPM
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix='.svg') as svg_temp_file:
+            # Save to temp file
+            self.dwg.filename = svg_temp_file.name
+            self.dwg.save()
 
-            convertedurl=self.path.split('.svg')[0]+'.'+extension
-            drawing = svg2rlg(self.path)
-            renderPM.drawToFile(drawing, convertedurl, fmt=upper_extension)
-        elif upper_extension in ['PDF']:
-            from svglib.svglib import svg2rlg
-            from reportlab.graphics import renderPDF
+            if upper_extension in ['PNG', 'BMP', 'PPM' , 'JPG' , 'JPEG' , 'GIF'] :
+                from svglib.svglib import svg2rlg
+                from reportlab.graphics import renderPM
 
-            convertedurl=self.path.split('.svg')[0]+'.'+extension
-            drawing = svg2rlg(self.path)
-            renderPDF.drawToFile(drawing, convertedurl)
-        else: 
-            raise ValueError('Unknown Format {}'.format(extension))
-        
-        if not existing and upper_extension !='SVG':
-            os.remove(self.path)
+                drawing = svg2rlg(svg_temp_file.name)
+                renderPM.drawToFile(drawing, result_file, fmt=upper_extension)
+            elif upper_extension in ['PDF']:
+                from svglib.svglib import svg2rlg
+                from reportlab.graphics import renderPDF
+
+                drawing = svg2rlg(svg_temp_file.name)
+                #NOTE: renderPDF doesn't seem to accept pathlib.Path
+                renderPDF.drawToFile(drawing, str(result_file.resolve()))
+            else:
+                raise ValueError('Unknown Format {}'.format(extension))

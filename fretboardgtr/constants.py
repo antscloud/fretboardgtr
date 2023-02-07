@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 from enum import Enum
 
+
 class Mode(str, Enum):
     """Makes it easier to list and select a mode, e.g. with auto-completion
-    Mode.MIXOLYDIAN can be used instead of the 'Mixolydian' string.
+    Mode.MIXOLYDIAN can be used instead of the 'Mixolydian' literal string.
     """
     AEOLIAN = 'Aeolian'
     ALTERED = 'Altered'
@@ -22,7 +23,7 @@ class Mode(str, Enum):
     LYDIAN = 'Lydian'
     LYDIAN_B7 = 'Lydianb7'
     LYDIAN_BEC9 = 'Lydianbec9'
-    MAJOR = 'Ionian' # For convenience
+    MAJOR = 'Ionian'  # For convenience
     MAJOR_BEBOP = 'Majorbebop'
     MAJOR_BLUE = 'Majorblue'
     MAJOR_PENTATONIC = 'Majorpentatonic'
@@ -37,6 +38,7 @@ class Mode(str, Enum):
     SUPER_LOCRIAN_BB7 = 'Superlocrianbb7'
     WHOLE_TONE = 'Wholetone'
     WHOLE_TONE_HALF_TONE = 'Wholetonehalftone'
+
 
 SCALES_DICT = {
     'Ionian': [0, 2, 4, 5, 7, 9, 11],
@@ -71,7 +73,38 @@ SCALES_DICT = {
     'Majorbebop': [0, 2, 3, 5, 7, 8, 9, 10]
 }
 
-CHORDS_DICT_ESSENTIAL={'M': [0, 4, 7],
+
+class Chord(str, Enum):
+    """Makes it easier to list and select a chord, e.g. with auto-completion
+    Chord.MAJOR can be used instead of the 'M' literal string.
+
+    Not every defined Chord from CHORDS_DICT_ESSENTIAL is defined as an enum
+    here, only the most common ones.
+    """
+    MAJOR = 'M'
+    ELEVENTH = '11'
+    THIRTEENTH = '13'
+    FIFTH = '5'
+    POWER = '5'  # For convenience
+    SIXTH = '6'
+    SEVENTH = '7'
+    DOMINANT_SEVENTH = '7'  # For convenience
+    NINTH = '9'
+    AUGMENTED = 'aug'
+    DIMINISHED = 'dim'
+    DIMINISHED_SEVENTH = 'dim7'
+    MINOR = 'm'
+    MINOR_ELEVENTH = 'm11'
+    MINOR_THIRTEENTH = 'm13'
+    MINOR_SIXTH = 'm6'
+    MINOR_SEVENTH = 'm7'
+    MINOR_NINTH = 'm9'
+    MAJOR_SEVENTH = 'maj7'
+    SUSPENDED_FOURTH = 'sus4'
+    SUSPENDED_SECOND = 'sus2'
+
+
+CHORDS_DICT_ESSENTIAL = {'M': [0, 4, 7],
  '(b5)': [0, 4, 6],
  '11': [0, 4, 5, 7, 10],
  '11#5': [0, 4, 5, 8, 10],

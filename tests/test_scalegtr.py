@@ -12,6 +12,13 @@ class ScaleGtrTest(unittest.TestCase):
 
     """" Test case for fretboardgtr"""
 
+    def test_every_mode_is_defined(self):
+        self.assertTrue(len(Mode) >= 7, "At least seven modes should be defined as enum")
+        for mode in Mode:
+            scale = ScaleFromName(root='E', mode=mode)
+            notes = scale.results['scale']
+            self.assertEqual('E', notes[0])
+
     def test_scalefromname_findscale(self):
         self.assertEqual(ScaleFromName().results,{'root': 'C', 'scale': ['C', 'D', 'E', 'F', 'G', 'A', 'B']})
         self.assertEqual(ScaleFromName(root='D#',mode='Aeolian').results,{'root': 'D#', 'scale': ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#']})
@@ -19,6 +26,12 @@ class ScaleGtrTest(unittest.TestCase):
         self.assertEqual(ScaleFromName(root='A#',mode='Dominantbebop').results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
         self.assertEqual(ScaleFromName(root='A#',mode=Mode.DOMINANT_BEBOP).results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
 
+    def test_every_chord_enum_is_defined(self):
+        self.assertTrue(len(Chord) >= 12, "Some chords should be defined as enum")
+        for chord_name in Chord:
+            chord = ChordFromName(root='F#', quality=chord_name)
+            notes = chord.results['scale']
+            self.assertEqual('F#', notes[0])
 
     def test_chordfromname_findscale(self):
         self.assertEqual(ChordFromName().results,{'root': 'C', 'scale': ['C', 'E', 'G']})

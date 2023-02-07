@@ -1,10 +1,11 @@
-import os 
+import os
 import io
 import sys
 import unittest
 from fretboardgtr.fretboardgtr import FretBoardGtr
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
+from fretboardgtr.constants import Mode
 
 path="tests/images/scalegtr/"
 class ScaleGtrTest(unittest.TestCase):
@@ -14,7 +15,9 @@ class ScaleGtrTest(unittest.TestCase):
     def test_scalefromname_findscale(self):
         self.assertEqual(ScaleFromName().results,{'root': 'C', 'scale': ['C', 'D', 'E', 'F', 'G', 'A', 'B']})
         self.assertEqual(ScaleFromName(root='D#',mode='Aeolian').results,{'root': 'D#', 'scale': ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#']})
+        self.assertEqual(ScaleFromName(root='D#',mode=Mode.AEOLIAN).results,{'root': 'D#', 'scale': ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#']})
         self.assertEqual(ScaleFromName(root='A#',mode='Dominantbebop').results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
+        self.assertEqual(ScaleFromName(root='A#',mode=Mode.DOMINANT_BEBOP).results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
 
 
     def test_chordfromname_findscale(self):

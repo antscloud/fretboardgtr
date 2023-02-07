@@ -1,4 +1,43 @@
 from __future__ import absolute_import
+from enum import Enum
+
+class Mode(str, Enum):
+    """Makes it easier to list and select a mode, e.g. with auto-completion
+    Mode.MIXOLYDIAN can be used instead of the 'Mixolydian' string.
+    """
+    AEOLIAN = 'Aeolian'
+    ALTERED = 'Altered'
+    AUGMENTED_LYDIAN = 'Augmentedlydian'
+    DOMINANT_BEBOP = 'Dominantbebop'
+    DORIAN = 'Dorian'
+    DORIAN_B9 = 'Dorianb9'
+    DORIAN_SHARP11 = 'Doriansharp11'
+    HALF_TONE_WHOLE_TONE = 'Halftonewholetone'
+    HARMONIC_MINOR = 'Harmonicminor'
+    IONIAN = 'Ionian'
+    IONIAN_SHARP5 = 'Ioniansharp5'
+    LOCRIAN = 'Locrian'
+    LOCRIAN_BEC13 = 'Locrianbec13'
+    LOCRIAN_BEC9 = 'Locrianbec9'
+    LYDIAN = 'Lydian'
+    LYDIAN_B7 = 'Lydianb7'
+    LYDIAN_BEC9 = 'Lydianbec9'
+    MAJOR = 'Ionian' # For convenience
+    MAJOR_BEBOP = 'Majorbebop'
+    MAJOR_BLUE = 'Majorblue'
+    MAJOR_PENTATONIC = 'Majorpentatonic'
+    MELOD_ICMINOR = 'Melodicminor'
+    MINOR_BLUES = 'Minorblues'
+    MINOR_PENTATONIC = 'Minorpentatonic'
+    MIXOLYDIAN = 'Mixolydian'
+    MIXOLYDIAN_B13 = 'Mixolydianb13'
+    MIXOLYDIAN_B9_B13 = 'Mixolydianb9b13'
+    NATURAL_MINOR = 'Aeolian'
+    PHRYGIAN = 'Phrygian'
+    SUPER_LOCRIAN_BB7 = 'Superlocrianbb7'
+    WHOLE_TONE = 'Wholetone'
+    WHOLE_TONE_HALF_TONE = 'Wholetonehalftone'
+
 SCALES_DICT = {
     'Ionian': [0, 2, 4, 5, 7, 9, 11],
     'Dorian': [0, 2, 3, 5, 7, 9, 10],

@@ -3,3 +3,4 @@
 from fretboardgtr.fretboardgtr import FretBoardGtr
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
+from fretboardgtr.constants import Mode

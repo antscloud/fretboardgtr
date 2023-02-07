@@ -5,7 +5,7 @@ import unittest
 from fretboardgtr.fretboardgtr import FretBoardGtr
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
-from fretboardgtr.constants import Mode
+from fretboardgtr.constants import Mode, Chord
 
 path="tests/images/scalegtr/"
 class ScaleGtrTest(unittest.TestCase):
@@ -23,6 +23,13 @@ class ScaleGtrTest(unittest.TestCase):
     def test_chordfromname_findscale(self):
         self.assertEqual(ChordFromName().results,{'root': 'C', 'scale': ['C', 'E', 'G']})
         self.assertEqual(ChordFromName(root='D#',quality='M').results,{'root': 'D#', 'scale': ['D#', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='D#',quality=Chord.MAJOR).results,{'root': 'D#', 'scale': ['D#', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='D',quality=Chord.MINOR).results,{'root': 'D', 'scale': ['D', 'F', 'A']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.DOMINANT_SEVENTH).results,{'root': 'C', 'scale': ['C', 'E', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.MAJOR_SEVENTH).results,{'root': 'C', 'scale': ['C', 'E', 'G', 'B']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.AUGMENTED).results,{'root': 'C', 'scale': ['C', 'E', 'G#']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.POWER).results,{'root': 'C', 'scale': ['C', 'G']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.SUSPENDED_FOURTH).results,{'root': 'C', 'scale': ['C', 'F', 'G']})
         self.assertEqual(ChordFromName(root='E',quality='dim(maj11)').results,{'root': 'E', 'scale': ['E', 'G', 'A', 'A#', 'D#']})
 
 

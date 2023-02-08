@@ -435,6 +435,15 @@ class FretBoardGtr():
         If another extension is specified (e.g. '.png'), or if path is set to 'file.png',
         the drawing will be saved as the corresponding format.
 
+        Supported extensions are :
+        * svg
+        * png
+        * pdf
+        * gif
+        * jpg
+        * bmp
+        * ppm
+
         >>> F.pathname('test.pdf'); F.save()
         >>> F.pathname('test'); F.save('.pdf')
         >>> F.pathname('test'); F.save('.pdf'); F.save('.png')

@@ -78,7 +78,7 @@ class FretBoardGtrTest(unittest.TestCase):
     def test_pathname(self):
         F=FretBoardGtr()
         F.pathname("/chords/chordsimage")
-        self.assertEqual(F.path,"/chords/chordsimage")
+        self.assertEqual(str(F.path),"/chords/chordsimage")
 
     def test_customtuning(self):
         F=FretBoardGtr()

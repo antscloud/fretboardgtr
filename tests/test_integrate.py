@@ -2,8 +2,10 @@ import unittest
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
 from fretboardgtr.constants import Mode, Chord
+import tempfile
+from pathlib import Path
 
-path="tests/images/integrate/"
+path = "tests/images/integrate/"
 class IntegrateTest(unittest.TestCase):
 
     def test_scale_degree_name(self):
@@ -125,6 +127,19 @@ class IntegrateTest(unittest.TestCase):
         with open(path+'chord_name_background.svg','r') as f:
             file=f.read()
             self.assertEqual(F.dwg.tostring(),file.split('<?xml version="1.0" encoding="utf-8" ?>\n')[1])
+
+
+    def test_save_diagram_in_different_formats(self):
+        extensions = ['png', 'pdf', 'svg', 'bmp', 'gif']
+        F=ScaleGtr(ScaleFromName(root='A',mode=Mode.MINOR_PENTATONIC))
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            for extension in extensions:
+                with self.subTest(ext=extension):
+                    out = Path(tmpdirname) / f'temp.{extension}'
+                    F.pathname(out)
+                    self.assertFalse(out.exists(), f"{out} should not have been created yet")
+                    F.save(extension=extension)
+                    self.assertTrue(out.exists(), f"{out} should have been written.")
 
 
 if __name__ == "__main__" :

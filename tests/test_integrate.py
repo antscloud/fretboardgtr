@@ -130,16 +130,27 @@ class IntegrateTest(unittest.TestCase):
 
 
     def test_save_diagram_in_different_formats(self):
-        extensions = ['png', 'pdf', 'svg', 'bmp', 'gif']
+        extensions = ['png', 'pdf', 'bmp', 'gif', 'svg'] # NOTE: SVG should be the last one
         F=ScaleGtr(ScaleFromName(root='A',mode=Mode.MINOR_PENTATONIC))
         with tempfile.TemporaryDirectory() as tmpdirname:
-            for extension in extensions:
-                with self.subTest(ext=extension):
-                    out = Path(tmpdirname) / f'temp.{extension}'
+            for ext in extensions:
+                with self.subTest(ext=ext):
+                    out = Path(tmpdirname) / f'some_file.{ext}'
                     F.pathname(out)
                     self.assertFalse(out.exists(), f"{out} should not have been created yet")
-                    F.save(extension=extension)
+                    F.save() # NOTE: Extension has been specified in pathname
                     self.assertTrue(out.exists(), f"{out} should have been written.")
+                    if ext != 'svg':
+                        self.assertFalse(out.with_suffix('.svg').exists(),
+                                         f"SVG version should not have been saved next to {out}")
+
+                    out2 = Path(tmpdirname) / 'another_file'
+                    F.pathname(out2)  # NOTE: Without extension
+                    out2 = out2.with_suffix('.' + ext)
+                    self.assertFalse(out2.exists(), f"{out2} should not have been created yet")
+                    F.save(extension=ext)
+                    self.assertTrue(out2.exists(), f"{out2} should have been written.")
+                    self.assertTrue(out2.stat().st_size > 4_000, f"{out2} should not be empty.")
 
 
 if __name__ == "__main__" :

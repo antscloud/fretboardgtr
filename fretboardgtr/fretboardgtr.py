@@ -457,7 +457,7 @@ class FretBoardGtr():
             extension = self.path.suffix
 
         if not extension.strip():
-            raise ValueError("Please specify an extension, either in self.path or as argument.")
+            raise ValueError("Please specify an extension, either in self.path or as argument for save.")
 
         if extension[0] != '.':
             extension = '.' + extension  # For Pathlib

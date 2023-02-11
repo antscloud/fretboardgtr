@@ -1,25 +1,48 @@
-import os 
+import os
 import io
 import sys
 import unittest
 from fretboardgtr.fretboardgtr import FretBoardGtr
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
+from fretboardgtr.constants import Mode, Chord
 
 path="tests/images/scalegtr/"
 class ScaleGtrTest(unittest.TestCase):
 
     """" Test case for fretboardgtr"""
 
+    def test_every_mode_is_defined(self):
+        self.assertTrue(len(Mode) >= 7, "At least seven modes should be defined as enum")
+        for mode in Mode:
+            scale = ScaleFromName(root='E', mode=mode)
+            notes = scale.results['scale']
+            self.assertEqual('E', notes[0])
+
     def test_scalefromname_findscale(self):
         self.assertEqual(ScaleFromName().results,{'root': 'C', 'scale': ['C', 'D', 'E', 'F', 'G', 'A', 'B']})
         self.assertEqual(ScaleFromName(root='D#',mode='Aeolian').results,{'root': 'D#', 'scale': ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#']})
+        self.assertEqual(ScaleFromName(root='D#',mode=Mode.AEOLIAN).results,{'root': 'D#', 'scale': ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#']})
         self.assertEqual(ScaleFromName(root='A#',mode='Dominantbebop').results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
+        self.assertEqual(ScaleFromName(root='A#',mode=Mode.DOMINANT_BEBOP).results,{'root': 'A#', 'scale': ['A#', 'C', 'D', 'D#', 'F', 'G', 'G#', 'A']})
 
+    def test_every_chord_enum_is_defined(self):
+        self.assertTrue(len(Chord) >= 12, "Some chords should be defined as enum")
+        for chord_name in Chord:
+            chord = ChordFromName(root='F#', quality=chord_name)
+            notes = chord.results['scale']
+            self.assertEqual('F#', notes[0])
 
     def test_chordfromname_findscale(self):
         self.assertEqual(ChordFromName().results,{'root': 'C', 'scale': ['C', 'E', 'G']})
         self.assertEqual(ChordFromName(root='D#',quality='M').results,{'root': 'D#', 'scale': ['D#', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='D#',quality=Chord.MAJOR).results,{'root': 'D#', 'scale': ['D#', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='D',quality=Chord.MINOR).results,{'root': 'D', 'scale': ['D', 'F', 'A']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.DOMINANT_SEVENTH).results,{'root': 'C', 'scale': ['C', 'E', 'G', 'A#']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.MAJOR_SEVENTH).results,{'root': 'C', 'scale': ['C', 'E', 'G', 'B']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.AUGMENTED).results,{'root': 'C', 'scale': ['C', 'E', 'G#']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.POWER).results,{'root': 'C', 'scale': ['C', 'G']})
+        self.assertEqual(ChordFromName(root='C',quality=Chord.SUSPENDED_FOURTH).results,{'root': 'C', 'scale': ['C', 'F', 'G']})
         self.assertEqual(ChordFromName(root='E',quality='dim(maj11)').results,{'root': 'E', 'scale': ['E', 'G', 'A', 'A#', 'D#']})
 
 

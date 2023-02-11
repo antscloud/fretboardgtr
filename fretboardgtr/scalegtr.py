@@ -5,8 +5,15 @@ import svgwrite
 
 class ScaleFromName:
     """
-    Object that generate a results dictionnary containing the root and the scale as argument from root and mode strings.
+    Object that generate a results dictionary containing the root and
+    the scale as argument from root and mode strings.
+
     >>> ScaleFromName(root='C',mode='Dorian').results
+        {'root': 'C', 'scale': ['C', 'D', 'D#', 'F', 'G', 'A', 'A#']}
+
+    Mode enum can also be used:
+
+    >>> ScaleFromName(root='C',mode=Mode.DORIAN).results
         {'root': 'C', 'scale': ['C', 'D', 'D#', 'F', 'G', 'A', 'A#']}
     """
     

@@ -1,10 +1,11 @@
-import os 
+import os
 import io
 import sys
 import unittest
 from fretboardgtr.fretboardgtr import FretBoardGtr
 from fretboardgtr.scalegtr import ScaleGtr, ChordFromName, ScaleFromName
 from fretboardgtr.chordgtr import ChordGtr
+from fretboardgtr.constants import Mode, Chord
 
 path="tests/images/integrate/"
 class IntegrateTest(unittest.TestCase):
@@ -43,7 +44,7 @@ class IntegrateTest(unittest.TestCase):
             self.assertEqual(F.dwg.tostring(),file.split('<?xml version="1.0" encoding="utf-8" ?>\n')[1])
 
     def test_TestScaleName(self):
-        F=ScaleGtr(ScaleFromName(root='F#',mode='Ionian'))
+        F=ScaleGtr(ScaleFromName(root='F#',mode=Mode.IONIAN))
         F.customtuning(['E','A','D','G','B','E'])
         F.pathname('img/TestScaleName.svg')
         F.theme(show_note_name=True)
@@ -88,7 +89,7 @@ class IntegrateTest(unittest.TestCase):
             self.assertEqual(F.dwg.tostring(),file.split('<?xml version="1.0" encoding="utf-8" ?>\n')[1])
 
     def test_TestChordName(self):
-        F=ScaleGtr(ChordFromName(root='C',quality='M'))
+        F=ScaleGtr(ChordFromName(root='C',quality=Chord.MAJOR))
         F.customtuning(['D','A','D','G','A','D'])
         F.pathname('img/TestChordName.svg')
         F.draw()

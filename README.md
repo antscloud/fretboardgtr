@@ -142,7 +142,7 @@ You can also just draw a scale diagramm with the root and the name of the scale.
 
     from fretboardgtr import ScaleGtr, ScaleFromName
     
-    F=ScaleGtr(ScaleFromName(root='F#',mode='Ionian'))
+    F=ScaleGtr(ScaleFromName(root='F#', mode='Ionian'))
     F.customtuning(['E','A','D','G','B','E'])
     F.pathname('TestScaleName.svg')
     F.theme(show_note_name=True)
@@ -152,10 +152,21 @@ You can also just draw a scale diagramm with the root and the name of the scale.
 <p align="center">
   <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/TestScaleName.svg" width=70%  height=auto />
 </p>
+
+For convenience, modes are also defined as Enum:
+
+    from fretboardgtr import ScaleGtr, ScaleFromName, Mode
+    
+    F=ScaleGtr(ScaleFromName(root='F#', mode=Mode.IONIAN))
+    F.customtuning(['E','A','D','G','B','E'])
+    F.pathname('TestScaleName.svg')
+    F.theme(show_note_name=True)
+    F.draw()
+    F.save()
     
 ## ChordFromName
 
-You can also just draw a scale diagramm with the root and the type of the chord. The following type are availables : M, (b5), 11, 11#5, 11b5, 13, 13#5, 13b5, 5, 6, 6b5, 7, 7#5, 7b5, 7sus2, 7sus4, 9, 9#5, 9b5, 9sus2, 9sus4, aug, aug6, dim, dim(maj11), dim(maj13), dim(maj7), dim(maj9), dim11, dim13, dim6, dim7, dim9, m, m#5, m(maj11), m(maj11)#5, m(maj13), m(maj13)#5, m(maj7), m(maj7)#5, m(maj9), m(maj9)#5, m11, m11#5, m13, m13#5, m6, m6#5, m7, m7#5, m7b5, m9, m9#5, maj11, maj11#5, maj11b5, maj13, maj13#5, maj13b5, maj7, maj7#5, maj7b5, maj9, maj9#5, maj9b5, sus2, sus2(#5), sus2(b5), sus4, sus4(#5), sus4(b5).
+You can also just draw a scale diagram with the root and the type of the chord. The following type are availables : M, (b5), 11, 11#5, 11b5, 13, 13#5, 13b5, 5, 6, 6b5, 7, 7#5, 7b5, 7sus2, 7sus4, 9, 9#5, 9b5, 9sus2, 9sus4, aug, aug6, dim, dim(maj11), dim(maj13), dim(maj7), dim(maj9), dim11, dim13, dim6, dim7, dim9, m, m#5, m(maj11), m(maj11)#5, m(maj13), m(maj13)#5, m(maj7), m(maj7)#5, m(maj9), m(maj9)#5, m11, m11#5, m13, m13#5, m6, m6#5, m7, m7#5, m7b5, m9, m9#5, maj11, maj11#5, maj11b5, maj13, maj13#5, maj13b5, maj7, maj7#5, maj7b5, maj9, maj9#5, maj9b5, sus2, sus2(#5), sus2(b5), sus4, sus4(#5), sus4(b5).
 
     from fretboardgtr import ScaleGtr, ChordFromName
     
@@ -168,6 +179,16 @@ You can also just draw a scale diagramm with the root and the type of the chord.
  <p align="center">
   <img src="https://github.com/antscloud/fretboardgtr/blob/master/img/TestChordName.svg" width=70%  height=auto />
 </p>
+
+For convenience, most common chords are also defined as Enum:
+
+    from fretboardgtr import ScaleGtr, ChordFromName, Chord
+    
+    F=ScaleGtr(ChordFromName(root='C', quality=Chord.MAJOR))
+    F.customtuning(['D','A','D','G','A','D'])
+    F.pathname('TestChordName.svg')
+    F.draw()
+    F.save()
 
 ## Enharmonic
 

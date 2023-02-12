@@ -1,0 +1,293 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "*.rst"
+
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "*.rst"
+
+jobs:
+  pre-commit:
+    name: Run pre-commit
+    # This is the VM in which github run
+    # We can use a custom container that will
+    # be run in this VM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Cache python environment
+        uses: actions/cache@v3
+        # https://tobiasmcnulty.com/posts/caching-pre-commit/
+        # This restore and/or save in the same action
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-3.10-venv-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install dependencies
+        # Activate or create env from cache and install package
+        # https://stackoverflow.com/questions/74668349/how-to-activate-a-virtualenv-in-a-github-action
+        # Note that you have to activate the virtualenv in every step
+        # because GitHub actions doesn't preserve the environment
+        run: |
+          pip install -U '.[dev]'
+
+      - name: Cache pre-commits
+        id: cache-pre-commits
+        # https://tobiasmcnulty.com/posts/caching-pre-commit/
+        # This restore and/or save in the same action
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit/
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Install pre-commits
+        # https://github.com/actions/cache#restoring-and-saving-cache-using-a-single-action
+        if: steps.cache-pre-commits.outputs.cache-hit != 'true'
+        run: pre-commit install
+
+      - name: Compute pre-commit cache key
+        run: |
+          pre-commit run --all-files
+
+  multi-os-tests:
+    name: Test for Python ${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    # Only test all OS on default branch
+    if: ( github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ) || startsWith(github.ref, 'refs/tags')
+    needs: pre-commit
+    strategy:
+      fail-fast: false
+      # https://github.com/actions/cache/blob/main/examples.md#multiple-oss-in-a-workflow-with-a-matrix
+      matrix:
+        include:
+          - {
+              python: "3.10",
+              os: "windows-latest",
+              session: "tests",
+              cache-path: ~\AppData\Local\pip\Cache,
+            }
+          - {
+              python: "3.10",
+              os: "macos-latest",
+              session: "tests",
+              cache-path: ~/Library/Caches/pip,
+            }
+          - {
+              python: "3.9",
+              os: "ubuntu-latest",
+              session: "tests",
+              cache-path: ~/.cache/pip,
+            }
+          - {
+              python: "3.8",
+              os: "ubuntu-latest",
+              session: "tests",
+              cache-path: ~/.cache/pip,
+            }
+
+    env:
+      FORCE_COLOR: "1"
+      PRE_COMMIT_COLOR: "always"
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Cache python environment
+        uses: actions/cache@v3
+        with:
+          path: ${{ matrix.cache-path }}
+          key: ${{ runner.os }}-python-${{ matrix.python }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        # Activate or create env from cache and install package
+        run: |
+          pip install -U '.[dev]'
+
+      - name: Run tests
+        run: |
+          python -m pytest
+
+  linux-tests:
+    name: Tests for Python 3.10 on ubuntu-latest
+    runs-on: ubuntu-latest
+    needs: pre-commit
+    # If not default branch
+    # It allows us to not use too much walltime of github
+    env:
+      FORCE_COLOR: "1"
+      PRE_COMMIT_COLOR: "always"
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Cache python environment
+        uses: actions/cache@v3
+        # https://tobiasmcnulty.com/posts/caching-pre-commit/
+        # This restore and/or save in the same action
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-3.10-pip-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install dependencies
+        # Activate or create env from cache and install package
+        run: |
+          pip install -U '.[dev]'
+
+      - name: Run tests
+        run: |
+          python -m pytest
+
+      - name: Upload artifacts generated by tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: tests-artifacts
+          path: tests/data/outputs/
+
+      - name: Upload coverage data
+        uses: "actions/upload-artifact@v3"
+        with:
+          name: coverage-data
+          path: "./coverage/"
+
+  coverage:
+    name: Coverage deployment
+    runs-on: ubuntu-latest
+    needs: linux-tests
+    # Only deploy coverage on default branch
+    if: ( github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ) || startsWith(github.ref, 'refs/tags')
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Download coverage data
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-data
+          path: ./coverage/
+
+      - name: Display structure of downloaded files
+        run: ls -lh --color=auto -R
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          directory: ./coverage/
+          fail_ci_if_error: true
+          files: coverage.xml
+          verbose: true
+
+  test-pypi:
+    name: Deploy Package to Test PyPI
+    runs-on: ubuntu-latest
+    needs: [pre-commit]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install pypa/build
+        run: >-
+          python -m
+          pip install
+          --upgrade
+          build
+          --user
+
+      - name: Build a binary wheel and a source tarball
+        run: >-
+          python -m
+          build
+          --sdist
+          --wheel
+          --outdir dist/
+          .
+
+      - name: Publish package to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          skip_existing: true
+
+  pypi:
+    name: Deploy Package to PyPI
+    # Deploy only tagged commit and if tests have succeeded
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    needs: [linux-tests, multi-os-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install pypa/build
+        run: >-
+          python -m
+          pip install
+          --upgrade
+          build
+          --user
+
+      - name: Build a binary wheel and a source tarball
+        run: >-
+          python -m
+          build
+          --sdist
+          --wheel
+          --outdir dist/
+          .
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}

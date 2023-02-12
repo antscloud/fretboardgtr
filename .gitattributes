@@ -1,0 +1,8 @@
+# Add to LFS all the tests data files
+fretboardgtr/tests/data/** filter=lfs diff=lfs merge=lfs -text
+tests/data/** filter=lfs diff=lfs merge=lfs -text
+fretboardgtr/test/data/** filter=lfs diff=lfs merge=lfs -text
+test/data/** filter=lfs diff=lfs merge=lfs -text
+
+# Add to LFS all nc files
++*.nc filter=lfs diff=lfs merge=lfs -text

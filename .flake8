@@ -1,0 +1,11 @@
+[flake8]
+# E402	Module level import not at top of file
+# E203	Whitespace before ':'
+# E203 Issue :  https://github.com/PyCQA/pycodestyle/issues/373
+
+extend-ignore = E402,E203
+# Ignore unused imports in __init__
+per-file-ignores = __init__.py:F401
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
+max-complexity = 15
+max-line-length = 88

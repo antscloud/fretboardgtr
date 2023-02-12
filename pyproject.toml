@@ -1,0 +1,88 @@
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fretboardgtr"
+authors = [
+    { name="Antoine Gibek", email="antoine.gibek@gmail.com"},
+]
+description="Package that make easy creation of fretboards and chords diagrams"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
+        'Natural Language :: English',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+]
+keywords=['fretboardgtr', "fretboard", "chord", "guitar", "bass"]
+dependencies=["reportlab", "svglib", "svgwrite"]
+# Dynamic for setuptools
+dynamic = ["version"]
+
+[project.license]
+file = "LICENSE"
+
+[project.urls]
+homepage = "https://github.com/antscloud/fretboardgtr"
+documentation = "https://fretboardgtr.readthedocs.io/en/latest"
+repository = "https://github.com/antscloud/fretboardgtr"
+changelog = "https://github.com/antscloud/fretboardgtr/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/antscloud/fretboardgtr/issues"
+
+[project.optional-dependencies]
+dev = [
+    "fretboardgtr",
+    # Pytest
+    "pytest>=6.1.1",
+    "pytest-cov>=2.10.1",
+    "pytest-mock>=3.6.1",
+    "coverage>=5.3",
+
+    # Documentation
+    "sphinx>=4.5.0",
+    "myst",
+    "myst-parser",
+    "sphinx_book_theme>=0.3.0",
+
+    # Pre-commit
+    "pre-commit",
+
+    # Bump2version
+    "bump2version",
+
+    # Formatting
+    "black",
+    "flake8",
+
+    # Typing
+    "mypy"
+
+
+]
+
+[tool.setuptools]
+zip-safe=false
+
+[tool.setuptools.packages.find]
+include = ["fretboardgtr", "fretboardgtr.*"]
+
+[tool.mypy]
+explicit_package_bases = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+exclude = ['build/','venv', "tests", "docs"]
+
+[tool.docformatter]
+recursive = true
+blank = true
+syntax= "numpy"

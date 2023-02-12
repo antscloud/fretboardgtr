@@ -1,0 +1,65 @@
+date.autoformatter.year:        %Y
+date.autoformatter.month:       %Y-%m
+date.autoformatter.day:         %Y-%m-%d
+date.autoformatter.hour:        %m-%d %H
+date.autoformatter.minute:      %d %H:%M
+date.autoformatter.second:      %H:%M:%S
+date.autoformatter.microsecond: %M:%S.%f
+
+
+lines.linewidth: 1.5               # line width in points
+lines.linestyle: -                 # solid line
+lines.color:     C0                # has no affect on plot(); see axes.prop_cycle
+lines.marker:          o        # the default marker
+lines.markerfacecolor: auto        # the default marker face color
+lines.markeredgecolor: auto        # the default marker edge color
+lines.markeredgewidth: 0         # the line width around the marker symbol
+lines.markersize:      4          # marker size, in points
+lines.solid_capstyle: round
+
+# Seaborn darkgrid parameters
+axes.grid: True
+axes.facecolor: F7F7F8
+axes.edgecolor: black
+axes.linewidth: 0.5
+axes.axisbelow: True
+axes.titlesize:     14   # font size of the axes title
+axes.titleweight:   600  # font weight of title
+axes.titlecolor:    636363    # color of the axes title, auto falls back to
+axes.labelsize:     12  # font size of the x and y labels
+axes.labelweight: 600
+axes.labelcolor:     636363  # font size of the x and y labels
+
+
+xtick.minor.visible: True   # visibility of minor ticks on x-axis
+ytick.minor.visible: True   # visibility of minor ticks on y-axis
+xtick.major.size: 5
+ytick.major.size: 5
+xtick.minor.size: 2
+ytick.minor.size: 2
+xtick.color: 636363
+ytick.color: 636363
+xtick.direction: out
+ytick.direction: out
+
+grid.color: F0F0F0
+grid.linestyle: --       # solid
+grid.linewidth: 2     # in points
+
+# Custom
+font.family:  sans-serif
+font.style: italic
+
+# XXXXXX(XX) Add two last chars to represent the transparency : 0 to 255 in hex format. 200=C8
+axes.prop_cycle: cycler('color', ['4F81BD', 'E46C0A', 'C0504D', '9BBB59', '8064A2'])
+
+image.cmap: RdPu
+figure.facecolor: fefeff
+savefig.facecolor: fefeff
+
+legend.frameon:       True     # if True, draw the legend on a background patch
+legend.framealpha:    0.8
+legend.facecolor:     white
+legend.numpoints: 1
+legend.scatterpoints: 1
+legend.fontsize:      12

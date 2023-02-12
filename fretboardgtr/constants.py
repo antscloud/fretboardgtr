@@ -187,24 +187,13 @@ CHROMATICS_INTERVALS = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b
 
 ALTERATIONS = {
     "Bb": "A#",
-    "Cb": "B",
-    "B#": "C",
     "Db": "C#",
     "Eb": "D#",
-    "Fb": "E",
     "Gb": "F#",
     "Ab": "G#",
 }
 
-
-def sharpy_alterations():
-    sharpy = {}
-    for key, values in ALTERATIONS.items():
-        sharpy[values] = key
-    return sharpy
-
-
-SHARPY_ALTERATIONS = sharpy_alterations()
+SHARPY_ALTERATIONS = {value: key for (key, value) in ALTERATIONS.items()}
 ENHARMONICS = {
     "A#": "Bb",
     "B": "Cb",

@@ -26,7 +26,7 @@ def chromatics_from_root(root: str) -> List[str]:
     return notes
 
 
-def chromatic_position_from_root(root: str, note: str):
+def chromatic_position_from_root(note: str, root: str):
     chroma_from_root = chromatics_from_root(root)
     for idx, chromatic_note in enumerate(chroma_from_root):
         if chromatic_note == note:
@@ -178,7 +178,6 @@ def get_dots_positions(fingering: List[Optional[int]]) -> List[Tuple[int, int]]:
 
     dots = []
     if gap_dist >= 12:
-
         for i in range(1, (gap_dist // 12) * len(DOTS_FRETBOARD_POSITIONS)):
             DOTS_FRETBOARD_POSITIONS.append(DOTS_FRETBOARD_POSITIONS[i] + 12)
             NUMBER_OF_DOTS.append(NUMBER_OF_DOTS[i])
@@ -188,9 +187,7 @@ def get_dots_positions(fingering: List[Optional[int]]) -> List[Tuple[int, int]]:
             DOTS_FRETBOARD_POSITIONS[i] >= (min_fret) % 12
             and DOTS_FRETBOARD_POSITIONS[i] < min_fret % 12 + gap_dist + 1
         ):
-            dots.append(
-                (DOTS_FRETBOARD_POSITIONS[i] - min_fret % 12, NUMBER_OF_DOTS[i])
-            )
+            dots.append((DOTS_FRETBOARD_POSITIONS[i] - min_fret % 12, NUMBER_OF_DOTS[i]))
 
     if min_fret == 0:
         dots.pop(0)

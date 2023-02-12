@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from typing import Tuple
 from typing import Optional
 import svgwrite
-from fretboardgtr.elements.base import FretBoardElement, ConfigIniter
 from fretboardgtr.elements.base import FretBoardElement
+from fretboardgtr.base import ConfigIniter
 
 
 @dataclass

@@ -4,7 +4,8 @@ from typing import Tuple
 
 import svgwrite
 from typing import Optional
-from fretboardgtr.elements.base import FretBoardElement, ConfigIniter
+from fretboardgtr.elements.base import FretBoardElement
+from fretboardgtr.base import ConfigIniter
 
 
 @dataclass

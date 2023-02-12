@@ -1,22 +1,22 @@
 from typing import List, Union, Tuple, Dict
-
+import copy
 import svgwrite
 import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from fretboardgtr.constants import STANDARD_TUNING, SVG_OVERLAY, DOTS_POSITIONS
+from fretboardgtr.constants import STANDARD_TUNING, DOTS_POSITIONS
 from fretboardgtr.elements.background import Background, BackgroundConfig
 from fretboardgtr.elements.fret_number import FretNumber, FretNumberConfig
 from fretboardgtr.elements.neck_dots import NeckDot, NeckDotConfig
 from fretboardgtr.elements.frets import Fret, FretConfig
 from fretboardgtr.elements.notes import (
-    NoteColors,
     OpenNote,
     FrettedNote,
     OpenNoteConfig,
     FrettedNoteConfig,
 )
+from fretboardgtr.note_colors import NoteColors
 from fretboardgtr.elements.nut import Nut, NutConfig
 from fretboardgtr.elements.tuning import Tuning, TuningConfig
 from fretboardgtr.elements.strings import String, StringConfig
@@ -25,11 +25,12 @@ from fretboardgtr.utils import (
     chromatic_position_from_root,
     note_to_interval_name,
 )
-from fretboardgtr.scale_creators import Scale, ScaleFromName
+from fretboardgtr.notes_creators import NotesContainer
 from dataclasses import dataclass
 from typing import Optional
 from fretboardgtr.elements.base import FretBoardElement
-from fretboardgtr.exporters import SVGExporter
+from fretboardgtr.exporters import PNGExporter, PDFExporter
+from fretboardgtr.base import ConfigIniter
 
 
 def get_valid_dots(first_fret: int, last_fret: int):
@@ -41,28 +42,28 @@ def get_valid_dots(first_fret: int, last_fret: int):
 
 
 @dataclass
-class FretboardMainConfig:
+class FretBoardMainConfig:
     x_start: float = 30.0
     y_start: float = 30.0
     fret_height: int = 50
     fret_width: int = 70
     first_fret: int = 0
     last_fret: int = 12
-    show_tuning = True
-    show_frets = True
-    show_nut = True
+    show_tuning: bool = True
+    show_frets: bool = True
+    show_nut: bool = True
     show_degree_name: bool = False
     show_note_name: bool = True
     open_color_scale: bool = False
-    fretted_color_scale = True
+    fretted_color_scale: bool = True
     open_colors: NoteColors = NoteColors()
     fretted_colors: NoteColors = NoteColors()
     enharmonic: bool = True
 
 
 @dataclass
-class FretBoardConfig:
-    main: FretboardMainConfig = FretboardMainConfig()
+class FretBoardConfig(ConfigIniter):
+    main: FretBoardMainConfig = FretBoardMainConfig()
     background: BackgroundConfig = BackgroundConfig()
     fretnumber: FretNumberConfig = FretNumberConfig()
     neckdot: NeckDotConfig = NeckDotConfig()
@@ -72,18 +73,6 @@ class FretBoardConfig:
     string: StringConfig = StringConfig()
     open_note: OpenNoteConfig = OpenNoteConfig()
     fretted_note: FrettedNoteConfig = FrettedNoteConfig()
-
-    @classmethod
-    def from_dict(cls, _dict):
-        kwargs = {}
-        for arg, _type in cls.__annotations__.items():
-            if arg not in _dict:
-                continue
-            if hasattr(_type, "from_dict"):
-                kwargs[arg] = _type.from_dict(_dict[arg])
-            else:
-                kwargs[arg] = _dict[arg]
-        return cls(**kwargs)
 
 
 class FretBoard:
@@ -104,39 +93,38 @@ class FretBoard:
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
         return svgwrite.Drawing(
             size=(  # +2 == Last fret + tuning
-                self.config.main.x_start
-                + self.config.main.fret_width * (number_of_frets + 2),
-                self.config.main.y_start
-                + self.config.main.fret_height * (len(self.tuning) + 1),
+                self.config.main.x_start + self.config.main.fret_width * (number_of_frets + 2),
+                self.config.main.y_start + self.config.main.fret_height * (len(self.tuning) + 1),
             ),
             profile="full",
         )
 
-    def add_background(self):
-        """
-        Fill background with a color
-        """
+    def set_tuning(self, tuning: List[str]):
+        self.tuning = tuning
+
+    def get_background(self) -> Background:
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
         x = self.config.main.x_start + self._open_fret_width
         y = self.config.main.y_start
         width = (number_of_frets) * (self.config.main.fret_width)
         height = (len(self.tuning) - 1) * self.config.main.fret_height
-        background = Background(
-            (x, y), (width, height), config=self.config.background
-        ).get_svg()
-        self.drawing.add(background)
+        background = Background((x, y), (width, height), config=self.config.background)
+        return background
 
-    def add_neck_dots(self):
+    def add_background(self):
         """
-        Add dot up to 24 frets.
-        Recalculate if the minimum fret isn't 0 or maximum fret isn't 12.
+        Add background component to the svg
         """
+        background = self.get_background()
+        self.drawing.add(background.get_svg())
+
+    def get_neck_dots(self) -> List[NeckDot]:
+        dots_elements = []
         dots = get_valid_dots(self.config.main.first_fret, self.config.main.last_fret)
         for dot in dots:
             x = (
                 self.config.main.x_start
-                + (0.5 + dot - self.config.main.first_fret)
-                * self.config.main.fret_width
+                + (0.5 + dot - self.config.main.first_fret) * self.config.main.fret_width
             )
             y = (
                 self.config.main.y_start
@@ -152,25 +140,30 @@ class FretBoard:
                     x,
                     y + self.config.main.fret_height,
                 )
-                upper_dot = NeckDot(
-                    upper_position, config=self.config.neckdot
-                ).get_svg()
-                lower_dot = NeckDot(
-                    lower_position, config=self.config.neckdot
-                ).get_svg()
-                self.drawing.add(upper_dot)
-                self.drawing.add(lower_dot)
+                upper_dot = NeckDot(upper_position, config=self.config.neckdot)
+                lower_dot = NeckDot(lower_position, config=self.config.neckdot)
+                dots_elements.append(upper_dot)
+                dots_elements.append(lower_dot)
             else:
                 center_position = (
                     x,
                     y,
                 )
-                center_dot = NeckDot(
-                    center_position, config=self.config.neckdot
-                ).get_svg()
-                self.drawing.add(center_dot)
+                center_dot = NeckDot(center_position, config=self.config.neckdot)
+                dots_elements.append(center_dot)
+        return dots_elements
 
-    def add_frets(self):
+    def add_neck_dots(self):
+        """
+        Add dot up to 24 frets.
+        Recalculate if the minimum fret isn't 0 or maximum fret isn't 12.
+        """
+        dots = self.get_neck_dots()
+        for dot in dots:
+            self.drawing.add(dot.get_svg())
+
+    def get_frets(self) -> List[Fret]:
+        frets = []
         show_nut = self.config.main.show_nut
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
 
@@ -187,24 +180,24 @@ class FretBoard:
                 len(self.tuning) - 1
             )
 
-            fret = Fret((x, y_start), (x, y_end), config=self.config.fret).get_svg()
-            self.drawing.add(fret)
+            fret = Fret((x, y_start), (x, y_end), config=self.config.fret)
+            frets.append(fret)
+        return frets
 
-    def add_strings(self):
+    def add_frets(self):
+        frets = self.get_frets()
+        for fret in frets:
+            self.drawing.add(fret.get_svg())
+
+    def get_strings(self) -> List[String]:
+        strings = []
         # begin before if min fret !=0 because no open chords
-        if self.config.main.first_fret != 0:
-            x_start = self.config.main.x_start + self._open_fret_width
-            x_end = self.config.main.x_start + (
-                (self.config.main.last_fret - self.config.main.first_fret)
-                * self.config.main.fret_width
-            )
-        else:
-            x_start = self.config.main.x_start + self._open_fret_width
-            x_end = self.config.main.x_start + (
-                self.config.main.fret_width
-                + (self.config.main.last_fret - self.config.main.first_fret)
-                * self.config.main.fret_width
-            )
+        x_start = self.config.main.x_start + self._open_fret_width
+        x_end = self.config.main.x_start + (
+            self.config.main.fret_width
+            + (self.config.main.last_fret - self.config.main.first_fret)
+            * self.config.main.fret_width
+        )
 
         for i, _ in enumerate(self.tuning):
             start = (
@@ -215,16 +208,19 @@ class FretBoard:
                 x_end,
                 self.config.main.y_start + (self.config.main.fret_height) * (i),
             )
-            string = String(start, end, config=self.config.string).get_svg()
-            self.drawing.add(string)
+            string = String(start, end, config=self.config.string)
+            strings.append(string)
+        return strings
 
-    def add_nut(self):
-        """
-        Create nut if minimum fret == 0.
+    def add_strings(self):
+        # begin before if min fret !=0 because no open chords
+        strings = self.get_strings()
+        for string in strings:
+            self.drawing.add(string.get_svg())
 
-        """
+    def get_nut(self) -> Optional[Nut]:
         if self.config.main.first_fret != 0 or not self.config.main.show_nut:
-            return
+            return None
 
         start = (
             self.config.main.x_start + self._open_fret_width,
@@ -232,39 +228,49 @@ class FretBoard:
         )
         end = (
             self.config.main.x_start + self._open_fret_width,
-            self.config.main.y_start
-            + self.config.main.fret_height * (len(self.tuning) - 1),
+            self.config.main.y_start + self.config.main.fret_height * (len(self.tuning) - 1),
         )
-        nut = Nut(start, end, config=self.config.nut).get_svg()
-        self.drawing.add(nut)
+        nut = Nut(start, end, config=self.config.nut)
+        return nut
 
-    def add_fret_numbers(self):
+    def add_nut(self):
         """
-        Show text under the frets for example 3ft.
+        Create nut if minimum fret == 0.
+
         """
-        if not self.config.main.show_frets:
+        nut = self.get_nut()
+        if nut is None:
             return
+        self.drawing.add(nut.get_svg())
 
+    def get_fret_numbers(self) -> Optional[List[FretNumber]]:
+        if not self.config.main.show_frets:
+            return None
+        fret_numbers = []
         dots = get_valid_dots(self.config.main.first_fret, self.config.main.last_fret)
         for dot in dots:
             x = self.config.main.x_start + self.config.main.fret_width * (
                 1 / 2 + dot - self.config.main.first_fret
             )
-            y = self.config.main.y_start + self.config.main.fret_height * (
-                len(self.tuning)
-            )
-            fret_number = FretNumber(
-                str(dot), (x, y), config=self.config.fretnumber
-            ).get_svg()
-            self.drawing.add(fret_number)
+            y = self.config.main.y_start + self.config.main.fret_height * (len(self.tuning))
+            fret_number = FretNumber(str(dot), (x, y), config=self.config.fretnumber)
+            fret_numbers.append(fret_number)
+        return fret_numbers
 
-    def add_tuning(self):
+    def add_fret_numbers(self):
         """
-        Show tuning at the end of the neck.
+        Show text under the frets for example 3ft.
         """
+        fret_numbers = self.get_fret_numbers()
+        if fret_numbers is None:
+            return None
+        for fret_number in fret_numbers:
+            self.drawing.add(fret_number.get_svg())
 
+    def get_tuning(self) -> Optional[List[Tuning]]:
         if not self.config.main.show_tuning:
-            return
+            return None
+        tunings = []
         reversed_tuning = list(reversed(self.tuning))
         for i, note in enumerate(reversed_tuning):
             x = self.config.main.x_start + (
@@ -272,10 +278,22 @@ class FretBoard:
                 * (self.config.main.last_fret - self.config.main.first_fret + 3 / 2)
             )
             y = self.config.main.y_start + self.config.main.fret_height * (i)
-            tuning_note = Tuning(note, (x, y), config=self.config.tuning).get_svg()
-            self.drawing.add(tuning_note)
+            tuning_note = Tuning(note, (x, y), config=self.config.tuning)
+            tunings.append(tuning_note)
+        return tunings
 
-    def create_empty_fretboard(self):
+    def add_tuning(self):
+        """
+        Show tuning at the end of the neck.
+        """
+
+        tunings = self.get_tuning()
+        if tunings is None:
+            return None
+        for tuning in tunings:
+            self.drawing.add(tuning.get_svg())
+
+    def init_fretboard(self):
         self.add_background()
         self.add_fret_numbers()
         self.add_frets()
@@ -287,8 +305,7 @@ class FretBoard:
     def _get_open_note(
         self, position: Tuple[float, float], note: str, root: Optional[str] = None
     ) -> OpenNote:
-
-        config = self.config.open_note
+        config = copy.copy(self.config.open_note)
         if root and self.config.main.open_color_scale:
             idx = chromatic_position_from_root(root, note)
             color = self.config.main.open_colors.from_interval(idx)
@@ -300,13 +317,13 @@ class FretBoard:
         if not (self.config.main.show_degree_name or self.config.main.show_note_name):
             note = ""
 
-        _note = OpenNote(note, position, config=config).get_svg()
+        _note = OpenNote(note, position, config=config)
         return _note
 
     def _get_fretted_note(
         self, position: Tuple[float, float], note: str, root: Optional[str] = None
     ) -> FrettedNote:
-        config = self.config.fretted_note
+        config = copy.copy(self.config.fretted_note)
         if root and self.config.main.fretted_color_scale:
             idx = chromatic_position_from_root(root, note)
             color = self.config.main.fretted_colors.from_interval(idx)
@@ -318,10 +335,12 @@ class FretBoard:
         if not (self.config.main.show_degree_name or self.config.main.show_note_name):
             note = ""
 
-        _note = FrettedNote(note, position, config=config).get_svg()
+        _note = FrettedNote(note, position, config=config)
         return _note
 
-    def add_note(self, string_no: int, note: str, root: Optional[str] = None):
+    def get_notes(
+        self, string_no: int, note: str, root: Optional[str] = None
+    ) -> List[Union[OpenNote, FrettedNote]]:
         if string_no < 0 or string_no > len(self.tuning):
             raise ValueError(f"String number is invalid. Tuning is {self.tuning}")
 
@@ -332,11 +351,9 @@ class FretBoard:
         while _idx <= self.config.main.last_fret:
             indices.append(_idx)
             _idx += 12
-
+        notes = []
         for idx in indices:
-            x = self.config.main.x_start + (self.config.main.fret_width) * (
-                idx + (1 / 2)
-            )
+            x = self.config.main.x_start + (self.config.main.fret_width) * (idx + (1 / 2))
             y = self.config.main.y_start + self.config.main.fret_height * (string_no)
             position = (x, y)
             _note: Union[OpenNote, FrettedNote]
@@ -344,12 +361,18 @@ class FretBoard:
                 _note = self._get_open_note(position, note, root)
             else:
                 _note = self._get_fretted_note(position, note, root)
-            self.drawing.add(_note)
+            notes.append(_note)
+        return notes
 
-    def add_scale(self, scale: Scale):
+    def add_notes(self, string_no: int, note: str, root: Optional[str] = None):
+        notes = self.get_notes(string_no, note, root)
+        for _note in notes:
+            self.drawing.add(_note.get_svg())
+
+    def add_scale(self, scale: NotesContainer):
         for string_no, _ in enumerate(self.tuning):
-            for note in scale.scale:
-                self.add_note(string_no, note, scale.root)
+            for note in scale.notes:
+                self.add_notes(string_no, note, scale.root)
 
     def get_bounds_fretboard(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
@@ -361,20 +384,11 @@ class FretBoard:
             + (number_of_frets) * (self.config.main.fret_width)
         )
         lower_right_y = (
-            self.config.main.y_start
-            + (len(self.tuning) - 1) * self.config.main.fret_height
+            self.config.main.y_start + (len(self.tuning) - 1) * self.config.main.fret_height
         )
         return ((upper_left_x, upper_left_y), (lower_right_x, lower_right_y))
 
     def add_element(self, element: FretBoardElement):
-        self.drawing.add(element)
-
-
-if __name__ == "__main__":
-    config = FretBoardConfig.from_dict({"background": {"color": "blue"}})
-    fretboard = FretBoard(config=config)
-    fretboard.create_empty_fretboard()
-    scale = ScaleFromName("C", "Ionian").get()
-    fretboard.add_scale(scale)
-    exporter = SVGExporter(fretboard.drawing)
-    exporter.export("./test_refactor.png")
+        if not issubclass(type(element), FretBoardElement):
+            raise ValueError("Element should be a 'FretBoardElement'")
+        self.drawing.add(element.get_svg())

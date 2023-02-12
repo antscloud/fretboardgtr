@@ -4,7 +4,7 @@ from typing import Tuple
 from typing import Optional
 import svgwrite
 from fretboardgtr.elements.base import FretBoardElement
-from fretboardgtr.elements.base import FretBoardElement, ConfigIniter
+from fretboardgtr.base import ConfigIniter
 
 TEXT_OFFSET = "0.3em"
 TEXT_STYLE = "text-anchor:middle"

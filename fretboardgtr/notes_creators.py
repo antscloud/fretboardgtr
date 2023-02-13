@@ -1,10 +1,7 @@
-from typing import List, Dict, Union
 from dataclasses import dataclass
-from fretboardgtr.constants import (
-    CHORDS_DICT_ESSENTIAL,
-    SCALES_DICT,
-    CHROMATICS_NOTES,
-)
+from typing import List
+
+from fretboardgtr.constants import CHORDS_DICT_ESSENTIAL, CHROMATICS_NOTES, SCALES_DICT
 
 
 @dataclass
@@ -14,9 +11,8 @@ class NotesContainer:
 
 
 class ScaleFromName:
-    """
-    Object that generate a results dictionnary containing the root
-    and the scale as argument from root and mode strings.
+    """Object that generating note container from root and mode.
+
     >>> ScaleFromName(root='C',mode='Dorian').results
         {'root': 'C', 'scale': ['C', 'D', 'D#', 'F', 'G', 'A', 'A#']}
     """
@@ -35,9 +31,7 @@ class ScaleFromName:
 
 
 class ChordFromName:
-    """
-    Object that generate a results dictionnary containing the root
-    and the scale as argument from root and quality of chords strings.
+    """Object that generating note container from root and quality.
 
     >>> ChordFromName(root='C',quality='M').results
         {'root': 'C', 'scale': ['C', 'E', 'G']}

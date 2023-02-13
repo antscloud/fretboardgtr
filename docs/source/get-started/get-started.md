@@ -2,7 +2,7 @@
 
 To get started simply install the package from PyPI
 
-## How to install 
+## How to install
 
 ```shell
 pip install fretboardgtr

@@ -1,22 +1,17 @@
 import pytest
-from fretboardgtr.fretboard import FretBoard, FretBoardConfig, FretBoardMainConfig
-from fretboardgtr.elements.background import Background, BackgroundConfig
-from fretboardgtr.elements.fret_number import FretNumber, FretNumberConfig
-from fretboardgtr.elements.neck_dots import NeckDot, NeckDotConfig
-from fretboardgtr.elements.frets import Fret, FretConfig
-from fretboardgtr.elements.notes import (
-    OpenNote,
-    FrettedNote,
-    OpenNoteConfig,
-    FrettedNoteConfig,
-)
-from fretboardgtr.note_colors import NoteColors
-from fretboardgtr.elements.nut import Nut, NutConfig
-from fretboardgtr.elements.tuning import Tuning, TuningConfig
-from fretboardgtr.elements.strings import String, StringConfig
-from fretboardgtr.fretboard import FretBoard, FretBoardConfig, FretBoardMainConfig
-from fretboardgtr.notes_creators import NotesContainer
 import svgwrite
+
+from fretboardgtr.elements.background import BackgroundConfig
+from fretboardgtr.elements.fret_number import FretNumberConfig
+from fretboardgtr.elements.frets import FretConfig
+from fretboardgtr.elements.neck_dots import NeckDotConfig
+from fretboardgtr.elements.notes import FrettedNoteConfig, OpenNote, OpenNoteConfig
+from fretboardgtr.elements.nut import NutConfig
+from fretboardgtr.elements.strings import StringConfig
+from fretboardgtr.elements.tuning import TuningConfig
+from fretboardgtr.fretboard import FretBoard, FretBoardConfig, FretBoardMainConfig
+from fretboardgtr.note_colors import NoteColors
+from fretboardgtr.notes_creators import NotesContainer
 
 
 @pytest.fixture()
@@ -67,9 +62,14 @@ def default_config():
             enharmonic=True,
         ),
         background=BackgroundConfig(color="rgb(150,150,150)", opacity=0.2),
-        fretnumber=FretNumberConfig(color="rgb(150,150,150)", fontsize=20, fontweight="bold"),
+        fretnumber=FretNumberConfig(
+            color="rgb(150,150,150)", fontsize=20, fontweight="bold"
+        ),
         neckdot=NeckDotConfig(
-            color="rgb(200,200,200)", color_stroke="rgb(0,0,0)", width_stroke=2, radius=7
+            color="rgb(200,200,200)",
+            color_stroke="rgb(0,0,0)",
+            width_stroke=2,
+            radius=7,
         ),
         fret=FretConfig(color="rgb(150,150,150)", width=3),
         nut=NutConfig(color="rgb(0,0,0)", width=6),
@@ -149,7 +149,12 @@ def dict_config():
         ),
         background=dict(color="rgb(150,150,150)", opacity=0.2),
         fretnumber=dict(color="rgb(150,150,150)", fontsize=20, fontweight="bold"),
-        neckdot=dict(color="rgb(200,200,200)", color_stroke="rgb(0,0,0)", width_stroke=2, radius=7),
+        neckdot=dict(
+            color="rgb(200,200,200)",
+            color_stroke="rgb(0,0,0)",
+            width_stroke=2,
+            radius=7,
+        ),
         fret=dict(color="rgb(150,150,150)", width=3),
         nut=dict(color="rgb(0,0,0)", width=6),
         tuning=dict(
@@ -227,11 +232,13 @@ def test_fretboard_get_neck_dots(default_config: FretBoardConfig):
     for neck_dot in neck_dots:
         # Check if center of fret
         assert (
-            neck_dot.x % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
+            neck_dot.x
+            % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
             == 0
         )
         assert (
-            neck_dot.y % (fretboard.config.main.y_start - (fretboard.config.main.fret_height // 2))
+            neck_dot.y
+            % (fretboard.config.main.y_start - (fretboard.config.main.fret_height // 2))
             == 0
         )
 
@@ -288,7 +295,10 @@ def test_fretboard_get_nut(default_config: FretBoardConfig):
     # Test if vertical line
     assert nut.start_position[0] == nut.end_position[0]
     # Test if start where it should
-    assert nut.start_position[0] == fretboard.config.main.x_start + fretboard.config.main.fret_width
+    assert (
+        nut.start_position[0]
+        == fretboard.config.main.x_start + fretboard.config.main.fret_width
+    )
     # Test if start where it should
     assert nut.start_position[1] == fretboard.config.main.y_start
     # Test length
@@ -464,7 +474,9 @@ def test_fretboard_get_notes(default_config: FretBoardConfig):
         assert note.y == fretboard.config.main.y_start
         # Check if placed between two frets
         assert (
-            note.x % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2)) == 0
+            note.x
+            % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
+            == 0
         )
 
 
@@ -485,22 +497,40 @@ def test_init_fretboard(default_config):
     fretboard = FretBoard(config=default_config)
     fretboard.init_fretboard()
     assert len(fretboard.drawing.elements) == 38
-    assert any([isinstance(obj, svgwrite.shapes.Rect) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.shapes.Circle) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.shapes.Line) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.text.Text) for obj in fretboard.drawing.elements])
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Rect) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Circle) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Line) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.text.Text) for obj in fretboard.drawing.elements]
+    )
 
 
 def test_init_fretboard_add_scales(default_config):
     fretboard = FretBoard(config=default_config)
-    notes_container = NotesContainer(root="C", notes=["C", "D", "E", "F", "G", "A", "B"])
+    notes_container = NotesContainer(
+        root="C", notes=["C", "D", "E", "F", "G", "A", "B"]
+    )
     fretboard.init_fretboard()
     fretboard.add_scale(notes_container)
     assert len(fretboard.drawing.elements) == 86
-    assert any([isinstance(obj, svgwrite.shapes.Rect) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.shapes.Circle) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.shapes.Line) for obj in fretboard.drawing.elements])
-    assert any([isinstance(obj, svgwrite.text.Text) for obj in fretboard.drawing.elements])
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Rect) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Circle) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.shapes.Line) for obj in fretboard.drawing.elements]
+    )
+    assert any(
+        [isinstance(obj, svgwrite.text.Text) for obj in fretboard.drawing.elements]
+    )
 
 
 def test_add_element(default_config):

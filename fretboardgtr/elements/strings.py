@@ -1,11 +1,11 @@
-from fretboardgtr.constants import GRAY
 from dataclasses import dataclass
-from typing import Tuple, Optional
-from fretboardgtr.constants import BLACK
+from typing import Optional, Tuple
+
 import svgwrite
-from typing import Optional
-from fretboardgtr.elements.base import FretBoardElement
+
 from fretboardgtr.base import ConfigIniter
+from fretboardgtr.constants import BLACK
+from fretboardgtr.elements.base import FretBoardElement
 
 
 @dataclass

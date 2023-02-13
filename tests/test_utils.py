@@ -1,28 +1,26 @@
-import pytest
-
 from fretboardgtr.utils import (
     _contains_duplicates,
-    chromatics_from_root,
     chromatic_position_from_root,
-    to_sharp_note,
-    to_flat_note,
-    scale_to_sharp,
-    scale_to_flat,
+    chromatics_from_root,
     note_to_interval,
     note_to_interval_name,
-    scale_to_intervals,
     scale_to_enharmonic,
+    scale_to_flat,
+    scale_to_intervals,
+    scale_to_sharp,
+    to_flat_note,
+    to_sharp_note,
 )
 
 
 def test_contains_duplicates_false():
-    l = ["a", "b", "c"]
-    assert False == _contains_duplicates(l)
+    elements = ["a", "b", "c"]
+    assert _contains_duplicates(elements) is False
 
 
 def test_contains_duplicates_true():
-    l = ["a", "b", "c", "a"]
-    assert True == _contains_duplicates(l)
+    elements = ["a", "b", "c", "a"]
+    assert _contains_duplicates(elements) is True
 
 
 def test_chromatics_from_root_a():

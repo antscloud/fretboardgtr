@@ -1,36 +1,33 @@
-from typing import List, Union, Tuple, Dict
 import copy
-import svgwrite
 import os
 import sys
+from typing import List, Tuple, Union
+
+import svgwrite
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from fretboardgtr.constants import STANDARD_TUNING, DOTS_POSITIONS
-from fretboardgtr.elements.background import Background, BackgroundConfig
-from fretboardgtr.elements.fret_number import FretNumber, FretNumberConfig
-from fretboardgtr.elements.neck_dots import NeckDot, NeckDotConfig
-from fretboardgtr.elements.frets import Fret, FretConfig
-from fretboardgtr.elements.notes import (
-    OpenNote,
-    FrettedNote,
-    OpenNoteConfig,
-    FrettedNoteConfig,
-)
-from fretboardgtr.note_colors import NoteColors
-from fretboardgtr.elements.nut import Nut, NutConfig
-from fretboardgtr.elements.tuning import Tuning, TuningConfig
-from fretboardgtr.elements.strings import String, StringConfig
-from fretboardgtr.utils import (
-    scale_to_intervals,
-    chromatic_position_from_root,
-    note_to_interval_name,
-)
-from fretboardgtr.notes_creators import NotesContainer
 from dataclasses import dataclass
 from typing import Optional
-from fretboardgtr.elements.base import FretBoardElement
-from fretboardgtr.exporters import PNGExporter, PDFExporter
+
 from fretboardgtr.base import ConfigIniter
+from fretboardgtr.constants import DOTS_POSITIONS, STANDARD_TUNING
+from fretboardgtr.elements.background import Background, BackgroundConfig
+from fretboardgtr.elements.base import FretBoardElement
+from fretboardgtr.elements.fret_number import FretNumber, FretNumberConfig
+from fretboardgtr.elements.frets import Fret, FretConfig
+from fretboardgtr.elements.neck_dots import NeckDot, NeckDotConfig
+from fretboardgtr.elements.notes import (
+    FrettedNote,
+    FrettedNoteConfig,
+    OpenNote,
+    OpenNoteConfig,
+)
+from fretboardgtr.elements.nut import Nut, NutConfig
+from fretboardgtr.elements.strings import String, StringConfig
+from fretboardgtr.elements.tuning import Tuning, TuningConfig
+from fretboardgtr.note_colors import NoteColors
+from fretboardgtr.notes_creators import NotesContainer
+from fretboardgtr.utils import chromatic_position_from_root, note_to_interval_name
 
 
 def get_valid_dots(first_fret: int, last_fret: int):
@@ -84,17 +81,16 @@ class FretBoard:
         self.config = config if config is not None else FretBoardConfig()
         self.tuning = tuning if tuning is not None else STANDARD_TUNING
         self.drawing = self.get_empty()
-        self._open_fret_width = self.config.main.fret_width
 
     def get_empty(self):
-        """
-        Create empty box and the object self.drawing
-        """
+        """Create empty box and the object self.drawing."""
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
         return svgwrite.Drawing(
             size=(  # +2 == Last fret + tuning
-                self.config.main.x_start + self.config.main.fret_width * (number_of_frets + 2),
-                self.config.main.y_start + self.config.main.fret_height * (len(self.tuning) + 1),
+                self.config.main.x_start
+                + self.config.main.fret_width * (number_of_frets + 2),
+                self.config.main.y_start
+                + self.config.main.fret_height * (len(self.tuning) + 1),
             ),
             profile="full",
         )
@@ -104,7 +100,8 @@ class FretBoard:
 
     def get_background(self) -> Background:
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
-        x = self.config.main.x_start + self._open_fret_width
+        open_fret_width = self.config.main.fret_width
+        x = self.config.main.x_start + open_fret_width
         y = self.config.main.y_start
         width = (number_of_frets) * (self.config.main.fret_width)
         height = (len(self.tuning) - 1) * self.config.main.fret_height
@@ -112,9 +109,7 @@ class FretBoard:
         return background
 
     def add_background(self):
-        """
-        Add background component to the svg
-        """
+        """Add background component to the svg."""
         background = self.get_background()
         self.drawing.add(background.get_svg())
 
@@ -124,7 +119,8 @@ class FretBoard:
         for dot in dots:
             x = (
                 self.config.main.x_start
-                + (0.5 + dot - self.config.main.first_fret) * self.config.main.fret_width
+                + (0.5 + dot - self.config.main.first_fret)
+                * self.config.main.fret_width
             )
             y = (
                 self.config.main.y_start
@@ -154,9 +150,10 @@ class FretBoard:
         return dots_elements
 
     def add_neck_dots(self):
-        """
-        Add dot up to 24 frets.
-        Recalculate if the minimum fret isn't 0 or maximum fret isn't 12.
+        """Add dot up to 24 frets.
+
+        Recalculate if the minimum fret isn't 0 or maximum fret isn't
+        12.
         """
         dots = self.get_neck_dots()
         for dot in dots:
@@ -192,7 +189,8 @@ class FretBoard:
     def get_strings(self) -> List[String]:
         strings = []
         # begin before if min fret !=0 because no open chords
-        x_start = self.config.main.x_start + self._open_fret_width
+        open_fret_width = self.config.main.fret_width
+        x_start = self.config.main.x_start + open_fret_width
         x_end = self.config.main.x_start + (
             self.config.main.fret_width
             + (self.config.main.last_fret - self.config.main.first_fret)
@@ -221,23 +219,22 @@ class FretBoard:
     def get_nut(self) -> Optional[Nut]:
         if self.config.main.first_fret != 0 or not self.config.main.show_nut:
             return None
+        open_fret_width = self.config.main.fret_width
 
         start = (
-            self.config.main.x_start + self._open_fret_width,
+            self.config.main.x_start + open_fret_width,
             self.config.main.y_start,
         )
         end = (
-            self.config.main.x_start + self._open_fret_width,
-            self.config.main.y_start + self.config.main.fret_height * (len(self.tuning) - 1),
+            self.config.main.x_start + open_fret_width,
+            self.config.main.y_start
+            + self.config.main.fret_height * (len(self.tuning) - 1),
         )
         nut = Nut(start, end, config=self.config.nut)
         return nut
 
     def add_nut(self):
-        """
-        Create nut if minimum fret == 0.
-
-        """
+        """Create nut if minimum fret == 0."""
         nut = self.get_nut()
         if nut is None:
             return
@@ -252,15 +249,15 @@ class FretBoard:
             x = self.config.main.x_start + self.config.main.fret_width * (
                 1 / 2 + dot - self.config.main.first_fret
             )
-            y = self.config.main.y_start + self.config.main.fret_height * (len(self.tuning))
+            y = self.config.main.y_start + self.config.main.fret_height * (
+                len(self.tuning)
+            )
             fret_number = FretNumber(str(dot), (x, y), config=self.config.fretnumber)
             fret_numbers.append(fret_number)
         return fret_numbers
 
     def add_fret_numbers(self):
-        """
-        Show text under the frets for example 3ft.
-        """
+        """Show text under the frets for example 3ft."""
         fret_numbers = self.get_fret_numbers()
         if fret_numbers is None:
             return None
@@ -283,10 +280,7 @@ class FretBoard:
         return tunings
 
     def add_tuning(self):
-        """
-        Show tuning at the end of the neck.
-        """
-
+        """Show tuning at the end of the neck."""
         tunings = self.get_tuning()
         if tunings is None:
             return None
@@ -353,7 +347,9 @@ class FretBoard:
             _idx += 12
         notes = []
         for idx in indices:
-            x = self.config.main.x_start + (self.config.main.fret_width) * (idx + (1 / 2))
+            x = self.config.main.x_start + (self.config.main.fret_width) * (
+                idx + (1 / 2)
+            )
             y = self.config.main.y_start + self.config.main.fret_height * (string_no)
             position = (x, y)
             _note: Union[OpenNote, FrettedNote]
@@ -375,16 +371,18 @@ class FretBoard:
                 self.add_notes(string_no, note, scale.root)
 
     def get_bounds_fretboard(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+        open_fret_width = self.config.main.fret_width
         number_of_frets = self.config.main.last_fret - self.config.main.first_fret
         upper_left_x = self.config.main.x_start
         upper_left_y = self.config.main.y_start
         lower_right_x = (
             self.config.main.x_start
-            + self._open_fret_width
+            + open_fret_width
             + (number_of_frets) * (self.config.main.fret_width)
         )
         lower_right_y = (
-            self.config.main.y_start + (len(self.tuning) - 1) * self.config.main.fret_height
+            self.config.main.y_start
+            + (len(self.tuning) - 1) * self.config.main.fret_height
         )
         return ((upper_left_x, upper_left_y), (lower_right_x, lower_right_y))
 

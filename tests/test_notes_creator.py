@@ -1,5 +1,4 @@
-import pytest
-from fretboardgtr.notes_creators import ScaleFromName, ChordFromName
+from fretboardgtr.notes_creators import ChordFromName, ScaleFromName
 
 
 def test_scale_creator():

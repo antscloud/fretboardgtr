@@ -1,10 +1,11 @@
-from fretboardgtr.constants import GRAY
 from dataclasses import dataclass
-from typing import Tuple
-from typing import Optional
+from typing import Optional, Tuple
+
 import svgwrite
-from fretboardgtr.elements.base import FretBoardElement
+
 from fretboardgtr.base import ConfigIniter
+from fretboardgtr.constants import GRAY
+from fretboardgtr.elements.base import FretBoardElement
 
 TEXT_OFFSET = "0.3em"
 TEXT_STYLE = "text-anchor:middle"

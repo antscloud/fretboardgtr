@@ -12,7 +12,9 @@ def test_background_get_svg():
 
 def test_background_get_svg_custom_config():
     background_config = BackgroundConfig(color="blue")
-    background = Background(position=(0.0, 0.0), size=(10.0, 10.0), config=background_config)
+    background = Background(
+        position=(0.0, 0.0), size=(10.0, 10.0), config=background_config
+    )
     attribs = background.get_svg().attribs
     assert attribs["x"] == 0.0
     assert attribs["y"] == 0.0

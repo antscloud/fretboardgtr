@@ -1,8 +1,10 @@
-import pytest
-from fretboardgtr.exporters import SVGExporter, PNGExporter, PDFExporter
 import tempfile
 from pathlib import Path
+
+import pytest
 import svgwrite
+
+from fretboardgtr.exporters import PDFExporter, PNGExporter, SVGExporter
 
 
 @pytest.fixture()
@@ -25,7 +27,7 @@ def drawing():
 def test_svg_exporter(drawing):
     svg_exporter = SVGExporter(drawing)
     with tempfile.TemporaryDirectory() as tmp_dir:
-        outfile = Path(tmp_dir) / f"tmp_file.svg"
+        outfile = Path(tmp_dir) / "tmp_file.svg"
         assert not outfile.exists()
         svg_exporter.export(outfile)
         assert outfile.exists()
@@ -34,7 +36,7 @@ def test_svg_exporter(drawing):
 def test_png_exporter(drawing):
     png_exporter = PNGExporter(drawing)
     with tempfile.TemporaryDirectory() as tmp_dir:
-        outfile = Path(tmp_dir) / f"tmp_file.png"
+        outfile = Path(tmp_dir) / "tmp_file.png"
         assert not outfile.exists()
         png_exporter.export(outfile)
         assert outfile.exists()
@@ -43,7 +45,7 @@ def test_png_exporter(drawing):
 def test_pdf_exporter(drawing):
     pdf_exporter = PDFExporter(drawing)
     with tempfile.TemporaryDirectory() as tmp_dir:
-        outfile = Path(tmp_dir) / f"tmp_file.pdf"
+        outfile = Path(tmp_dir) / "tmp_file.pdf"
         assert not outfile.exists()
         pdf_exporter.export(outfile)
         assert outfile.exists()

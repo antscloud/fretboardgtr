@@ -1,9 +1,9 @@
+import tempfile
+import uuid
 from pathlib import Path
 from typing import Union
-import svgwrite
-import uuid
 
-import tempfile
+import svgwrite
 
 
 class SVGExporter:
@@ -23,11 +23,15 @@ class PNGExporter:
         try:
             from reportlab.graphics import renderPM
         except ImportError:
-            raise ImportError("Cannot export svg to PNG because reportlab package is missing")
+            raise ImportError(
+                "Cannot export svg to PNG because reportlab package is missing"
+            )
         try:
             from svglib.svglib import svg2rlg
         except ImportError:
-            raise ImportError("Cannot export svg to PNG because svglib package is missing")
+            raise ImportError(
+                "Cannot export svg to PNG because svglib package is missing"
+            )
         to = Path(to)
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_file = Path(tmp_dir) / Path(f"{uuid.uuid4()}.svg")
@@ -45,11 +49,15 @@ class PDFExporter:
         try:
             from reportlab.graphics import renderPDF
         except ImportError:
-            raise ImportError("Cannot export svg to PNG because reportlab package is missing")
+            raise ImportError(
+                "Cannot export svg to PNG because reportlab package is missing"
+            )
         try:
             from svglib.svglib import svg2rlg
         except ImportError:
-            raise ImportError("Cannot export svg to PNG because svglib package is missing")
+            raise ImportError(
+                "Cannot export svg to PNG because svglib package is missing"
+            )
         to = Path(to)
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_file = Path(tmp_dir) / Path(f"{uuid.uuid4()}.svg")

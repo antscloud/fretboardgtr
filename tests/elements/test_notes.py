@@ -1,5 +1,9 @@
-from fretboardgtr.elements.notes import OpenNote, OpenNoteConfig
-from fretboardgtr.elements.notes import FrettedNote, FrettedNoteConfig
+from fretboardgtr.elements.notes import (
+    FrettedNote,
+    FrettedNoteConfig,
+    OpenNote,
+    OpenNoteConfig,
+)
 
 
 def test_open_note_get_svg():
@@ -48,7 +52,9 @@ def test_fretted_note_get_svg():
 
 def test_fretted_note_get_svg_custom_config():
     fretted_note_config = FrettedNoteConfig(radius=30)
-    fretted_note = FrettedNote(name="test", position=(0.0, 0.0), config=fretted_note_config)
+    fretted_note = FrettedNote(
+        name="test", position=(0.0, 0.0), config=fretted_note_config
+    )
     circle = fretted_note.get_svg().elements[0]
     text = fretted_note.get_svg().elements[1]
     circle_attribs = circle.attribs

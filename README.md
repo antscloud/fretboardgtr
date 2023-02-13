@@ -16,7 +16,7 @@ Package that make easy creation of **highly customizable** fretboards and chords
 - License: GNU Affero General Public License v3.0
 - Documentation: https://fretboardgtr.readthedocs.io/en/latest.
 
-## How to install 
+## How to install
 
 ```shell
 pip install fretboardgtr

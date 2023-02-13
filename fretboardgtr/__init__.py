@@ -13,7 +13,13 @@ from fretboardgtr.elements.notes import (
 from fretboardgtr.elements.nut import Nut, NutConfig
 from fretboardgtr.elements.strings import String, StringConfig
 from fretboardgtr.elements.tuning import Tuning, TuningConfig
-from fretboardgtr.fretboard import FretBoard, FretBoardConfig, FretBoardMainConfig
+from fretboardgtr.fretboard import (
+    FretBoard,
+    FretBoardConfig,
+    FretBoardContainer,
+    FretboardDrawer,
+    FretBoardMainConfig,
+)
 from fretboardgtr.note_colors import NoteColors
 from fretboardgtr.notes_creators import NotesContainer
 

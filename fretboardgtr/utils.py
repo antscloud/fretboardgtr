@@ -17,19 +17,21 @@ def _contains_duplicates(iterable: Iterable) -> bool:
 
 def chromatics_from_root(root: str) -> List[str]:
     """Create list of notes chromatically starting with root."""
-    notes: List[str] = [0] * len(CHROMATICS_NOTES)
-    for j in range(len(CHROMATICS_NOTES)):
-        notes[j] = CHROMATICS_NOTES[(CHROMATICS_NOTES.index(root) + j) % 12]
+    notes = []
+    root_idx = CHROMATICS_NOTES.index(root)
+    for i, _ in enumerate(CHROMATICS_NOTES):
+        notes.append(CHROMATICS_NOTES[(root_idx + i) % 12])
     return notes
 
 
-def chromatic_position_from_root(note: str, root: str):
+def chromatic_position_from_root(note: str, root: str) -> int:
     """Get the index of the note from the root on chromatic scale."""
+    idx = 0
     chroma_from_root = chromatics_from_root(root)
-    for idx, chromatic_note in enumerate(chroma_from_root):
+    for _idx, chromatic_note in enumerate(chroma_from_root):
         if chromatic_note == note:
-            return idx
-    return None
+            idx = _idx
+    return idx
 
 
 def to_sharp_note(note: str) -> str:

@@ -22,18 +22,16 @@ class NoteColors(ConfigIniter):
     minorseventh: str = "rgb(120, 37, 134)"
     majorseventh: str = "rgb(120, 25, 98)"
 
-    @classmethod
-    def from_short_interval(cls, interval: str):
+    def from_short_interval(self, interval: str):
         color = WHITE
         for long, short in INTERVAL_MAPPING.items():
             if interval != short:
                 continue
-            if hasattr(cls, long):
-                color = getattr(cls, long)
+            if hasattr(self, long):
+                color = getattr(self, long)
         return color
 
-    @classmethod
-    def from_interval(cls, interval: int):
-        cls_keys = list(cls.__annotations__)
-        color = getattr(cls, cls_keys[interval % 12])
+    def from_interval(self, interval: int):
+        cls_keys = list(self.__annotations__)
+        color = getattr(self, cls_keys[interval % 12])
         return color

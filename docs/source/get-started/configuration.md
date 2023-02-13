@@ -27,29 +27,29 @@ See [fretted_colors](#fretted_colors)
 ## `[fretboard][background]`
 See [background](#background)
 
-## `[fretboard][fret]`
-See [fret](#fret)
+## `[fretboard][frets]`
+See [frets](#frets)
 
-## `[fretboard][fretnumber]`
-See [fretnumber](#fretnumber)
+## `[fretboard][fret_numbers]`
+See [fret_numbers](#fret_numbers)
 
-## `[fretboard][neckdot]`
-See [neckdot](#neckdot)
+## `[fretboard][neck_dots]`
+See [neck_dots](#neck_dots)
 
 ## `[fretboard][nut]`
 See [nut](#nut)
 
-## `[fretboard][string]`
-See [string](#string)
+## `[fretboard][strings]`
+See [strings](#strings)
 
 ## `[fretboard][tuning]`
 See [tuning](#tuning)
 
-## `[fretboard][open_note]`
-See [open_note](#open_note)
+## `[fretboard][open_notes]`
+See [open_notes](#open_notes)
 
-## `[fretboard][fretted_note]`
-See [fretted_note](#fretted_note)
+## `[fretboard][fretted_notes]`
+See [fretted_notes](#fretted_notes)
 
 
 ## Elements
@@ -64,13 +64,13 @@ See [fretted_note](#fretted_note)
 | color   | str   | Color of the background   | rgb(150,150,150) |
 | opacity | float | Opacity of the background | 0.2              |
 
-## `[fret]`
-| Name  | Type        | Description            | Default            |
-|-------|-------------|------------------------|--------------------|
-| color | str         | Color of the fret      | "rgb(150,150,150)" |
-| width | int / float | Width of the fret line | 3                  |
+## `[frets]`
+| Name  | Type        | Description             | Default            |
+|-------|-------------|-------------------------|--------------------|
+| color | str         | Color of the frets      | "rgb(150,150,150)" |
+| width | int / float | Width of the frets line | 3                  |
 
-## `[fretnumber]`
+## `[fret_numbers]`
 | Name       | Type        | Description                   | Default            |
 |------------|-------------|-------------------------------|--------------------|
 | color      | str         | Text color of the fret number | "rgb(150,150,150)" |
@@ -78,7 +78,7 @@ See [fretted_note](#fretted_note)
 | fontweight | str         | Font weight                   | "bold"             |
 
 
-## `[neckdot]`
+## `[neck_dots]`
 | Name         | Type        | Description          | Default            |
 |--------------|-------------|----------------------|--------------------|
 | color        | str         | Color of the dot     | "rgb(200,200,200)" |
@@ -94,11 +94,11 @@ See [fretted_note](#fretted_note)
 | width | int / float | Width of the nut | 6            |
 
 
-## `[string]`
+## `[strings]`
 | Name  | Type        | Description              | Default      |
 |-------|-------------|--------------------------|--------------|
-| color | str         | Color of the string      | "rgb(0,0,0)" |
-| width | int / float | Width of the string line | 3            |
+| color | str         | Color of the strings      | "rgb(0,0,0)" |
+| width | int / float | Width of the strings line | 3            |
 
 
 ## `[tuning]`
@@ -109,7 +109,7 @@ See [fretted_note](#fretted_note)
 | fontweight | str         | Font weight  | "normal"           |
 
 
-## `[open_note]`
+## `[open_notes]`
 | Name         | Type        | Description                             | Default            |
 |--------------|-------------|-----------------------------------------|--------------------|
 | color        | str         | Color of the                            | "rgb(255,255,255)" |
@@ -121,7 +121,7 @@ See [fretted_note](#fretted_note)
 | fontweight   | str         | Font weight of the text inside the note | "bold"             |
 
 
-## `[fretted_note]`
+## `[fretted_notes]`
 | Name         | Type        | Description                             | Default            |
 |--------------|-------------|-----------------------------------------|--------------------|
 | color        | str         | Color of the                            | "rgb(255,255,255)" |

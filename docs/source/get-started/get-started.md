@@ -8,58 +8,56 @@ To get started simply install the package from PyPI
 pip install fretboardgtr
 ```
 
-# Get started
+## Usage
 
 ```python
-from fretboardgtr import FretBoard, ScaleFromName
+from fretboardgtr.fretboard import FretBoard
+from fretboardgtr.notes_creators import ScaleFromName
 
 fretboard = FretBoard()
-fretboard.init_fretboard()
-
 c_major = ScaleFromName(root="C", mode="Ionian").get()
-fretboard.add_scale(c_major)
-
-SVGExporter(fretboard.drawing).export("my_fretboard.svg")
+fretboard.add_notes(scale=c_major)
+fretboard.export("my_fretboard.svg", format="svg")
 ```
 
+![My Fretboard](../assets/my_fretboard.svg)
 ## Customization example
 
 ```python
-from fretboardgtr import FretBoard, ScaleFromName
+from fretboardgtr.fretboard import FretBoard
+from fretboardgtr.notes_creators import ScaleFromName
+
 config = {
     "main": {
         "first_fret": 0,
-        "last_fret": 12,
+        "last_fret": 24,
         "show_tuning": False,
         "show_frets": True,
-        "show_note_name": True,
-        "open_color_scale": False,
+        "show_note_name": False,
+        "show_degree_name": True,
+        "open_color_scale": True,
         "fretted_color_scale": True,
-        "open_colors": {
-            "majorthird": "rgb(0, 108, 0)",
-        },
         "fretted_colors": {
-            "majorsixth": "rgb(222, 81, 108)",
+            "root": "rgb(255,255,255)",
+        },
+        "open_colors": {
+            "root": "rgb(255,255,255)",
         },
         "enharmonic": True,
     },
-    "background": {"color": "rgb(150,150,150)", "opacity": 0.2},
-    "fretnumber": {"color": "rgb(150,150,150)", "fontsize": 20, "fontweight": "bold"},
-    "tuning": {
-        "color": "rgb(150,150,150)",
-        "fontsize": 20,
-        "fontweight": "normal",
-    },
-    "string": {"color": "rgb(0,0,0)", "width": 3},
+    "background": {"color": "rgb(0,0,50)", "opacity": 0.4},
+    "frets": {"color": "rgb(150,150,150)"},
+    "fret_numbers": {"color": "rgb(150,150,150)", "fontsize": 20, "fontweight": "bold"},
+    "strings": {"color": "rgb(200,200,200)", "width": 2},
 }
 
-fretboard = FretBoard(config=config)
-fretboard.init_fretboard()
-
-c_major = ScaleFromName(root="C", mode="Ionian").get()
-fretboard.add_scale(c_major)
-
-SVGExporter(fretboard.drawing).export("my_fretboard.svg")
+fretboard_config = FretBoardConfig.from_dict(config)
+fretboard = FretBoard(config=fretboard_config)
+c_major = ScaleFromName(root="A", mode="Ionian").get()
+fretboard.add_notes(scale=c_major)
+fretboard.export("my_custom_fretboard.svg", format="svg")
 ```
 
+
+![My custom Fretboard](../assets/my_custom_fretboard.svg)
 Please see the [configuration documentation](./configuration.md) for more details.

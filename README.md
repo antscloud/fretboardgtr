@@ -16,25 +16,30 @@ Package that make easy creation of **highly customizable** fretboards and chords
 - License: GNU Affero General Public License v3.0
 - Documentation: https://fretboardgtr.readthedocs.io/en/latest.
 
+# Get started
+
+To get started simply install the package from PyPI
+
 ## How to install
 
 ```shell
 pip install fretboardgtr
 ```
 
-# Get started
+## Usage
 
 ```python
-from fretboardgtr import FretBoard, ScaleFromName
+from fretboardgtr.fretboard import FretBoard
+from fretboardgtr.notes_creators import ScaleFromName
 
 fretboard = FretBoard()
-fretboard.init_fretboard()
-
 c_major = ScaleFromName(root="C", mode="Ionian").get()
-fretboard.add_scale(c_major)
-
-SVGExporter(fretboard.drawing).export("my_fretboard.svg")
+fretboard.add_notes(scale=c_major)
+fretboard.export("my_fretboard.svg", format="svg")
 ```
+
+![My Fretboard](docs/source/assets/my_fretboard.svg)
+## Customization example
 
 ## Customization example
 ```python

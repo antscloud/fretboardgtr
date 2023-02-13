@@ -65,7 +65,11 @@ dev = [
     "flake8",
 
     # Typing
-    "mypy"
+    "mypy",
+
+    # Python version capabilities
+    "six"
+
 
 
 ]

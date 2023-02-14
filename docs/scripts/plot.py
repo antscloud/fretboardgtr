@@ -14,6 +14,7 @@ def doc_plot() -> None:
 
     Save it in EXPORT_FOLDER.
     """
+    ...
 
 
 def make_plots() -> None:

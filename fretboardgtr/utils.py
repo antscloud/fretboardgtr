@@ -24,6 +24,12 @@ def chromatics_from_root(root: str) -> List[str]:
     return notes
 
 
+def get_note_from_index(index: int, root: str) -> List[str]:
+    """Get note from chromatic scale from index and root."""
+    chroma_from_root = chromatics_from_root(root)
+    return chroma_from_root[index % 12]
+
+
 def chromatic_position_from_root(note: str, root: str) -> int:
     """Get the index of the note from the root on chromatic scale."""
     idx = 0

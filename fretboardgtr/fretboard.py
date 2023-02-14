@@ -14,6 +14,7 @@ from fretboardgtr.base import ConfigIniter
 from fretboardgtr.constants import DOTS_POSITIONS, STANDARD_TUNING
 from fretboardgtr.elements.background import Background, BackgroundConfig
 from fretboardgtr.elements.base import FretBoardElement
+from fretboardgtr.elements.cross import Cross, CrossConfig
 from fretboardgtr.elements.fret_number import FretNumber, FretNumberConfig
 from fretboardgtr.elements.frets import Fret, FretConfig
 from fretboardgtr.elements.neck_dots import NeckDot, NeckDotConfig
@@ -29,7 +30,11 @@ from fretboardgtr.elements.tuning import Tuning, TuningConfig
 from fretboardgtr.exporters import EXPORTERS
 from fretboardgtr.note_colors import NoteColors
 from fretboardgtr.notes_creators import NotesContainer
-from fretboardgtr.utils import chromatic_position_from_root, note_to_interval_name
+from fretboardgtr.utils import (
+    chromatic_position_from_root,
+    get_note_from_index,
+    note_to_interval_name,
+)
 
 
 def get_valid_dots(first_fret: int, last_fret: int):
@@ -72,6 +77,7 @@ class FretBoardConfig(ConfigIniter):
     strings: StringConfig = StringConfig()
     open_notes: OpenNoteConfig = OpenNoteConfig()
     fretted_notes: FrettedNoteConfig = FrettedNoteConfig()
+    cross: CrossConfig = CrossConfig()
 
 
 @dataclass
@@ -84,6 +90,7 @@ class FretBoardElements:
     tuning: List[Tuning] = field(default_factory=list)
     strings: List[String] = field(default_factory=list)
     notes: List[Union[OpenNote, FrettedNote]] = field(default_factory=list)
+    crosses: List[Cross] = field(default_factory=list)
     customs: List[FretBoardElement] = field(default_factory=list)
 
     def to_list(self) -> List[FretBoardElement]:
@@ -317,6 +324,42 @@ class FretBoardContainer:
             for note in scale.notes:
                 self.add_note(string_no, note, scale.root)
 
+    def add_fingering(
+        self, fingering=List[Optional[int]], root: Optional[str] = None
+    ) -> None:
+        """Add fingerinf starting with upper string to lower string."""
+        if len(fingering) != len(self.tuning):
+            raise ValueError(
+                f"Fingering has not the same size as tuning."
+                f" Got {len(fingering)} expected {len(self.tuning)}"
+            )
+
+        for string_no, finger_position in enumerate(reversed(fingering)):
+            string_note = self.tuning[len(self.tuning) - 1 - string_no]
+            if finger_position is None:
+                x = self.config.main.x_start + self.config.main.fret_width * (1 / 2)
+                y = self.config.main.y_start + (self.config.main.fret_height) * (
+                    string_no
+                )
+                position = (x, y)
+                cross = Cross(position, config=self.config.cross)
+                self.elements.crosses.append(cross)
+            else:
+                x = self.config.main.x_start + self.config.main.fret_width * (
+                    1 / 2 + finger_position
+                )
+                y = self.config.main.y_start + (self.config.main.fret_height) * (
+                    string_no
+                )
+                position = (x, y)
+                note = get_note_from_index(finger_position, string_note)
+                if finger_position == 0:
+                    _note = self._get_open_note(position, note, root)
+                else:
+                    _note = self._get_fretted_note(position, note, root)
+
+                self.elements.notes.append(_note)
+
     def get_bounds_of_fretboard(
         self,
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
@@ -401,6 +444,9 @@ class FretBoard:
         if not issubclass(type(scale), NotesContainer):
             raise ValueError(f"scale should be a NotesContainer nor {type(scale)}")
         self._fretboard.add_scale(scale=scale)
+
+    def add_fingering(self, fingering: List[Optional[None]]) -> None:
+        self._fretboard.add_fingering(fingering=fingering)
 
     def add_note_element(self, note: Union[OpenNote, FrettedNote]) -> None:
         self._fretboard.add_note_element(note)

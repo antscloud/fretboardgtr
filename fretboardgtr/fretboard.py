@@ -77,7 +77,7 @@ class VerticalFretBoard(FretBoard):
 def main():
     from fretboardgtr.notes_creators import ScaleFromName
 
-    fretboard = VerticalFretBoard()
+    fretboard = FretBoard()
     c_major = ScaleFromName(root="C", mode="Ionian").get()
     fretboard.add_notes(scale=c_major)
     fretboard.export("c_ionian.svg")

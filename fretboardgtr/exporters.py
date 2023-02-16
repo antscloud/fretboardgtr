@@ -12,18 +12,18 @@ class Exporter(ABC):
         self.drawing = drawing
 
     @abstractmethod
-    def export(self, to: Union[str, Path]):
+    def export(self, to: Union[str, Path]) -> None:
         pass
 
 
 class SVGExporter(Exporter):
-    def export(self, to: Union[str, Path]):
+    def export(self, to: Union[str, Path]) -> None:
         to = Path(to)
         self.drawing.saveas(str(to))
 
 
 class PNGExporter(Exporter):
-    def export(self, to: Union[str, Path]):
+    def export(self, to: Union[str, Path]) -> None:
         try:
             from reportlab.graphics import renderPM
         except ImportError:
@@ -45,7 +45,7 @@ class PNGExporter(Exporter):
 
 
 class PDFExporter(Exporter):
-    def export(self, to: Union[str, Path]):
+    def export(self, to: Union[str, Path]) -> None:
         try:
             from reportlab.graphics import renderPDF
         except ImportError:
@@ -67,7 +67,7 @@ class PDFExporter(Exporter):
             renderPDF.drawToFile(drawing, str(to))
 
 
-def register_exporter(exporter: Type[Exporter], extension: str):
+def register_exporter(exporter: Type[Exporter], extension: str) -> None:
     EXPORTERS[extension.upper()] = exporter
 
 

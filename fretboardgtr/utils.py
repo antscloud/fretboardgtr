@@ -1,15 +1,24 @@
-from typing import Iterable, List
+from typing import Collection, List
 
 from fretboardgtr.constants import (
     ALTERATIONS,
     CHROMATICS_INTERVALS,
     CHROMATICS_NOTES,
+    DOTS_POSITIONS,
     ENHARMONICS,
     SHARPY_ALTERATIONS,
 )
 
 
-def _contains_duplicates(iterable: Iterable) -> bool:
+def get_valid_dots(first_fret: int, last_fret: int) -> List[int]:
+    dots = []
+    for dot in DOTS_POSITIONS:
+        if dot >= first_fret and dot <= last_fret:
+            dots.append(dot)
+    return dots
+
+
+def _contains_duplicates(iterable: Collection) -> bool:
     if len(iterable) != len(set(iterable)):
         return True
     return False
@@ -24,7 +33,7 @@ def chromatics_from_root(root: str) -> List[str]:
     return notes
 
 
-def get_note_from_index(index: int, root: str) -> List[str]:
+def get_note_from_index(index: int, root: str) -> str:
     """Get note from chromatic scale from index and root."""
     chroma_from_root = chromatics_from_root(root)
     return chroma_from_root[index % 12]
@@ -54,7 +63,7 @@ def to_flat_note(note: str) -> str:
     return note
 
 
-def scale_to_sharp(scale: List[str]):
+def scale_to_sharp(scale: List[str]) -> List[str]:
     """Get scale replacing each note by its sharp correspondant note."""
     flat_scale = list(scale)
     for i, note in enumerate(scale):
@@ -63,7 +72,7 @@ def scale_to_sharp(scale: List[str]):
     return flat_scale
 
 
-def scale_to_flat(scale: List[str]):
+def scale_to_flat(scale: List[str]) -> List[str]:
     """Get scale replacing each note by its flat correspondant note."""
     flat_scale = list(scale)
     for i, note in enumerate(scale):
@@ -79,13 +88,13 @@ def note_to_interval(note: str, root: str) -> int:
     return idx
 
 
-def note_to_interval_name(note: str, root: str):
+def note_to_interval_name(note: str, root: str) -> str:
     """Get note from interval name."""
     idx = note_to_interval(note, root)
     return CHROMATICS_INTERVALS[idx]
 
 
-def scale_to_intervals(scale: List[str], root: str):
+def scale_to_intervals(scale: List[str], root: str) -> List[int]:
     """Get intervals from root.
 
     >>> scale_to_intervals(scale=['C','E','G'],root='C')
@@ -97,7 +106,7 @@ def scale_to_intervals(scale: List[str], root: str):
     return intervals
 
 
-def scale_to_enharmonic(scale: List[str]):
+def scale_to_enharmonic(scale: List[str]) -> List[str]:
     """Modify the scale in order to not repeat note.
 
     Turns into enharmonic way if possible.

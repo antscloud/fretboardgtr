@@ -1,6 +1,9 @@
+from typing import Any, Dict
+
+
 class ConfigIniter:
     @classmethod
-    def from_dict(cls, _dict):
+    def from_dict(cls, _dict: Dict) -> Any:
         kwargs = {}
         for arg, _type in cls.__annotations__.items():
             if arg not in _dict:

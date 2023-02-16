@@ -24,7 +24,7 @@ fretboard.export("my_fretboard.svg", format="svg")
 ## Customization example
 
 ```python
-from fretboardgtr.fretboard import FretBoard
+from fretboardgtr.fretboard import FretBoard, FretBoardConfig
 from fretboardgtr.notes_creators import ScaleFromName
 
 config = {
@@ -61,3 +61,19 @@ fretboard.export("my_custom_fretboard.svg", format="svg")
 
 ![My custom Fretboard](../assets/my_custom_fretboard.svg)
 Please see the [configuration documentation](./configuration.md) for more details.
+
+
+## Vertical Fretboard
+```python
+from fretboardgtr.fretboard import VerticalFretBoard
+from fretboardgtr.notes_creators import ScaleFromName
+
+fretboard = VerticalFretBoard()
+c_major = ScaleFromName(root="C", mode="Ionian").get()
+fretboard.add_notes(scale=c_major)
+fretboard.export("my_vertical_fretboard.svg", format="svg")
+```
+
+<p align="center">
+  <img src="../assets/my_vertical_fretboard.svg" width="250"/>
+</p>

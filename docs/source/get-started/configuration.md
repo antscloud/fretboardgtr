@@ -1,10 +1,12 @@
 # Configuration
 
-## `[fretboard][main]`
+## `[fretboard][general]`
 | Name                | Type  | Description                                         | Default |
 |---------------------|-------|-----------------------------------------------------|---------|
 | x_start             | float | x position for starting fretboard                   | 30.0    |
 | y_start             | float | y position for starting fretboard                   | 30.0    |
+| x_end_offset        | float | x offset based on the lower right point             | 30.0    |
+| y_end_offset        | float | y offset based on the lower right point             | 30.0    |
 | fret_height         | float | Fret height                                         | 50      |
 | fret_width          | float | Fret width                                          | 70      |
 | first_fret          | float | Number of the first fret to display                 | 0       |
@@ -18,10 +20,10 @@
 | fretted_color_scale | bool  | Color the fretted notes                             | True    |
 | enharmonic          | bool  | Preprocess the scale and trensform it to enharmonic | True    |
 
-## `[fretboard][main][open_colors]`
+## `[fretboard][general][open_colors]`
 See [open_colors](#open_colors)
 
-## `[fretboard][main][fretted_colors]`
+## `[fretboard][general][fretted_colors]`
 See [fretted_colors](#fretted_colors)
 
 ## `[fretboard][background]`

@@ -4,14 +4,14 @@ from typing import Optional, Tuple
 import svgwrite
 
 from fretboardgtr.base import ConfigIniter
-from fretboardgtr.constants import GRAY
+from fretboardgtr.constants import NO_COLOR
 from fretboardgtr.elements.base import FretBoardElement
 
 
 @dataclass
 class BackgroundConfig(ConfigIniter):
-    color: str = GRAY
-    opacity: float = 0.2
+    color: str = NO_COLOR
+    opacity: float = 0.7
 
 
 class Background(FretBoardElement):

@@ -16,7 +16,7 @@ from fretboardgtr.elements.tuning import Tuning, TuningConfig
 from fretboardgtr.fretboard import (
     FretBoardConfig,
     FretBoardContainer,
-    FretBoardMainConfig,
+    FretBoardGeneralConfig,
 )
 from fretboardgtr.note_colors import NoteColors
 from fretboardgtr.notes_creators import NotesContainer
@@ -25,7 +25,7 @@ from fretboardgtr.notes_creators import NotesContainer
 @pytest.fixture()
 def default_config():
     return FretBoardConfig(
-        main=FretBoardMainConfig(
+        general=FretBoardGeneralConfig(
             x_start=30.0,
             y_start=30.0,
             fret_height=50,
@@ -69,7 +69,7 @@ def default_config():
             ),
             enharmonic=True,
         ),
-        background=BackgroundConfig(color="rgb(150,150,150)", opacity=0.2),
+        background=BackgroundConfig(color="none", opacity=0.7),
         fret_numbers=FretNumberConfig(
             color="rgb(150,150,150)", fontsize=20, fontweight="bold"
         ),
@@ -111,7 +111,7 @@ def default_config():
 @pytest.fixture()
 def dict_config():
     return dict(
-        main=dict(
+        general=dict(
             x_start=30.0,
             y_start=30.0,
             fret_height=50,
@@ -203,6 +203,11 @@ def test_default_config(default_config: FretBoardConfig):
     assert default_config == FretBoardConfig()
 
 
+def test_default_config_container(default_config):
+    vertical_fretboard = FretBoardContainer()
+    assert vertical_fretboard.config == default_config
+
+
 def load_config_from_dict(dict_config):
     config = FretBoardConfig.from_dict(dict_config)
     assert config == FretBoardConfig()
@@ -243,12 +248,18 @@ def test_fretboard_get_neck_dots(default_config: FretBoardConfig):
         # Check if center of fret
         assert (
             neck_dot.x
-            % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
+            % (
+                fretboard.config.general.x_start
+                - (fretboard.config.general.fret_width // 2)
+            )
             == 0
         )
         assert (
             neck_dot.y
-            % (fretboard.config.main.y_start - (fretboard.config.main.fret_height // 2))
+            % (
+                fretboard.config.general.y_start
+                - (fretboard.config.general.fret_height // 2)
+            )
             == 0
         )
 
@@ -260,17 +271,17 @@ def test_fretboard_get_frets(default_config: FretBoardConfig):
     for fret in frets:
         # Test if multiple of width
         assert (
-            fret.start_position[0] % fretboard.config.main.x_start
-            + fretboard.config.main.fret_width
+            fret.start_position[0] % fretboard.config.general.x_start
+            + fretboard.config.general.fret_width
         )
         # Test if vertical line
         assert fret.start_position[0] == fret.end_position[0]
 
         # Test coherence and length
-        assert fret.start_position[1] == fretboard.config.main.y_start
+        assert fret.start_position[1] == fretboard.config.general.y_start
         assert fret.end_position[1] == (
-            fretboard.config.main.y_start
-            + (len(fretboard.tuning) - 1) * fretboard.config.main.fret_height
+            fretboard.config.general.y_start
+            + (len(fretboard.tuning) - 1) * fretboard.config.general.fret_height
         )
 
 
@@ -284,19 +295,19 @@ def test_fretboard_get_strings(default_config: FretBoardConfig):
 
         # Test if multiple of width
         assert (
-            string.start_position[1] % fretboard.config.main.x_start
-            + fretboard.config.main.fret_height
+            string.start_position[1] % fretboard.config.general.x_start
+            + fretboard.config.general.fret_height
         )
 
         # Test coherence and length
         assert (
             string.start_position[0]
-            == fretboard.config.main.x_start + fretboard.config.main.fret_width
+            == fretboard.config.general.x_start + fretboard.config.general.fret_width
         )
         assert string.end_position[0] == (
-            fretboard.config.main.y_start
-            + fretboard.config.main.fret_width
-            + fretboard.config.main.last_fret * fretboard.config.main.fret_width
+            fretboard.config.general.y_start
+            + fretboard.config.general.fret_width
+            + fretboard.config.general.last_fret * fretboard.config.general.fret_width
         )
 
 
@@ -310,20 +321,20 @@ def test_fretboard_get_nut(default_config: FretBoardConfig):
     # Test if start where it should
     assert (
         nut.start_position[0]
-        == fretboard.config.main.x_start + fretboard.config.main.fret_width
+        == fretboard.config.general.x_start + fretboard.config.general.fret_width
     )
     # Test if start where it should
-    assert nut.start_position[1] == fretboard.config.main.y_start
+    assert nut.start_position[1] == fretboard.config.general.y_start
     # Test length
     assert (
         nut.end_position[1]
-        == fretboard.config.main.y_start
-        + (len(fretboard.tuning) - 1) * fretboard.config.main.fret_height
+        == fretboard.config.general.y_start
+        + (len(fretboard.tuning) - 1) * fretboard.config.general.fret_height
     )
 
 
 def test_fretboard_get_nut_not_first_fret(default_config: FretBoardConfig):
-    default_config.main.first_fret = 1
+    default_config.general.first_fret = 1
     fretboard = FretBoardContainer(config=default_config)
     fretboard.add_nut()
 
@@ -341,12 +352,18 @@ def test_fretboard_get_fret_numbers(default_config: FretBoardConfig):
         # Check if center of fret
         assert (
             fret_number.x
-            % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
+            % (
+                fretboard.config.general.x_start
+                - (fretboard.config.general.fret_width // 2)
+            )
             == 0
         )
         assert (
             fret_number.y
-            % (fretboard.config.main.y_start - (fretboard.config.main.fret_height // 2))
+            % (
+                fretboard.config.general.y_start
+                - (fretboard.config.general.fret_height // 2)
+            )
             == 0
         )
 
@@ -361,19 +378,19 @@ def test_fretboard_get_string(default_config: FretBoardConfig):
 
         # Test if multiple of width
         assert (
-            string.start_position[1] % fretboard.config.main.x_start
-            + fretboard.config.main.fret_height
+            string.start_position[1] % fretboard.config.general.x_start
+            + fretboard.config.general.fret_height
         )
 
         # Test coherence and length
         assert (
             string.start_position[0]
-            == fretboard.config.main.x_start + fretboard.config.main.fret_width
+            == fretboard.config.general.x_start + fretboard.config.general.fret_width
         )
         assert string.end_position[0] == (
-            fretboard.config.main.y_start
-            + fretboard.config.main.fret_width
-            + fretboard.config.main.last_fret * fretboard.config.main.fret_width
+            fretboard.config.general.y_start
+            + fretboard.config.general.fret_width
+            + fretboard.config.general.last_fret * fretboard.config.general.fret_width
         )
 
 
@@ -396,7 +413,7 @@ def test_fretboard_get_open_note_root(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_open_note_root_colors(default_config: FretBoardConfig):
-    default_config.main.open_color_scale = True
+    default_config.general.open_color_scale = True
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -407,8 +424,8 @@ def test_fretboard_get_open_note_root_colors(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_open_note_show_degree_name(default_config: FretBoardConfig):
-    default_config.main.open_color_scale = True
-    default_config.main.show_degree_name = True
+    default_config.general.open_color_scale = True
+    default_config.general.show_degree_name = True
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -419,9 +436,9 @@ def test_fretboard_get_open_note_show_degree_name(default_config: FretBoardConfi
 
 
 def test_fretboard_get_open_note_no_name(default_config: FretBoardConfig):
-    default_config.main.open_color_scale = True
-    default_config.main.show_degree_name = False
-    default_config.main.show_note_name = False
+    default_config.general.open_color_scale = True
+    default_config.general.show_degree_name = False
+    default_config.general.show_note_name = False
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -451,7 +468,7 @@ def test_fretboard_get_fretted_note_root_colors(default_config: FretBoardConfig)
 
 
 def test_fretboard_get_fretted_note_root_no_color(default_config: FretBoardConfig):
-    default_config.main.fretted_color_scale = False
+    default_config.general.fretted_color_scale = False
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -461,7 +478,7 @@ def test_fretboard_get_fretted_note_root_no_color(default_config: FretBoardConfi
 
 
 def test_fretboard_get_fretted_note_show_degree_name(default_config: FretBoardConfig):
-    default_config.main.show_degree_name = True
+    default_config.general.show_degree_name = True
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -472,8 +489,8 @@ def test_fretboard_get_fretted_note_show_degree_name(default_config: FretBoardCo
 
 
 def test_fretboard_get_fretted_note_no_name(default_config: FretBoardConfig):
-    default_config.main.show_degree_name = False
-    default_config.main.show_note_name = False
+    default_config.general.show_degree_name = False
+    default_config.general.show_note_name = False
     fretboard = FretBoardContainer(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
@@ -489,11 +506,14 @@ def test_fretboard_get_notes(default_config: FretBoardConfig):
 
     notes = fretboard.elements.notes
     for note in notes:
-        assert note.y == fretboard.config.main.y_start
+        assert note.y == fretboard.config.general.y_start
         # Check if placed between two frets
         assert (
             note.x
-            % (fretboard.config.main.x_start - (fretboard.config.main.fret_width // 2))
+            % (
+                fretboard.config.general.x_start
+                - (fretboard.config.general.fret_width // 2)
+            )
             == 0
         )
 
@@ -504,11 +524,18 @@ def test_fretboard_get_notes_invalid_string(default_config: FretBoardConfig):
         fretboard.add_note(string_no=7, note="E", root="C")
 
 
-def test_fretboard_get_bounds_of_fretboard(default_config):
+def test_fretboard_get_inside_bounds(default_config):
     fretboard = FretBoardContainer(config=default_config)
-    upper_left, lower_right = fretboard.get_bounds_of_fretboard()
+    upper_left, lower_right = fretboard.get_inside_bounds()
     assert upper_left == (30.0, 30.0)
     assert lower_right == (940.0, 280.0)
+
+
+def test_fretboard_get_size(default_config):
+    fretboard = FretBoardContainer(config=default_config)
+    width, height = fretboard.get_size()
+    assert width == 1010.0
+    assert height == 380.0
 
 
 def test_init_fretboard(default_config):

@@ -1,10 +1,13 @@
 from __future__ import absolute_import
+
 from enum import Enum
 
 
 class Mode(str, Enum):
-    """Makes it easier to list and select a mode, e.g. with auto-completion
-    Mode.MIXOLYDIAN can be used instead of the 'Mixolydian' literal string.
+    """Makes it easier to list and select a mode.
+
+    One can use auto-completion Mode.MIXOLYDIAN can be used instead of
+    the 'Mixolydian' literal string.
     """
 
     AEOLIAN = "Aeolian"
@@ -76,11 +79,13 @@ SCALES_DICT = {
 
 
 class Chord(str, Enum):
-    """Makes it easier to list and select a chord, e.g. with auto-completion
-    Chord.MAJOR can be used instead of the 'M' literal string.
+    """Makes it easier to list and select a chord.
 
-    Not every defined Chord from CHORDS_DICT_ESSENTIAL is defined as an enum
-    here, only the most common ones.
+    One can use auto-completion Chord.MAJOR can be used instead of the 'M'
+    literal string.
+
+    Not every defined Chord from CHORDS_DICT_ESSENTIAL is defined as an
+    enum here, only the most common ones.
     """
 
     MAJOR = "M"
@@ -106,7 +111,6 @@ class Chord(str, Enum):
     SUSPENDED_SECOND = "sus2"
 
 
-z
 CHORDS_DICT_ESSENTIAL = {
     "M": [0, 4, 7],
     "(b5)": [0, 4, 6],
@@ -181,6 +185,77 @@ CHORDS_DICT_ESSENTIAL = {
     "sus4(#5)": [0, 5, 8],
     "sus4(b5)": [0, 5, 6],
 }
+
+
+class Note(str, Enum):
+    """Makes it easier to list and select a note.
+
+    One can use auto-completion Note.A_SHARP instead of the 'A#' literal
+    string.
+    """
+
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+    A_SHARP = "A#"
+    A_FLAT = "Ab"
+    B_FLAT = "Bb"
+    C_FLAT = "Cb"
+    C_SHARP = "C#"
+    D_FLAT = "Db"
+    D_SHARP = "D#"
+    E_FLAT = "Eb"
+    E_SHARP = "E#"
+    F_SHARP = "F#"
+    G_FLAT = "Gb"
+    G_SHARP = "G#"
+
+
+class Interval(str, Enum):
+    """Makes it easier to list and select an interval.
+
+    One can use auto-completion Interval.DIMINISHED_FIFTH instead of the
+    'b5' literal string.
+    """
+
+    ROOT = "1"
+    MINOR_SECOND = "b2"
+    MAJOR_SECOND = "2"
+    MINOR_THIRD = "b3"
+    MAJOR_THIRD = "3"
+    PERFECT_FOURTH = "4"
+    DIMINISHED_FIFTH = "b5"
+    PERFECT_FIFTH = "5"
+    MINOR_SIXTH = "b6"
+    MAJORS_IXTH = "6"
+    MINOR_SEVENTH = "b7"
+    MAJOR_SEVENTH = "7"
+
+
+class LongInterval(str, Enum):
+    """Makes it easier to list and select a long interval.
+
+    One can use LongInterval.MINOR_SECOND instead of the 'minor_second'
+    literal string.
+    """
+
+    ROOT = "root"
+    MINOR_SECOND = "minor_second"
+    MAJOR_SECOND = "major_second"
+    MINOR_THIRD = "minor_third"
+    MAJOR_THIRD = "major_third"
+    PERFECT_FOURTH = "perfect_fourth"
+    DIMINISHED_FIFTH = "diminished_fifth"
+    PERFECT_FIFTH = "perfect_fifth"
+    MINOR_SIXTH = "minor_sixth"
+    MAJORS_IXTH = "major_sixth"
+    MINOR_SEVENTH = "minor_seventh"
+    MAJOR_SEVENTH = "major_seventh"
+
 
 CHROMATICS_NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 CHROMATICS_INTERVALS = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"]

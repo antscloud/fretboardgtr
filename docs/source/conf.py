@@ -77,6 +77,16 @@ source_suffix = {
     ".md": "markdown",
 }
 
+# -- Options for autodoc ----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
+
+# Automatically extract typehints when specified and place them in
+# descriptions of the relevant function/method.
+autodoc_typehints = "description"
+
+# Don't show class signature with the class' name.
+autodoc_class_signature = "separated"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 

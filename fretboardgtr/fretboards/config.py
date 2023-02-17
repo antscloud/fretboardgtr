@@ -1,7 +1,3 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from dataclasses import dataclass
 
 from fretboardgtr.base import ConfigIniter
@@ -19,6 +15,8 @@ from fretboardgtr.note_colors import NoteColors
 
 @dataclass
 class FretBoardGeneralConfig(ConfigIniter):
+    """General configuration for a Fretboard."""
+
     x_start: float = 30.0
     y_start: float = 30.0
     x_end_offset: float = 0.0
@@ -41,6 +39,23 @@ class FretBoardGeneralConfig(ConfigIniter):
 
 @dataclass
 class FretBoardConfig(ConfigIniter):
+    """Configuration for the fretboard but also for all its elements.
+
+    Inside configurations are :
+
+    FretBoardGeneralConfig
+    BackgroundConfig
+    FretNumberConfig
+    NeckDotConfig
+    FretConfig
+    NutConfig
+    TuningConfig
+    StringConfig
+    OpenNoteConfig
+    FrettedNoteConfig
+    CrossConfig
+    """
+
     general: FretBoardGeneralConfig = FretBoardGeneralConfig()
     background: BackgroundConfig = BackgroundConfig()
     fret_numbers: FretNumberConfig = FretNumberConfig()

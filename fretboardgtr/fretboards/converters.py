@@ -1,16 +1,17 @@
-import os
-import sys
+from dataclasses import fields
 
 import svgwrite
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from dataclasses import fields
 
 from fretboardgtr.elements.base import FretBoardElement
 from fretboardgtr.fretboards.base import FretBoardLike
 
 
 class FretBoardToSVGConverter:
+    """Convert a FretboardLike object to a svgwrite object.
+
+    Convert it in order to export it to a specific format later.
+    """
+
     def __init__(self, fretboard: FretBoardLike):
         self._fretboard = fretboard
         self.drawing = self.get_empty()

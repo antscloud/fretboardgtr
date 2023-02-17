@@ -8,6 +8,8 @@ import svgwrite
 
 
 class Exporter(ABC):
+    """Interface to implement for a new exporter."""
+
     def __init__(self, drawing: svgwrite.Drawing):
         self.drawing = drawing
 
@@ -17,12 +19,19 @@ class Exporter(ABC):
 
 
 class SVGExporter(Exporter):
+    """SVG Exporter."""
+
     def export(self, to: Union[str, Path]) -> None:
         to = Path(to)
         self.drawing.saveas(str(to))
 
 
 class PNGExporter(Exporter):
+    """PNG Exporter.
+
+    Need reportlab and svglib module installed
+    """
+
     def export(self, to: Union[str, Path]) -> None:
         try:
             from reportlab.graphics import renderPM
@@ -45,6 +54,11 @@ class PNGExporter(Exporter):
 
 
 class PDFExporter(Exporter):
+    """PDF Exporter.
+
+    Need reportlab and svglib module installed
+    """
+
     def export(self, to: Union[str, Path]) -> None:
         try:
             from reportlab.graphics import renderPDF
@@ -68,6 +82,11 @@ class PDFExporter(Exporter):
 
 
 def register_exporter(exporter: Type[Exporter], extension: str) -> None:
+    """Register an exporter.
+
+    When creating a new exporter one have to use this function to
+    register the exporter and be able to use it
+    """
     EXPORTERS[extension.upper()] = exporter
 
 

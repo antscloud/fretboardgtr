@@ -9,6 +9,14 @@ from fretboardgtr.notes_creators import NotesContainer
 
 
 class FretBoardLike(ABC):
+    """Interface to implement to define a FretBoard.
+
+    This interface's purpose is to define an interface (common
+    behaviour) in order to draw the fretboard into a SVG Format. This
+    interface also define standard method for higher level API call such
+    as add_note_element, or add_element for example.
+    """
+
     @abstractmethod
     def set_config(self, config: FretBoardConfig) -> None:
         pass
@@ -28,7 +36,7 @@ class FretBoardLike(ABC):
         pass
 
     @abstractmethod
-    def add_scale(self, scale: NotesContainer) -> None:
+    def add_notes(self, scale: NotesContainer) -> None:
         pass
 
     @abstractmethod

@@ -139,34 +139,34 @@ See [fretted_notes](#fretted_notes)
 
 ## `[open_colors]`
 
-| Name            | Type | Description                   | Default             |
-|-----------------|------|-------------------------------|---------------------|
-| root            | str  | Color of the root             | "rgb(231, 0, 0)"    |
-| minorsecond     | str  | Color of the minor second     | "rgb(249, 229, 0)"  |
-| majorsecond     | str  | Color of the major second     | "rgb(249, 165, 0)"  |
-| minorthird      | str  | Color of the minor third      | "rgb(0, 94, 0)"     |
-| majorthird      | str  | Color of the major third      | "rgb(0, 108, 0)"    |
-| perfectfourth   | str  | Color of the perfect fourth   | "rgb(0, 154, 0)"    |
-| diminishedfifth | str  | Color of the diminished fifth | "rgb(0, 15, 65)"    |
-| perfectfifth    | str  | Color of the perfect fifth    | "rgb(0, 73, 151)"   |
-| minorsixth      | str  | Color of the minor sixth      | "rgb(168, 107, 98)" |
-| majorsixth      | str  | Color of the major sixth      | "rgb(222, 81, 108)" |
-| minorseventh    | str  | Color of the minor seventh    | "rgb(120, 37, 134)" |
-| majorseventh    | str  | Color of the major seventh    | "rgb(120, 25, 98)"  |
+| Name             | Type | Description                   | Default             |
+|------------------|------|-------------------------------|---------------------|
+| root             | str  | Color of the root             | "rgb(231, 0, 0)"    |
+| minor_second     | str  | Color of the minor second     | "rgb(249, 229, 0)"  |
+| major_second     | str  | Color of the major second     | "rgb(249, 165, 0)"  |
+| minor_third      | str  | Color of the minor third      | "rgb(0, 94, 0)"     |
+| major_third      | str  | Color of the major third      | "rgb(0, 108, 0)"    |
+| perfect_fourth   | str  | Color of the perfect fourth   | "rgb(0, 154, 0)"    |
+| diminished_fifth | str  | Color of the diminished fifth | "rgb(0, 15, 65)"    |
+| perfect_fifth    | str  | Color of the perfect fifth    | "rgb(0, 73, 151)"   |
+| minor_sixth      | str  | Color of the minor sixth      | "rgb(168, 107, 98)" |
+| major_sixth      | str  | Color of the major sixth      | "rgb(222, 81, 108)" |
+| minor_seventh    | str  | Color of the minor seventh    | "rgb(120, 37, 134)" |
+| major_seventh    | str  | Color of the major seventh    | "rgb(120, 25, 98)"  |
 
 ## `[fretted_colors]`
 
-| Name            | Type | Description                   | Default             |
-|-----------------|------|-------------------------------|---------------------|
-| root            | str  | Color of the root             | "rgb(231, 0, 0)"    |
-| minorsecond     | str  | Color of the minor second     | "rgb(249, 229, 0)"  |
-| majorsecond     | str  | Color of the major second     | "rgb(249, 165, 0)"  |
-| minorthird      | str  | Color of the minor third      | "rgb(0, 94, 0)"     |
-| majorthird      | str  | Color of the major third      | "rgb(0, 108, 0)"    |
-| perfectfourth   | str  | Color of the perfect fourth   | "rgb(0, 154, 0)"    |
-| diminishedfifth | str  | Color of the diminished fifth | "rgb(0, 15, 65)"    |
-| perfectfifth    | str  | Color of the perfect fifth    | "rgb(0, 73, 151)"   |
-| minorsixth      | str  | Color of the minor sixth      | "rgb(168, 107, 98)" |
-| majorsixth      | str  | Color of the major sixth      | "rgb(222, 81, 108)" |
-| minorseventh    | str  | Color of the minor seventh    | "rgb(120, 37, 134)" |
-| majorseventh    | str  | Color of the major seventh    | "rgb(120, 25, 98)"  |
+| Name             | Type | Description                   | Default             |
+|------------------|------|-------------------------------|---------------------|
+| root             | str  | Color of the root             | "rgb(231, 0, 0)"    |
+| minor_second     | str  | Color of the minor second     | "rgb(249, 229, 0)"  |
+| major_second     | str  | Color of the major second     | "rgb(249, 165, 0)"  |
+| minor_third      | str  | Color of the minor third      | "rgb(0, 94, 0)"     |
+| major_third      | str  | Color of the major third      | "rgb(0, 108, 0)"    |
+| perfect_fourth   | str  | Color of the perfect fourth   | "rgb(0, 154, 0)"    |
+| diminished_fifth | str  | Color of the diminished fifth | "rgb(0, 15, 65)"    |
+| perfect_fifth    | str  | Color of the perfect fifth    | "rgb(0, 73, 151)"   |
+| minor_sixth      | str  | Color of the minor sixth      | "rgb(168, 107, 98)" |
+| major_sixth      | str  | Color of the major sixth      | "rgb(222, 81, 108)" |
+| minor_seventh    | str  | Color of the minor seventh    | "rgb(120, 37, 134)" |
+| major_seventh    | str  | Color of the major seventh    | "rgb(120, 25, 98)"  |

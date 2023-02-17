@@ -11,6 +11,20 @@ from fretboardgtr.constants import (
 
 
 def get_valid_dots(first_fret: int, last_fret: int) -> List[int]:
+    """Get the valid fretboard dots between frets.
+
+    Parameters
+    ----------
+    first_fret : int
+        First fret
+    last_fret : int
+        Last fret
+
+    Returns
+    -------
+    List[int]
+        Valid dots between frets
+    """
     dots = []
     for dot in DOTS_POSITIONS:
         if dot >= first_fret and dot <= last_fret:

@@ -38,31 +38,31 @@ def default_config():
             fretted_color_scale=True,
             open_colors=NoteColors(
                 root="rgb(231, 0, 0)",
-                minorsecond="rgb(249, 229, 0)",
-                majorsecond="rgb(249, 165, 0)",
-                minorthird="rgb(0, 94, 0)",
-                majorthird="rgb(0, 108, 0)",
-                perfectfourth="rgb(0, 154, 0)",
-                diminishedfifth="rgb(0, 15, 65)",
-                perfectfifth="rgb(0, 73, 151)",
-                minorsixth="rgb(168, 107, 98)",
-                majorsixth="rgb(222, 81, 108)",
-                minorseventh="rgb(120, 37, 134)",
-                majorseventh="rgb(120, 25, 98)",
+                minor_second="rgb(249, 229, 0)",
+                major_second="rgb(249, 165, 0)",
+                minor_third="rgb(0, 94, 0)",
+                major_third="rgb(0, 108, 0)",
+                perfect_fourth="rgb(0, 154, 0)",
+                diminished_fifth="rgb(0, 15, 65)",
+                perfect_fifth="rgb(0, 73, 151)",
+                minor_sixth="rgb(168, 107, 98)",
+                major_sixth="rgb(222, 81, 108)",
+                minor_seventh="rgb(120, 37, 134)",
+                major_seventh="rgb(120, 25, 98)",
             ),
             fretted_colors=NoteColors(
                 root="rgb(231, 0, 0)",
-                minorsecond="rgb(249, 229, 0)",
-                majorsecond="rgb(249, 165, 0)",
-                minorthird="rgb(0, 94, 0)",
-                majorthird="rgb(0, 108, 0)",
-                perfectfourth="rgb(0, 154, 0)",
-                diminishedfifth="rgb(0, 15, 65)",
-                perfectfifth="rgb(0, 73, 151)",
-                minorsixth="rgb(168, 107, 98)",
-                majorsixth="rgb(222, 81, 108)",
-                minorseventh="rgb(120, 37, 134)",
-                majorseventh="rgb(120, 25, 98)",
+                minor_second="rgb(249, 229, 0)",
+                major_second="rgb(249, 165, 0)",
+                minor_third="rgb(0, 94, 0)",
+                major_third="rgb(0, 108, 0)",
+                perfect_fourth="rgb(0, 154, 0)",
+                diminished_fifth="rgb(0, 15, 65)",
+                perfect_fifth="rgb(0, 73, 151)",
+                minor_sixth="rgb(168, 107, 98)",
+                major_sixth="rgb(222, 81, 108)",
+                minor_seventh="rgb(120, 37, 134)",
+                major_seventh="rgb(120, 25, 98)",
             ),
             enharmonic=True,
         ),
@@ -318,12 +318,12 @@ def test_init_fretboard(default_config):
     assert not any([isinstance(obj, OpenNote) for obj in list_of_elements])
 
 
-def test_init_fretboard_add_scales(default_config):
+def test_init_fretboard_add_notes(default_config):
     fretboard = VerticalFretBoardContainer(config=default_config)
     notes_container = NotesContainer(
         root="C", notes=["C", "D", "E", "F", "G", "A", "B"]
     )
-    fretboard.add_scale(notes_container)
+    fretboard.add_notes(notes_container)
     assert len(fretboard.elements) == 85
     assert len(fretboard.elements.strings) == 6
     assert len(fretboard.elements.frets) == 12

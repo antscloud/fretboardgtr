@@ -13,6 +13,8 @@ from fretboardgtr.elements.base import FretBoardElement
 
 @dataclass
 class OpenNoteConfig(ConfigIniter):
+    """OpenNote element configuration."""
+
     radius: int = 20
     color: str = WHITE
     stroke_color: str = BLACK
@@ -23,6 +25,8 @@ class OpenNoteConfig(ConfigIniter):
 
 
 class OpenNote(FretBoardElement):
+    """Open notes elements to be drawn in the final fretboard."""
+
     def __init__(
         self,
         name: str,
@@ -35,6 +39,11 @@ class OpenNote(FretBoardElement):
         self.y = position[1]
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the OpenNote to a svgwrite object.
+
+        This maps the OpenNoteConfig configuration attributes to the svg
+        attributes
+        """
         note = svgwrite.container.Group()
         circle = svgwrite.shapes.Circle(
             (self.x, self.y),
@@ -69,6 +78,8 @@ class FrettedNoteConfig(ConfigIniter):
 
 
 class FrettedNote(FretBoardElement):
+    """Fretted notes elements to be drawn in the final fretboard."""
+
     def __init__(
         self,
         name: str,
@@ -81,6 +92,11 @@ class FrettedNote(FretBoardElement):
         self.y = position[1]
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the FrettedNote to a svgwrite object.
+
+        This maps the FrettedNoteConfig configuration attributes to the
+        svg attributes
+        """
         note = svgwrite.container.Group()
         circle = svgwrite.shapes.Circle(
             (self.x, self.y),

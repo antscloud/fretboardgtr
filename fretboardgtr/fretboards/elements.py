@@ -1,10 +1,5 @@
-import os
-import sys
-from typing import List, Union
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from dataclasses import dataclass, field, fields
-from typing import Optional
+from typing import List, Optional, Union
 
 from fretboardgtr.elements.background import Background
 from fretboardgtr.elements.base import FretBoardElement
@@ -20,6 +15,8 @@ from fretboardgtr.elements.tuning import Tuning
 
 @dataclass
 class FretBoardElements:
+    """Container dataclass for the different elements of fretboards."""
+
     background: Optional[Background] = None
     fret_numbers: List[FretNumber] = field(default_factory=list)
     neck_dots: List[NeckDot] = field(default_factory=list)
@@ -32,6 +29,7 @@ class FretBoardElements:
     customs: List[FretBoardElement] = field(default_factory=list)
 
     def to_list(self) -> List[FretBoardElement]:
+        """Convert the elements to a flat list of element."""
         flat_elements = []
         for element in fields(self):
             value = getattr(self, element.name)

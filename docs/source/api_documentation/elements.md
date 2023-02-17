@@ -56,6 +56,13 @@
    :undoc-members:
 ```
 
+## Cross
+
+```{eval-rst}
+.. automodule:: fretboardgtr.elements.cross
+   :members:
+   :undoc-members:
+```
 ## Notes
 
 ```{eval-rst}

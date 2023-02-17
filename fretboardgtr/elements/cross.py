@@ -13,12 +13,16 @@ from fretboardgtr.elements.base import FretBoardElement
 
 @dataclass
 class CrossConfig(ConfigIniter):
+    """Cross element configuration."""
+
     color: str = BLACK
     fontsize: int = 35
     fontweight: str = "bold"
 
 
 class Cross(FretBoardElement):
+    """Cross element to be drawn in the final fretboard."""
+
     def __init__(
         self,
         position: Tuple[float, float],
@@ -30,6 +34,11 @@ class Cross(FretBoardElement):
         self.y = position[1]
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the Cross to a svgwrite object.
+
+        This maps the CrossConfig configuration attributes to the svg
+        attributes
+        """
         text = svgwrite.text.Text(
             self.name,
             insert=(self.x, self.y),

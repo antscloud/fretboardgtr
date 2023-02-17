@@ -12,11 +12,15 @@ SVG_OVERLAY = 10  # overlay
 
 @dataclass
 class NutConfig(ConfigIniter):
+    """Nut element configuration."""
+
     color: str = BLACK
     width: int = 6
 
 
 class Nut(FretBoardElement):
+    """Nut element to be drawn in the final fretboard."""
+
     def __init__(
         self,
         start_position: Tuple[float, float],
@@ -28,6 +32,11 @@ class Nut(FretBoardElement):
         self.end_position = end_position
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the Nut to a svgwrite object.
+
+        This maps the NutConfig configuration attributes to the svg
+        attributes
+        """
         line = svgwrite.shapes.Line(
             start=self.start_position,
             end=self.end_position,

@@ -1,10 +1,5 @@
 import copy
-import os
-import sys
-from typing import List, Tuple, Union
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from typing import Optional
+from typing import List, Optional, Tuple, Union
 
 from fretboardgtr.constants import STANDARD_TUNING
 from fretboardgtr.elements.background import Background
@@ -30,6 +25,11 @@ from fretboardgtr.utils import (
 
 
 class FretBoardContainer(FretBoardLike):
+    """Class containing the different elements of a fretboard.
+
+    Also contains associated method to add some.
+    """
+
     def __init__(
         self,
         tuning: Optional[List[str]] = None,
@@ -44,6 +44,17 @@ class FretBoardContainer(FretBoardLike):
         self.config = config
 
     def init(self) -> None:
+        """Init the fretboard by adding essential elements.
+
+        This adds :
+            background
+            fret_numbers
+            neck_dots
+            frets
+            nut
+            tuning
+            strings
+        """
         self.add_background()
         self.add_fret_numbers()
         self.add_neck_dots()
@@ -53,6 +64,7 @@ class FretBoardContainer(FretBoardLike):
         self.add_strings()
 
     def add_background(self) -> None:
+        """Build and add background element."""
         number_of_frets = self.config.general.last_fret - self.config.general.first_fret
         open_fret_width = self.config.general.fret_width
         x = self.config.general.x_start + open_fret_width
@@ -63,6 +75,7 @@ class FretBoardContainer(FretBoardLike):
         self.elements.background = background
 
     def add_neck_dots(self) -> None:
+        """Build and add neck dot elements."""
         dots = get_valid_dots(
             self.config.general.first_fret, self.config.general.last_fret
         )
@@ -99,6 +112,7 @@ class FretBoardContainer(FretBoardLike):
                 self.elements.neck_dots.append(center_dot)
 
     def add_frets(self) -> None:
+        """Build and add fret elements."""
         show_nut = self.config.general.show_nut
         number_of_frets = self.config.general.last_fret - self.config.general.first_fret
 
@@ -121,6 +135,7 @@ class FretBoardContainer(FretBoardLike):
             self.elements.frets.append(fret)
 
     def add_strings(self) -> None:
+        """Build and add string elements."""
         # begin before if min fret !=0 because no open chords
         open_fret_width = self.config.general.fret_width
         x_start = self.config.general.x_start + open_fret_width
@@ -143,6 +158,7 @@ class FretBoardContainer(FretBoardLike):
             self.elements.strings.append(string)
 
     def add_nut(self) -> None:
+        """Build and add nut element."""
         if self.config.general.first_fret != 0 or not self.config.general.show_nut:
             return None
         open_fret_width = self.config.general.fret_width
@@ -160,6 +176,7 @@ class FretBoardContainer(FretBoardLike):
         self.elements.nut = nut
 
     def add_fret_numbers(self) -> None:
+        """Build and add fret number elements."""
         if not self.config.general.show_frets:
             return None
 
@@ -177,6 +194,7 @@ class FretBoardContainer(FretBoardLike):
             self.elements.fret_numbers.append(fret_number)
 
     def add_tuning(self) -> None:
+        """Build and add tuning element."""
         if not self.config.general.show_tuning:
             return None
         reversed_tuning = list(reversed(self.tuning))
@@ -234,6 +252,7 @@ class FretBoardContainer(FretBoardLike):
         return _note
 
     def add_note(self, string_no: int, note: str, root: Optional[str] = None) -> None:
+        """Build and add background element."""
         if string_no < 0 or string_no > len(self.tuning):
             raise ValueError(f"String number is invalid. Tuning is {self.tuning}")
 
@@ -260,7 +279,14 @@ class FretBoardContainer(FretBoardLike):
                 _note = self._get_fretted_note(position, note, root)
             self.elements.notes.append(_note)
 
-    def add_scale(self, scale: NotesContainer) -> None:
+    def add_notes(self, scale: NotesContainer) -> None:
+        """Add an entire scale (from NoteContainer object) to the fretboard.
+
+        Parameters
+        ----------
+        scale : NotesContainer
+            Object representing the root and the associated scale
+        """
         for string_no, _ in enumerate(self.tuning):
             for note in scale.notes:
                 self.add_note(string_no, note, scale.root)
@@ -268,7 +294,12 @@ class FretBoardContainer(FretBoardLike):
     def add_fingering(
         self, fingering: List[Optional[int]], root: Optional[str] = None
     ) -> None:
-        """Add fingerinf starting with upper string to lower string."""
+        """Add fingering starting with upper string to lower string.
+
+        This function automatically calculate the note names or
+        intervals if the root is given Display them in the way described
+        in configuration
+        """
         if len(fingering) != len(self.tuning):
             raise ValueError(
                 f"Fingering has not the same size as tuning."
@@ -307,6 +338,13 @@ class FretBoardContainer(FretBoardLike):
                 self.elements.notes.append(_note)
 
     def get_size(self) -> Tuple[float, float]:
+        """Get total size of the drawing.
+
+        Returns
+        -------
+        Tuple[float, float]
+            Width and heigth
+        """
         number_of_frets = self.config.general.last_fret - self.config.general.first_fret
         width = (
             self.config.general.x_start
@@ -323,6 +361,16 @@ class FretBoardContainer(FretBoardLike):
     def get_inside_bounds(
         self,
     ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+        """Get the size of the inner drawing.
+
+        This function could be use to add custom elements
+
+        Returns
+        -------
+        Tuple[Tuple[float, float], Tuple[float, float]]
+            Upper left corner x coordinate, upper left corner y coordinate
+            Lower right corner x coordinate, lower right corner y coordinate
+        """
         open_fret_width = self.config.general.fret_width
         number_of_frets = self.config.general.last_fret - self.config.general.first_fret
         upper_left_x = self.config.general.x_start
@@ -339,11 +387,37 @@ class FretBoardContainer(FretBoardLike):
         return ((upper_left_x, upper_left_y), (lower_right_x, lower_right_y))
 
     def add_note_element(self, note: Union[OpenNote, FrettedNote]) -> None:
-        if not issubclass(type(note), OpenNote) or issubclass(type(note), FrettedNote):
-            raise ValueError("Element should be either 'OpenNote' or 'FrettedNoted'")
+        """Add a note element to the fretboard.
+
+        Need to be either a OpenNote or a FrettedNote
+
+        Parameters
+        ----------
+        note : Union[OpenNote, FrettedNote]
+            Note element
+
+        Raises
+        ------
+        ValueError
+            If the note is not a Union[OpenNote, FrettedNote]
+        """
         self.elements.notes.append(note)
 
     def add_element(self, element: FretBoardElement) -> None:
+        """Add an element to the fretboard.
+
+        Need to be either a FretBoardElement
+
+        Parameters
+        ----------
+        element : FretBoardElement
+            Fretboard element
+
+        Raises
+        ------
+        ValueError
+            If the element is not a FretboardElement
+        """
         if not issubclass(type(element), FretBoardElement):
             raise ValueError("Element should be a 'FretBoardElement'")
         self.elements.customs.append(element)

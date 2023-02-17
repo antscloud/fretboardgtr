@@ -12,11 +12,15 @@ SVG_OVERLAY = 10  # overlay
 
 @dataclass
 class FretConfig(ConfigIniter):
+    """Frets element configuration."""
+
     color: str = GRAY
     width: int = 3
 
 
 class Fret(FretBoardElement):
+    """Fret element to be drawn in the final fretboard."""
+
     def __init__(
         self,
         start_position: Tuple[float, float],
@@ -28,6 +32,11 @@ class Fret(FretBoardElement):
         self.end_position = end_position
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the Fret to a svgwrite object.
+
+        This maps the FretConfig configuration attributes to the svg
+        attributes
+        """
         line = svgwrite.shapes.Line(
             start=self.start_position,
             end=self.end_position,

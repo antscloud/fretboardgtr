@@ -13,7 +13,7 @@ def remove_test_file(path: Path):
         os.remove(str(path))
 
 
-def test_c_major_fretboard(remove_test_file):
+def test_c_major_fretboard():
     fretboard = FretBoard()
     c_major = ScaleFromName(root="C", mode="Ionian").get()
     fretboard.add_notes(scale=c_major)
@@ -25,7 +25,7 @@ def test_c_major_fretboard(remove_test_file):
     assert tmp_file.exists()
 
 
-def test_c_major_vertical_fretboard(remove_test_file):
+def test_c_major_vertical_fretboard():
     fretboard = VerticalFretBoard()
     c_major = ScaleFromName(root="C", mode="Ionian").get()
     fretboard.add_notes(scale=c_major)

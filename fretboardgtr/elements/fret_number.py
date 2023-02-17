@@ -13,12 +13,16 @@ TEXT_STYLE = "text-anchor:middle"
 
 @dataclass
 class FretNumberConfig(ConfigIniter):
+    """FretNumber element configuration."""
+
     color: str = GRAY
     fontsize: int = 20
     fontweight: str = "bold"
 
 
 class FretNumber(FretBoardElement):
+    """Fret numbers elements to be drawn in the final fretboard."""
+
     def __init__(
         self,
         name: str,
@@ -31,6 +35,11 @@ class FretNumber(FretBoardElement):
         self.y = position[1]
 
     def get_svg(self) -> svgwrite.base.BaseElement:
+        """Convert the FretNumber to a svgwrite object.
+
+        This maps the FretNumberConfig configuration attributes to the
+        svg attributes
+        """
         text = svgwrite.text.Text(
             self.name,
             insert=(self.x, self.y),

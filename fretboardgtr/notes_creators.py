@@ -11,10 +11,20 @@ class NotesContainer:
 
 
 class ScaleFromName:
-    """Object that generating note container from root and mode.
+    """Object that generating NotesContainer object from root and mode.
 
-    >>> ScaleFromName(root='C',mode='Dorian').results
-        {'root': 'C', 'scale': ['C', 'D', 'D#', 'F', 'G', 'A', 'A#']}
+    Given a root name and a mode name, get the resulting scale.
+
+    Also :
+    Mode name can be given thanks to the constants.Mode enum as well as string
+    Note name can be given thanks to the constants.Note enum as well as string
+
+    Example
+    -------
+    >>> ScaleFromName(root='C',mode='Dorian').get()
+        NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
+    >>> ScaleFromName(root=Note.C,mode=Mode.DORIAN).get()
+        NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
     """
 
     def __init__(self, root: str = "C", mode: str = "Ionian"):
@@ -31,10 +41,20 @@ class ScaleFromName:
 
 
 class ChordFromName:
-    """Object that generating note container from root and quality.
+    """Object generating NotesContainer object from root and chord quality.
 
-    >>> ChordFromName(root='C',quality='M').results
-        {'root': 'C', 'scale': ['C', 'E', 'G']}
+    Given a root name and a quality name, get the resulting scale.
+
+    Also :
+    Mode name can be given thanks to the constants.Chord enum as well as string
+    Note name can be given thanks to the constants.Note enum as well as string
+
+    Example
+    -------
+    >>> ScaleFromName(root='C',quality='M).get()
+        NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
+    >>> ScaleFromName(root=Note.C,quality=Chord.MAJOR).resultget()
+        NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
     """
 
     def __init__(self, root: str = "C", quality: str = "M"):

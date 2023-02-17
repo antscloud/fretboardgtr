@@ -128,20 +128,40 @@ To run a subset of tests :
 ```
 python -m pytest tests.test_fretboardgtr
 ```
-## Deploying
+## Deploying and bump2version
 
 A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run:
+Make sure all your changes are committed.
 
 ```
-bump2version patch # possible: major / minor / patch / release_candidate / dev
-git push
+bump2version patch # possible: major / minor / patch
+```
+
+Will bump for example 0.1.0 to 0.2.0-dev0.
+
+We can then use :
+
+```
+bump2version dev
+```
+
+To bump  0.2.0-dev0 to 0.2.0-dev1 and so on.
+
+If you want to commit and tag directly the pre-release you can
+run for example :
+
+```
+bump2version dev --commit --tag
+```
+
+When a release is ready we then run (on a clean repo):
+
+```
+bump2version release --commit --tag
 git push --tags
 ```
 
-This will then deploy the package in PyPI if tests pass and a tag is set,
-otherwise it will deployed on test-pipy.
+This will then deploy the package in PyPI if tests pass and a tag is set, otherwise it will deployed on test-pipy.
 
 ## Further words
 

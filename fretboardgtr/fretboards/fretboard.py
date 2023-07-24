@@ -65,8 +65,17 @@ class FretBoardContainer(FretBoardLike):
 
     def add_background(self) -> None:
         """Build and add background element."""
-        number_of_frets = self.config.general.last_fret - self.config.general.first_fret
-        open_fret_width = self.config.general.fret_width
+        if self.config.general.first_fret == 0:
+            number_of_frets = (
+                self.config.general.last_fret - self.config.general.first_fret
+            )
+            open_fret_width = self.config.general.fret_width
+        else:
+            number_of_frets = (
+                self.config.general.last_fret - self.config.general.first_fret + 1
+            )
+            open_fret_width = 0
+
         x = self.config.general.x_start + open_fret_width
         y = self.config.general.y_start
         width = (number_of_frets) * (self.config.general.fret_width)
@@ -117,9 +126,11 @@ class FretBoardContainer(FretBoardLike):
         number_of_frets = self.config.general.last_fret - self.config.general.first_fret
 
         # Skip the open virtual fret
-        first_fret = 1
-        if self.config.general.first_fret == 0 and show_nut:
-            first_fret = 2
+        first_fret = 0
+        if self.config.general.first_fret == 0:
+            first_fret = 1
+            if show_nut:
+                first_fret = 2
 
         # +2 is to close the last fret of fretboard
         for fret_no in range(first_fret, number_of_frets + 2):
@@ -137,7 +148,10 @@ class FretBoardContainer(FretBoardLike):
     def add_strings(self) -> None:
         """Build and add string elements."""
         # begin before if min fret !=0 because no open chords
-        open_fret_width = self.config.general.fret_width
+        open_fret_width = 0
+        if self.config.general.first_fret == 0:
+            open_fret_width = self.config.general.fret_width
+
         x_start = self.config.general.x_start + open_fret_width
         x_end = self.config.general.x_start + (
             self.config.general.fret_width
@@ -256,24 +270,26 @@ class FretBoardContainer(FretBoardLike):
         if string_no < 0 or string_no > len(self.tuning):
             raise ValueError(f"String number is invalid. Tuning is {self.tuning}")
 
+        # Note when fret == 0
         string_root = self.tuning[len(self.tuning) - 1 - string_no]
+        # Note when fret == N
+        string_root = get_note_from_index(self.config.general.first_fret, string_root)
+        # Index of the note from root
         _idx = chromatic_position_from_root(note, string_root)
-
         indices = []
-        while _idx <= self.config.general.last_fret:
+        while _idx <= self.config.general.last_fret - self.config.general.first_fret:
             indices.append(_idx)
             _idx += 12
 
         for idx in indices:
-            x = self.config.general.x_start + (self.config.general.fret_width) * (
-                idx + (1 / 2)
-            )
+            x_pos = idx + (1 / 2)
+            x = self.config.general.x_start + (self.config.general.fret_width) * x_pos
             y = self.config.general.y_start + self.config.general.fret_height * (
                 string_no
             )
             position = (x, y)
             _note: Union[OpenNote, FrettedNote]
-            if idx == 0:
+            if idx == 0 and self.config.general.first_fret == 0:
                 _note = self._get_open_note(position, note, root)
             else:
                 _note = self._get_fretted_note(position, note, root)

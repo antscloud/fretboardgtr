@@ -37,6 +37,8 @@ class FretBoardToSVGConverter:
         elements = self._fretboard.get_elements()
         for key in fields(elements):
             element = getattr(elements, key.name, None)
+            if element is None:
+                continue
             if isinstance(element, list):
                 for sub in element:
                     drawing = self.add_to_drawing(drawing, sub)

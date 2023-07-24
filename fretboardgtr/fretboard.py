@@ -106,6 +106,7 @@ class FretBoard:
                 f"Save to the {format} format is unsupported."
                 f" Available formats are {availables}"
             )
+
         drawing = FretBoardToSVGConverter(self._fretboard).convert()
         EXPORTERS[format.upper()](drawing).export(to=to)
 

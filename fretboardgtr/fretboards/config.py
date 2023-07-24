@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from fretboardgtr.base import ConfigIniter
 from fretboardgtr.elements.background import BackgroundConfig
@@ -32,8 +32,8 @@ class FretBoardGeneralConfig(ConfigIniter):
     show_note_name: bool = True
     open_color_scale: bool = False
     fretted_color_scale: bool = True
-    open_colors: NoteColors = NoteColors()
-    fretted_colors: NoteColors = NoteColors()
+    open_colors: NoteColors = field(default_factory=NoteColors)
+    fretted_colors: NoteColors = field(default_factory=NoteColors)
     enharmonic: bool = True
 
 
@@ -56,14 +56,14 @@ class FretBoardConfig(ConfigIniter):
     CrossConfig
     """
 
-    general: FretBoardGeneralConfig = FretBoardGeneralConfig()
-    background: BackgroundConfig = BackgroundConfig()
-    fret_numbers: FretNumberConfig = FretNumberConfig()
-    neck_dots: NeckDotConfig = NeckDotConfig()
-    frets: FretConfig = FretConfig()
-    nut: NutConfig = NutConfig()
-    tuning: TuningConfig = TuningConfig()
-    strings: StringConfig = StringConfig()
-    open_notes: OpenNoteConfig = OpenNoteConfig()
-    fretted_notes: FrettedNoteConfig = FrettedNoteConfig()
-    cross: CrossConfig = CrossConfig()
+    general: FretBoardGeneralConfig = field(default_factory=FretBoardGeneralConfig)
+    background: BackgroundConfig = field(default_factory=BackgroundConfig)
+    fret_numbers: FretNumberConfig = field(default_factory=FretNumberConfig)
+    neck_dots: NeckDotConfig = field(default_factory=NeckDotConfig)
+    frets: FretConfig = field(default_factory=FretConfig)
+    nut: NutConfig = field(default_factory=NutConfig)
+    tuning: TuningConfig = field(default_factory=TuningConfig)
+    strings: StringConfig = field(default_factory=StringConfig)
+    open_notes: OpenNoteConfig = field(default_factory=OpenNoteConfig)
+    fretted_notes: FrettedNoteConfig = field(default_factory=FrettedNoteConfig)
+    cross: CrossConfig = field(default_factory=CrossConfig)

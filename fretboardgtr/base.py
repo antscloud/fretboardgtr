@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 
@@ -12,9 +13,13 @@ class ConfigIniter:
     @classmethod
     def from_dict(cls, _dict: Dict) -> Any:
         kwargs = {}
-        for arg, _type in cls.__annotations__.items():
-            if arg not in _dict:
+        for arg in _dict:
+            if arg not in cls.__annotations__.keys():
+                logging.warning(
+                    f'"{arg}" key confuration was not found in {cls.__name__}'
+                )
                 continue
+            _type = cls.__annotations__[arg]
             if hasattr(_type, "from_dict"):
                 kwargs[arg] = _type.from_dict(_dict[arg])
             else:

@@ -28,7 +28,7 @@ from fretboardgtr.fretboard import FretBoard, FretBoardConfig
 from fretboardgtr.notes_creators import ScaleFromName
 
 config = {
-    "main": {
+    "general": {
         "first_fret": 0,
         "last_fret": 24,
         "show_tuning": False,

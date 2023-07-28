@@ -1,13 +1,88 @@
 from dataclasses import dataclass
-from typing import List
+from itertools import product
+from typing import List, Optional
 
 from fretboardgtr.constants import CHORDS_DICT_ESSENTIAL, CHROMATICS_NOTES, SCALES_DICT
+from fretboardgtr.utils import chromatic_position_from_root, get_note_from_index
+
+
+def find_first_index(_list: List[int], value: int) -> Optional[int]:
+    try:
+        index = _list.index(value)
+        return index
+    except ValueError:
+        return None  # If the value is not found in the tuple, return None
 
 
 @dataclass
 class NotesContainer:
     root: str
     notes: List[str]
+
+    def get_probablely_possible_fingering(
+        self, tuning: List[str]
+    ) -> List[List[Optional[int]]]:
+        """Get all probably possible fingering for a specific tuning.
+
+        Parameters
+        ----------
+        tuning : List[str]
+            List of note of the tuning
+
+        Returns
+        -------
+        List[List[Optional[int]]]
+            List of propably possible fingerings
+        """
+        scale = []
+        for string_note in tuning:
+            indices = []
+            for note in self.notes:
+                _idx = chromatic_position_from_root(note, string_note)
+                while _idx <= 16:
+                    indices.append(_idx)
+                    _idx += 12
+            scale.append(sorted(indices))
+
+        fingerings = []
+        for combination in product(*scale):
+            non_zero_numbers = [num for num in combination if num != 0]
+
+            # No more than 4 fingers but duplicated allowed
+            if len(set(non_zero_numbers)) > 4:
+                continue
+
+            # No more than 5 frets spacing
+            # else try to remplace min values by None
+            # TODO: Also add the max checking
+            new_combination = list(combination)
+
+            while True:
+                index_of_min = find_first_index(new_combination, min(non_zero_numbers))
+                index_of_min_of_non_zero = find_first_index(
+                    non_zero_numbers, min(non_zero_numbers)
+                )
+
+                if index_of_min is not None and index_of_min_of_non_zero is not None:
+                    new_combination[index_of_min] = None
+                    del non_zero_numbers[index_of_min_of_non_zero]
+
+                if len(non_zero_numbers) < 2:
+                    break
+
+                if max(non_zero_numbers) - min(non_zero_numbers) <= 5:
+                    break
+
+            notes = []
+            for index, note in zip(new_combination, tuning):
+                if index is not None:
+                    notes.append(get_note_from_index(index, note))
+
+            # Each notes should appear at least once.
+            if set(notes) != set(self.notes):
+                continue
+            fingerings.append(list(new_combination))
+        return fingerings
 
 
 class ScaleFromName:
@@ -51,9 +126,9 @@ class ChordFromName:
 
     Example
     -------
-    >>> ScaleFromName(root='C',quality='M).get()
+    >>> ChordFromName(root='C',quality='M').get()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
-    >>> ScaleFromName(root=Note.C,quality=Chord.MAJOR).resultget()
+    >>> ChordFromName(root=Note.C,quality=Chord.MAJOR).resultget()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
     """
 
@@ -69,3 +144,25 @@ class ChordFromName:
         for note_id in quality_idx:
             scale.append(CHROMATICS_NOTES[(index + note_id) % 12])
         return NotesContainer(self.root, scale)
+
+
+def main():
+    from fretboardgtr.fretboard import FretBoard, FretBoardConfig
+
+    config = {
+        "general": {
+            "first_fret": 0,
+            "last_fret": 5,
+            "fret_width": 50,
+        }
+    }
+    fretboard_config = FretBoardConfig.from_dict(config)
+    fretboard = FretBoard(config=fretboard_config, vertical=True)
+    c_major = [0, 3, 2, 0, 1, 0]
+
+    fretboard.add_fingering(c_major, root="C")
+    fretboard.export("c_major_chord.svg", format="svg")
+
+
+if __name__ == "__main__":
+    main()

@@ -65,10 +65,10 @@ Please see the [configuration documentation](./configuration.md) for more detail
 
 ## Vertical Fretboard
 ```python
-from fretboardgtr.fretboard import VerticalFretBoard
+from fretboardgtr.fretboard import FretBoard
 from fretboardgtr.notes_creators import ScaleFromName
 
-fretboard = VerticalFretBoard()
+fretboard = FretBoard(vertical=True)
 c_major = ScaleFromName(root="C", mode="Ionian").get()
 fretboard.add_notes(scale=c_major)
 fretboard.export("my_vertical_fretboard.svg", format="svg")
@@ -77,3 +77,63 @@ fretboard.export("my_vertical_fretboard.svg", format="svg")
 <p align="center">
   <img src="../assets/my_vertical_fretboard.svg" width="250"/>
 </p>
+
+## Examples
+### Draw a chord diagram
+
+```python
+from fretboardgtr.fretboard import FretBoardConfig, FretBoard
+
+config = {
+    "general": {
+        "first_fret": 0,
+        "last_fret": 5,
+        "fret_width": 50,
+    }
+}
+fretboard_config = FretBoardConfig.from_dict(config)
+fretboard = FretBoard(config=fretboard_config, vertical=True)
+c_major = [0, 3, 2, 0, 1, 0]
+
+fretboard.add_fingering(c_major, root="C")
+fretboard.export("my_vertical_fretboard.svg", format="svg")
+```
+<p align="center">
+  <img src="../assets/c_major_chord.svg" width="250"/>
+</p>
+
+### Draw all propably possible chord position for a specific chord
+
+⚠️ Be careful with this snippets. This example generate over 1000 svgs
+```python
+    TUNING = ["E", "A", "D", "G", "B", "E"]
+    CHORD_ROOT = "C"
+    CHORD_QUALITY = "M"
+
+    fingerings = (
+        ChordFromName(root=CHORD_ROOT, quality=CHORD_QUALITY)
+        .get()
+        .get_probablely_possible_fingering(TUNING)
+    )
+    for i, fingering in enumerate(fingerings):
+        _cleaned_fingering = [pos for pos in fingering if pos is not None and pos != 0]
+        first_fret = min(_cleaned_fingering) - 2
+        if first_fret < 0:
+            first_fret = 0
+
+        last_fret = max(_cleaned_fingering) + 2
+        if last_fret < 4:
+            last_fret = 4
+
+        config = {
+            "general": {
+                "first_fret": first_fret,
+                "last_fret": last_fret,
+                "fret_width": 50,
+            }
+        }
+        fretboard_config = FretBoardConfig.from_dict(config)
+        fretboard = FretBoard(config=fretboard_config, tuning=TUNING, vertical=True)
+        fretboard.add_fingering(fingering, root=CHORD_ROOT)
+        fretboard.export(f"./C_Major/C_Major_position_{i}.svg", format="svg")
+```

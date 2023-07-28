@@ -13,8 +13,8 @@ from fretboardgtr.elements.notes import (
 from fretboardgtr.elements.nut import Nut, NutConfig
 from fretboardgtr.elements.strings import String, StringConfig
 from fretboardgtr.elements.tuning import Tuning, TuningConfig
+from fretboardgtr.fretboard import FretBoard
 from fretboardgtr.fretboards.config import FretBoardConfig, FretBoardGeneralConfig
-from fretboardgtr.fretboards.fretboard import FretBoardContainer
 from fretboardgtr.note_colors import NoteColors
 from fretboardgtr.notes_creators import NotesContainer
 
@@ -200,11 +200,6 @@ def test_default_config(default_config: FretBoardConfig):
     assert default_config == FretBoardConfig()
 
 
-def test_default_config_container(default_config):
-    vertical_fretboard = FretBoardContainer()
-    assert vertical_fretboard.config == default_config
-
-
 def load_config_from_dict(dict_config):
     config = FretBoardConfig.from_dict(dict_config)
     assert config == FretBoardConfig()
@@ -218,7 +213,7 @@ def load_config_from_partial_dict(partial_dict_config):
 
 
 def test_fretboard_get_background(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_background()
     background = fretboard.elements.background
     # Position == (width_fret + x_start, y_start)
@@ -227,7 +222,7 @@ def test_fretboard_get_background(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_background_new_tuning(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config, tuning=["E", "A", "D", "G"])
+    fretboard = FretBoard(config=default_config, tuning=["E", "A", "D", "G"])
     fretboard.add_background()
     background = fretboard.elements.background
     # Position == (width_fret + x_start, y_start)
@@ -236,7 +231,7 @@ def test_fretboard_get_background_new_tuning(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_neck_dots(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_neck_dots()
     neck_dots = fretboard.elements.neck_dots
     assert neck_dots[0].x == 275.0
@@ -262,7 +257,7 @@ def test_fretboard_get_neck_dots(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_frets(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_frets()
     frets = fretboard.elements.frets
     for fret in frets:
@@ -283,7 +278,7 @@ def test_fretboard_get_frets(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_strings(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_strings()
     strings = fretboard.elements.strings
     for string in strings:
@@ -309,7 +304,7 @@ def test_fretboard_get_strings(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_nut(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_nut()
     nut = fretboard.elements.nut
     assert nut is not None
@@ -332,14 +327,14 @@ def test_fretboard_get_nut(default_config: FretBoardConfig):
 
 def test_fretboard_get_nut_not_first_fret(default_config: FretBoardConfig):
     default_config.general.first_fret = 1
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_nut()
 
     assert fretboard.elements.nut is None
 
 
 def test_fretboard_get_fret_numbers(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_fret_numbers()
     fret_numbers = fretboard.elements.fret_numbers
     assert fret_numbers is not None
@@ -366,7 +361,7 @@ def test_fretboard_get_fret_numbers(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_string(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     strings = fretboard.add_strings()
     strings = fretboard.elements.strings
     for string in strings:
@@ -392,7 +387,7 @@ def test_fretboard_get_string(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_open_note(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -401,7 +396,7 @@ def test_fretboard_get_open_note(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_open_note_root(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -411,7 +406,7 @@ def test_fretboard_get_open_note_root(default_config: FretBoardConfig):
 
 def test_fretboard_get_open_note_root_colors(default_config: FretBoardConfig):
     default_config.general.open_color_scale = True
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -423,7 +418,7 @@ def test_fretboard_get_open_note_root_colors(default_config: FretBoardConfig):
 def test_fretboard_get_open_note_show_degree_name(default_config: FretBoardConfig):
     default_config.general.open_color_scale = True
     default_config.general.show_degree_name = True
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -436,7 +431,7 @@ def test_fretboard_get_open_note_no_name(default_config: FretBoardConfig):
     default_config.general.open_color_scale = True
     default_config.general.show_degree_name = False
     default_config.general.show_note_name = False
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_open_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -446,7 +441,7 @@ def test_fretboard_get_open_note_no_name(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_fretted_note(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -455,7 +450,7 @@ def test_fretboard_get_fretted_note(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_fretted_note_root_colors(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -466,7 +461,7 @@ def test_fretboard_get_fretted_note_root_colors(default_config: FretBoardConfig)
 
 def test_fretboard_get_fretted_note_root_no_color(default_config: FretBoardConfig):
     default_config.general.fretted_color_scale = False
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -476,7 +471,7 @@ def test_fretboard_get_fretted_note_root_no_color(default_config: FretBoardConfi
 
 def test_fretboard_get_fretted_note_show_degree_name(default_config: FretBoardConfig):
     default_config.general.show_degree_name = True
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -488,7 +483,7 @@ def test_fretboard_get_fretted_note_show_degree_name(default_config: FretBoardCo
 def test_fretboard_get_fretted_note_no_name(default_config: FretBoardConfig):
     default_config.general.show_degree_name = False
     default_config.general.show_note_name = False
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     open_note = fretboard._get_fretted_note(position=(100, 100), note="C", root="C")
     assert open_note.x == 100
     assert open_note.y == 100
@@ -498,7 +493,7 @@ def test_fretboard_get_fretted_note_no_name(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_notes(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_note(string_no=0, note="E", root="C")
 
     notes = fretboard.elements.notes
@@ -516,30 +511,30 @@ def test_fretboard_get_notes(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_notes_invalid_string(default_config: FretBoardConfig):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     with pytest.raises(ValueError):
         fretboard.add_note(string_no=7, note="E", root="C")
 
 
 def test_fretboard_get_inside_bounds(default_config):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     upper_left, lower_right = fretboard.get_inside_bounds()
     assert upper_left == (30.0, 30.0)
     assert lower_right == (940.0, 280.0)
 
 
 def test_fretboard_get_size(default_config):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     width, height = fretboard.get_size()
     assert width == 1010.0
     assert height == 380.0
 
 
 def test_init_fretboard(default_config):
-    fretboard = FretBoardContainer(config=default_config)
-    assert len(fretboard.elements) == 37
+    fretboard = FretBoard(config=default_config)
+    assert len(fretboard.elements) == 38
     assert len(fretboard.elements.strings) == 6
-    assert len(fretboard.elements.frets) == 12
+    assert len(fretboard.elements.frets) == 13
     list_of_elements = fretboard.elements.to_list()
     assert any([isinstance(obj, FretNumber) for obj in list_of_elements])
     assert any([isinstance(obj, Fret) for obj in list_of_elements])
@@ -552,14 +547,14 @@ def test_init_fretboard(default_config):
 
 
 def test_init_fretboard_add_notes(default_config):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     notes_container = NotesContainer(
         root="C", notes=["C", "D", "E", "F", "G", "A", "B"]
     )
     fretboard.add_notes(notes_container)
-    assert len(fretboard.elements) == 85
+    assert len(fretboard.elements) == 86
     assert len(fretboard.elements.strings) == 6
-    assert len(fretboard.elements.frets) == 12
+    assert len(fretboard.elements.frets) == 13
     list_of_elements = fretboard.elements.to_list()
     assert any([isinstance(obj, Background) for obj in list_of_elements])
     assert any([isinstance(obj, FretNumber) for obj in list_of_elements])
@@ -574,11 +569,11 @@ def test_init_fretboard_add_notes(default_config):
 
 def test_add_element(default_config):
     note = OpenNote("C", position=(0, 0))
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     fretboard.add_element(note)
 
 
 def test_add_wrong_lement(default_config):
-    fretboard = FretBoardContainer(config=default_config)
+    fretboard = FretBoard(config=default_config)
     with pytest.raises(ValueError):
         fretboard.add_element(1)

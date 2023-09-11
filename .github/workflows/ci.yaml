@@ -204,8 +204,9 @@ jobs:
         run: ls -lh --color=auto -R
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v3.1.0
+        uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage/
           fail_ci_if_error: true
           files: coverage.xml

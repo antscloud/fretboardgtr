@@ -74,11 +74,13 @@ fretboard.add_notes(scale=c_major)
 fretboard.export("my_vertical_fretboard.svg", format="svg")
 ```
 
-<p align="center">
-  <img src="../assets/my_vertical_fretboard.svg" width="250"/>
-</p>
+```{image} ../assets/my_vertical_fretboard.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
+## Examples
 
-## Examples
 ### Draw a chord diagram
 
 ```python
@@ -98,13 +100,16 @@ c_major = [0, 3, 2, 0, 1, 0]
 fretboard.add_fingering(c_major, root="C")
 fretboard.export("my_vertical_fretboard.svg", format="svg")
 ```
-<p align="center">
-  <img src="../assets/c_major_chord.svg" width="250"/>
-</p>
+
+```{image} ../assets/c_major_chord.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
 
 ### Draw all propably possible chord position for a specific chord
 
-⚠️ Be careful with this snippets. This example generate over 1000 svgs
+⚠️ Be careful with this snippets. This example generates over 1000 svgs
 ```python
     TUNING = ["E", "A", "D", "G", "B", "E"]
     CHORD_ROOT = "C"

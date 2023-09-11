@@ -20,7 +20,17 @@ Package that make easy creation of **highly customizable** fretboards and chords
 
 To get started simply install the package from PyPI
 
+## Dependencies
+
+`fretboardgtr` needs to have the following install in order to run : 
+
+```shell
+sudo apt install libcairo2-dev pkg-config
+```
+
 ## How to install
+
+
 
 ```shell
 pip install fretboardgtr

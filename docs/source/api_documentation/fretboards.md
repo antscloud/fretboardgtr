@@ -4,7 +4,7 @@
 ## Horizontal Fretboard
 
 ```{eval-rst}
-.. automodule:: fretboardgtr.fretboards.fretboard
+.. automodule:: fretboardgtr.fretboards.horizontal
    :members:
    :undoc-members:
 ```

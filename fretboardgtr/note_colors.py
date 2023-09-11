@@ -41,7 +41,7 @@ class NoteColors(ConfigIniter):
         -------
         from fretboardgtr.constants import Interval
         >>> NoteColors().from_short_interval(Interval.MINOR_SIXTH)
-            "rgb(168, 107, 98)"
+        "rgb(168, 107, 98)"
         """
         color = WHITE
         for long, short in INTERVAL_MAPPING.items():
@@ -68,7 +68,7 @@ class NoteColors(ConfigIniter):
         -------
         from fretboardgtr.constants import LongInterval
         >>> NoteColors().from_short_interval(LongInterval.MINOR_SIXTH)
-            "rgb(168, 107, 98)"
+        "rgb(168, 107, 98)"
         """
         cls_keys = list(self.__annotations__)
         color = getattr(self, cls_keys[interval % 12])

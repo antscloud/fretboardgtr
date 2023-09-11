@@ -1,6 +1,6 @@
 # Welcome to FretBoardGtr Documentation
 
-Package that make easy creation of **highly customizable** fretboards and chords diagrams
+Package that make easy creation of **highly customizable** fretboards and chords diagrams.
 
 ## Table of content
 

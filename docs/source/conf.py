@@ -97,7 +97,7 @@ exclude_patterns = []
 
 html_sidebars = {
     "**": [
-        "sidebar-logo.html",
+        "navbar-logo.html",
         "search-field.html",
         "sbt-sidebar-nav.html",
     ]
@@ -114,7 +114,6 @@ html_theme_options = {
     "use_issues_button": True,
     "use_download_button": True,
     "use_sidenotes": True,
-    "logo_only": True,
     "home_page_in_toc": False,
     "show_toc_level": 2,
 }

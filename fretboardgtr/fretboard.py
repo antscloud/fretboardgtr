@@ -1,6 +1,6 @@
 import copy
 from pathlib import Path
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from fretboardgtr.constants import STANDARD_TUNING
 from fretboardgtr.elements.background import Background
@@ -29,20 +29,34 @@ from fretboardgtr.utils import (
 )
 
 
+def build_config(config: Optional[Union[Dict, FretBoardConfig]]) -> FretBoardConfig:
+    if config is None:
+        return FretBoardConfig()
+    elif isinstance(config, dict):
+        return FretBoardConfig.from_dict(config)
+    elif isinstance(config, FretBoardConfig):
+        return config
+    else:
+        msg = "Invalid config type {type(config)}."
+        msg += "Need a dictionnary or FretBoardConfig instance"
+        raise ValueError(msg)
+
+
 class FretBoard(FretBoardLike):
     def __init__(
         self,
         tuning: Optional[List[str]] = None,
-        config: Optional[FretBoardConfig] = None,
+        config: Optional[Union[Dict, FretBoardConfig]] = None,
         vertical: bool = False,
     ):
         self.tuning = tuning if tuning is not None else STANDARD_TUNING
-        self.config = config if config is not None else FretBoardConfig()
+
+        self.config = build_config(config)
         self.elements = FretBoardElements()
         self.fretboard: Union[HorizontalFretBoard, VerticalFretBoard] = (
-            HorizontalFretBoard(tuning, config)
+            HorizontalFretBoard(tuning, self.config)
             if not vertical
-            else VerticalFretBoard(tuning, config)
+            else VerticalFretBoard(tuning, self.config)
         )
         self.init()
 

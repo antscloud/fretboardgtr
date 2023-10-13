@@ -128,37 +128,33 @@ To run a subset of tests :
 ```
 python -m pytest tests.test_fretboardgtr
 ```
-## Deploying and bump2version
+## Deploying
 
 A reminder for the maintainers on how to deploy.
 Make sure all your changes are committed.
 
-```
-bump2version patch # possible: major / minor / patch
-```
+Go to fretboardgtr/_version.py and bump the version to the version you want.
+Let's say from `0.2.0` to `0.2.1.
 
-Will bump for example 0.1.0 to 0.2.0-dev0.
 
-We can then use :
-
-```
-bump2version dev
-```
-
-To bump  0.2.0-dev0 to 0.2.0-dev1 and so on.
-
-If you want to commit and tag directly the pre-release you can
-run for example :
+```diff
+< version_str = "0.2.0"
+> version_str = "0.2.1"
 
 ```
-bump2version dev --commit --tag
+
+Then commit this change
+
+```sh
+git commit -m "Bump version 0.2.0 to 0.2.1" -m "<What changed>" -m "More descriptive message"
 ```
 
-When a release is ready we then run (on a clean repo):
+```sh
+git tag -a "0.2.1" -m "Bump version 0.2.0 to 0.2.1" -m "<What changed>" -m "More descriptive message"
+```
 
 ```
-bump2version release --commit --tag
-git push --tags
+git push origin master --tags
 ```
 
 This will then deploy the package in PyPI if tests pass and a tag is set, otherwise it will deployed on test-pipy.

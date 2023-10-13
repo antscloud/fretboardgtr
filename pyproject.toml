@@ -57,9 +57,6 @@ dev = [
     # Pre-commit
     "pre-commit",
 
-    # Bump2version
-    "bump2version",
-
     # Formatting
     "black",
     "flake8",

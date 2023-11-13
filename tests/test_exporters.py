@@ -1,8 +1,11 @@
+import mimetypes
 import tempfile
 from pathlib import Path
 
 import pytest
 import svgwrite
+from PIL import Image
+from pypdf import PdfReader
 
 from fretboardgtr.exporters import PDFExporter, PNGExporter, SVGExporter
 
@@ -31,6 +34,7 @@ def test_svg_exporter(drawing):
         assert not outfile.exists()
         svg_exporter.export(outfile)
         assert outfile.exists()
+        assert mimetypes.guess_type(outfile)[0] == "image/svg+xml"
 
 
 def test_png_exporter(drawing):
@@ -40,6 +44,9 @@ def test_png_exporter(drawing):
         assert not outfile.exists()
         png_exporter.export(outfile)
         assert outfile.exists()
+        assert mimetypes.guess_type(outfile)[0] == "image/png"
+        img = Image.open(outfile)
+        assert img.format == "PNG"
 
 
 def test_pdf_exporter(drawing):
@@ -49,3 +56,5 @@ def test_pdf_exporter(drawing):
         assert not outfile.exists()
         pdf_exporter.export(outfile)
         assert outfile.exists()
+        assert mimetypes.guess_type(outfile)[0] == "application/pdf"
+        assert len(PdfReader(outfile).pages) == 1

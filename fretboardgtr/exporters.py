@@ -50,7 +50,7 @@ class PNGExporter(Exporter):
             tmp_file = Path(tmp_dir) / Path(f"{uuid.uuid4()}.svg")
             self.drawing.saveas(str(tmp_file))
             drawing = svg2rlg(str(tmp_file))
-            renderPM.drawToFile(drawing, str(to))
+            renderPM.drawToFile(drawing, str(to), fmt="PNG")
 
 
 class PDFExporter(Exporter):

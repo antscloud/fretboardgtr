@@ -65,10 +65,10 @@ dev = [
     "mypy",
 
     # Python version capabilities
-    "six"
+    "six",
 
-
-
+    # Utils
+    "pypdf"
 ]
 
 [tool.setuptools]

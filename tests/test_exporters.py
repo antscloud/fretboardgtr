@@ -45,8 +45,8 @@ def test_png_exporter(drawing):
         png_exporter.export(outfile)
         assert outfile.exists()
         assert mimetypes.guess_type(outfile)[0] == "image/png"
-        img = Image.open(outfile)
-        assert img.format == "PNG"
+        with Image.open(outfile) as img:
+            assert img.format == "PNG"
 
 
 def test_pdf_exporter(drawing):

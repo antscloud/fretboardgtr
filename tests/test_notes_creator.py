@@ -15,6 +15,15 @@ def test_chord_creator_fingerings():
     fingerings = (
         ChordFromName(root="C", quality="M")
         .get()
-        .get_probablely_possible_fingering(["E", "A", "D", "G", "B", "E"])
+        .get_chord_fingerings(["E", "A", "D", "G", "B", "E"])
     )
     assert len(fingerings) > 1000
+
+
+def test_scale_creator_position():
+    scale_positions = (
+        ScaleFromName(root="C", mode="Ionian")
+        .get()
+        .get_scale_positions(["E", "A", "D", "G", "B", "E"])
+    )
+    assert len(scale_positions) > 5

@@ -19,8 +19,48 @@ class NotesContainer:
     root: str
     notes: List[str]
 
-    def get_probablely_possible_fingering(
-        self, tuning: List[str]
+    def _get_scale(self, tuning: List[str], max_spacing: int = 5) -> List[List[int]]:
+        """Get the scale of each string in the given tuning.
+
+        Goes from 0 up to (12 + max_spacing - 1) on the fretboard
+
+        Parameters
+        ----------
+        tuning (List[str])
+            The tuning of each string.
+
+        Returns
+        -------
+        List[List[int]]
+            The scale of each string in the tuning.
+        """
+        scale = []
+
+        # Iterate over each string in the tuning
+        for string_note in tuning:
+            indices = []
+
+            # Iterate over each note in the self.notes list
+            for note in self.notes:
+                _idx = chromatic_position_from_root(note, string_note)
+
+                # Add the chromatic positions of the note on the string
+                # until it reaches or exceeds the maximum position of 16
+                while _idx <= 12 + max_spacing - 1:
+                    indices.append(_idx)
+                    _idx += 12
+
+            # Sort the indices in ascending order
+            scale.append(sorted(indices))
+
+        return scale
+
+    def get_chord_fingerings(
+        self,
+        tuning: List[str],
+        max_spacing: int = 5,
+        min_notes_in_chord: int = 2,
+        number_of_fingers: int = 4,
     ) -> List[List[Optional[int]]]:
         """Get all probably possible fingering for a specific tuning.
 
@@ -28,50 +68,44 @@ class NotesContainer:
         ----------
         tuning : List[str]
             List of note of the tuning
+        max_spacing : int
+            Maximum spacing between notes
+        min_notes_in_chord : int
+            Minimum number of notes in chord
+        number_of_fingers : int
+            Number of fingers allowed
 
         Returns
         -------
         List[List[Optional[int]]]
             List of propably possible fingerings
         """
-        scale = []
-        for string_note in tuning:
-            indices = []
-            for note in self.notes:
-                _idx = chromatic_position_from_root(note, string_note)
-                while _idx <= 16:
-                    indices.append(_idx)
-                    _idx += 12
-            scale.append(sorted(indices))
+        scale = self._get_scale(tuning, max_spacing)
 
         fingerings = []
         for combination in product(*scale):
             non_zero_numbers = [num for num in combination if num != 0]
-
             # No more than 4 fingers but duplicated allowed
-            if len(set(non_zero_numbers)) > 4:
+            if len(set(non_zero_numbers)) > number_of_fingers:
                 continue
 
-            # No more than 5 frets spacing
-            # else try to remplace min values by None
-            # TODO: Also add the max checking
             new_combination = list(combination)
-
             while True:
+                # If 0 note or only one this is not a chord so break
+                if len(non_zero_numbers) < min_notes_in_chord:
+                    break
+                # If the spacing is less than 5 then it'ok so break
+                if max(non_zero_numbers) - min(non_zero_numbers) <= max_spacing:
+                    break
+
+                # If the spacing is more than 5 then remplace min values by None
                 index_of_min = find_first_index(new_combination, min(non_zero_numbers))
-                index_of_min_of_non_zero = find_first_index(
+                index_of_non_zero_min = find_first_index(
                     non_zero_numbers, min(non_zero_numbers)
                 )
-
-                if index_of_min is not None and index_of_min_of_non_zero is not None:
+                if index_of_min is not None and index_of_non_zero_min is not None:
                     new_combination[index_of_min] = None
-                    del non_zero_numbers[index_of_min_of_non_zero]
-
-                if len(non_zero_numbers) < 2:
-                    break
-
-                if max(non_zero_numbers) - min(non_zero_numbers) <= 5:
-                    break
+                    del non_zero_numbers[index_of_non_zero_min]
 
             notes = []
             for index, note in zip(new_combination, tuning):
@@ -81,7 +115,44 @@ class NotesContainer:
             # Each notes should appear at least once.
             if set(notes) != set(self.notes):
                 continue
+
             fingerings.append(list(new_combination))
+        return fingerings
+
+    def get_scale_positions(
+        self,
+        tuning: List[str],
+        max_spacing: int = 5,
+    ) -> List[List[List[Optional[int]]]]:
+        """Get all possible scale positions for a specific tuning.
+
+        Parameters
+        ----------
+        tuning : List[str]
+            List of note of the tuning
+        max_spacing : int
+            Maximum spacing between notes
+
+        Returns
+        -------
+        List[List[List[Optional[int]]]]
+            List of all possible scale positions
+        """
+        scale = self._get_scale(tuning, max_spacing)
+        fingerings: List[List[List[Optional[int]]]] = []
+        for first_string_pos in scale[0]:
+            fingering: List[List[Optional[int]]] = []
+            for string in scale:
+                string_fingering: List[Optional[int]] = []
+                for note in string:
+                    if (
+                        note - first_string_pos < 0
+                        or note - first_string_pos >= max_spacing
+                    ):
+                        continue
+                    string_fingering.append(note)
+                fingering.append(string_fingering)
+            fingerings.append(fingering)
         return fingerings
 
 

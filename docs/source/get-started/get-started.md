@@ -4,6 +4,12 @@ To get started simply install the package from PyPI
 
 ## How to install
 
+`fretboardgtr` needs to have the following install in order to run :
+
+```shell
+sudo apt install libcairo2-dev pkg-config
+```
+
 ```shell
 pip install fretboardgtr
 ```
@@ -111,34 +117,69 @@ fretboard.export("my_vertical_fretboard.svg", format="svg")
 
 ⚠️ Be careful with this snippets. This example generates over 1000 svgs
 ```python
-    TUNING = ["E", "A", "D", "G", "B", "E"]
-    CHORD_ROOT = "C"
-    CHORD_QUALITY = "M"
+from fretboardgtr.fretboard import FretBoardConfig, FretBoard
+from fretboardgtr.constants import Chord
+from fretboardgtr.notes_creators import ChordFromName
 
-    fingerings = (
-        ChordFromName(root=CHORD_ROOT, quality=CHORD_QUALITY)
-        .get()
-        .get_probablely_possible_fingering(TUNING)
-    )
-    for i, fingering in enumerate(fingerings):
-        _cleaned_fingering = [pos for pos in fingering if pos is not None and pos != 0]
-        first_fret = min(_cleaned_fingering) - 2
-        if first_fret < 0:
-            first_fret = 0
+TUNING = ["E", "A", "D", "G", "B", "E"]
+ROOT = "C"
+QUALITY = Chord.MAJOR
 
-        last_fret = max(_cleaned_fingering) + 2
-        if last_fret < 4:
-            last_fret = 4
+fingerings = (
+    ChordFromName(root=ROOT, quality=QUALITY).get().get_chord_fingerings(TUNING)
+)
+for i, fingering in enumerate(fingerings):
+    _cleaned_fingering = [pos for pos in fingering if pos is not None and pos != 0]
+    first_fret = min(_cleaned_fingering) - 2
+    if first_fret < 0:
+        first_fret = 0
 
-        config = {
-            "general": {
-                "first_fret": first_fret,
-                "last_fret": last_fret,
-                "fret_width": 50,
-            }
+    last_fret = max(_cleaned_fingering) + 2
+    if last_fret < 4:
+        last_fret = 4
+
+    config = {
+        "general": {
+            "first_fret": first_fret,
+            "last_fret": last_fret,
+            "fret_width": 50,
         }
-        fretboard_config = FretBoardConfig.from_dict(config)
-        fretboard = FretBoard(config=fretboard_config, tuning=TUNING, vertical=True)
-        fretboard.add_fingering(fingering, root=CHORD_ROOT)
-        fretboard.export(f"./C_Major/C_Major_position_{i}.svg", format="svg")
+    }
+    fretboard_config = FretBoardConfig.from_dict(config)
+    fretboard = FretBoard(config=fretboard_config, tuning=TUNING, vertical=True)
+    fretboard.add_fingering(fingering, root=ROOT)
+    fretboard.export(
+        f"./{ROOT}_{QUALITY.value}/{ROOT}_{QUALITY.value}_position_{i}.svg",
+        format="svg",
+    )
+
+
+```
+
+### Generate all the classic positions for A minor pentatonic scale
+
+```python
+from fretboardgtr.fretboard import FretBoardConfig, FretBoard
+from fretboardgtr.notes_creators import ScaleFromName
+from fretboardgtr.constants import Mode
+
+TUNING = ["E", "A", "D", "G", "B", "E"]
+ROOT = "A"
+MODE = Mode.MINOR_PENTATONIC
+
+scale_positions = (
+    ScaleFromName(root=ROOT, mode=MODE).get().get_scale_positions(TUNING, max_spacing=4)
+)
+config = {
+    "general": {
+        "last_fret": 16,
+    }
+}
+
+for i, scale_position in enumerate(scale_positions):
+    fretboard = FretBoard(config=config, tuning=TUNING)
+    fretboard.add_scale(scale_position, root=ROOT)
+    fretboard.export(
+        f"./{ROOT}_{MODE.value}/{ROOT}_{MODE.value}_position_{i}.svg", format="svg"
+    )
 ```

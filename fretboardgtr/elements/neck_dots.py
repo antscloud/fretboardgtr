@@ -13,8 +13,8 @@ class NeckDotConfig(ConfigIniter):
     """NeckDot element configuration."""
 
     color: str = DARK_GRAY
-    color_stroke: str = BLACK
-    width_stroke: int = 2
+    stroke_color: str = BLACK
+    stroke_width: int = 2
     radius: int = 7
 
 
@@ -38,7 +38,7 @@ class NeckDot(FretBoardElement):
             (self.x, self.y),
             r=self.config.radius,
             fill=self.config.color,
-            stroke=self.config.color_stroke,
-            stroke_width=self.config.width_stroke,
+            stroke=self.config.stroke_color,
+            stroke_width=self.config.stroke_width,
         )
         return circle

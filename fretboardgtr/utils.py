@@ -53,16 +53,6 @@ def get_note_from_index(index: int, root: str) -> str:
     return chroma_from_root[index % 12]
 
 
-def chromatic_position_from_root(note: str, root: str) -> int:
-    """Get the index of the note from the root on chromatic scale."""
-    idx = 0
-    chroma_from_root = chromatics_from_root(root)
-    for _idx, chromatic_note in enumerate(chroma_from_root):
-        if chromatic_note == note:
-            idx = _idx
-    return idx
-
-
 def to_sharp_note(note: str) -> str:
     """Get note by replacing it by its corresponding sharp note."""
     if note in ALTERATIONS:
@@ -75,6 +65,16 @@ def to_flat_note(note: str) -> str:
     if note in SHARPY_ALTERATIONS:
         note = SHARPY_ALTERATIONS[note]
     return note
+
+
+def chromatic_position_from_root(note: str, root: str) -> int:
+    """Get the index of the note from the root on chromatic scale."""
+    idx = 0
+    chroma_from_root = chromatics_from_root(root)
+    for _idx, chromatic_note in enumerate(chroma_from_root):
+        if chromatic_note == to_sharp_note(note):
+            idx = _idx
+    return idx
 
 
 def scale_to_sharp(scale: List[str]) -> List[str]:
@@ -123,29 +123,55 @@ def scale_to_intervals(scale: List[str], root: str) -> List[int]:
 def scale_to_enharmonic(scale: List[str]) -> List[str]:
     """Modify the scale in order to not repeat note.
 
-    Turns into enharmonic way if possible.
+    Turns into enharmonic way if possible. Otherwise return the original scale.
 
-    >>> setenharmonic(['A#', 'C', 'D', 'D#', 'F', 'G', 'A'])
+    >>> scale_to_enharmonic(['A#', 'C', 'D', 'D#', 'F', 'G', 'A'])
         ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']
-    >>> setenharmonic(["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"])
+    >>> scale_to_enharmonic(["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"])
         ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
-    >>> setenharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
+    >>> scale_to_enharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
         ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F']
     """
+    # Try to make all flat notes unique
+    flat_scale = scale_to_flat(scale)
+    unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
+    if len(unique_flat_scale) == len(flat_scale):
+        return flat_scale
+    # Try to replace E with Fb if there is still duplicates
+    if "E" in flat_scale:
+        flat_scale = [ENHARMONICS["E"] if note == "E" else note for note in flat_scale]
+        unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
+        if len(unique_flat_scale) == len(flat_scale):
+            return flat_scale
+    # Try to replace B with Cb if there is still duplicates
+    if "B" in flat_scale:
+        flat_scale = [ENHARMONICS["B"] if note == "B" else note for note in flat_scale]
+        unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
+        if len(unique_flat_scale) == len(flat_scale):
+            return flat_scale
+
+    # Try to make all sharp notes unique
     sharp_scale = scale_to_sharp(scale)
-    enharmonic_scale = list(sharp_scale)
+    unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
+    if len(unique_sharp_notes) == len(sharp_scale):
+        return sharp_scale
 
-    if _contains_duplicates(sharp_scale):
-        for i, note in enumerate(sharp_scale):
-            # len == 2 means there is an alteration
-            if len(note) == 2:
-                enharmonic_scale[i] = ENHARMONICS[note]
+    # Try to replace F with E# if there is still duplicates
+    if "F" in sharp_scale:
+        sharp_scale = [
+            ENHARMONICS["F"] if note == "F" else note for note in sharp_scale
+        ]
+        unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
+        if len(unique_sharp_notes) == len(sharp_scale):
+            return sharp_scale
 
-    # If there is still duplicate then remove transform B and F
-    if _contains_duplicates(enharmonic_scale):
-        if "B" in enharmonic_scale:
-            enharmonic_scale[enharmonic_scale.index("B")] = ENHARMONICS["B"]
-        elif "F" in enharmonic_scale:
-            enharmonic_scale[enharmonic_scale.index("F")] = ENHARMONICS["F"]
+    # Try to replace C with B# if there is still duplicates
+    if "C" in sharp_scale:
+        sharp_scale = [
+            ENHARMONICS["C"] if note == "C" else note for note in sharp_scale
+        ]
+        unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
+        if len(unique_sharp_notes) == len(sharp_scale):
+            return sharp_scale
 
-    return enharmonic_scale
+    return scale

@@ -84,8 +84,8 @@ See [fretted_notes](#fretted_notes)
 | Name         | Type        | Description          | Default            |
 |--------------|-------------|----------------------|--------------------|
 | color        | str         | Color of the dot     | "rgb(200,200,200)" |
-| color_stroke | str         | Color of the stroke  | "rgb(0,0,0)"       |
-| width_stroke | int / float | Width of the stroke  | 2                  |
+| stroke_color | str         | Color of the stroke  | "rgb(0,0,0)"       |
+| stroke_width | int / float | Width of the stroke  | 2                  |
 | radius       | int / float | Radius of the stroke | 7                  |
 
 

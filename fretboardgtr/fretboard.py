@@ -26,6 +26,7 @@ from fretboardgtr.utils import (
     get_note_from_index,
     get_valid_dots,
     note_to_interval_name,
+    scale_to_enharmonic,
 )
 
 
@@ -264,8 +265,11 @@ class FretBoard(FretBoardLike):
         scale : NotesContainer
             Object representing the root and the associated scale
         """
+        notes = scale.notes
+        if self.config.general.enharmonic:
+            notes = scale_to_enharmonic(scale.notes)
         for string_no, _ in enumerate(self.tuning):
-            for note in scale.notes:
+            for note in notes:
                 self.add_note(string_no, note, scale.root)
 
     def add_fingering(

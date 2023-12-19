@@ -99,3 +99,24 @@ def test_scale_to_intervals():
 def test_scale_to_enharmonic():
     scale = ["G", "A", "B", "C", "D", "E", "Gb"]
     assert ["G", "A", "B", "C", "D", "E", "F#"] == scale_to_enharmonic(scale)
+    scale = ["A#", "C", "D", "D#", "F", "G", "A"]
+    assert ["Bb", "C", "D", "Eb", "F", "G", "A"] == scale_to_enharmonic(scale)
+    scale = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
+    assert [
+        "A",
+        "A#",
+        "B",
+        "C",
+        "C#",
+        "D",
+        "D#",
+        "E",
+        "F",
+        "F#",
+        "G",
+        "G#",
+    ] == scale_to_enharmonic(scale)
+    scale = ["F#", "G#", "A#", "B", "C#", "D#", "F"]
+    assert ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"] == scale_to_enharmonic(scale)
+    c_dorian_scale = ["C", "D", "D#", "F", "G", "A", "A#"]
+    assert ["C", "D", "Eb", "F", "G", "A", "Bb"] == scale_to_enharmonic(c_dorian_scale)

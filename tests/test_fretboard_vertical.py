@@ -72,8 +72,8 @@ def default_config():
         ),
         neck_dots=NeckDotConfig(
             color="rgb(200,200,200)",
-            color_stroke="rgb(0,0,0)",
-            width_stroke=2,
+            stroke_color="rgb(0,0,0)",
+            stroke_width=2,
             radius=7,
         ),
         frets=FretConfig(color="rgb(150,150,150)", width=3),

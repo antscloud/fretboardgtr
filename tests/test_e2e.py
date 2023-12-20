@@ -101,7 +101,7 @@ def test_c_major_fingering():
 def test_c_major_vertical_fingering():
     config = {
         "general": {
-            "first_fret": 0,
+            "first_fret": 1,
             "last_fret": 5,
             "fret_width": 50,
         }
@@ -122,7 +122,7 @@ def test_c_major_vertical_fingering():
 def test_a_major_pentatonic_scale():
     config = {
         "general": {
-            "first_fret": 0,
+            "first_fret": 1,
             "last_fret": 12,
             "fret_width": 50,
         }
@@ -143,7 +143,7 @@ def test_a_major_pentatonic_scale():
 def test_a_major_vertical_pentatonic_scale():
     config = {
         "general": {
-            "first_fret": 0,
+            "first_fret": 1,
             "last_fret": 12,
             "fret_width": 50,
         }
@@ -155,6 +155,43 @@ def test_a_major_vertical_pentatonic_scale():
     fretboard.add_scale(a_major_pentatonic, root="A")
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "a_major_pentatonic_vertical.svg"
+    remove_test_file(tmp_file)
+    assert not tmp_file.exists()
+    fretboard.export(tmp_file)
+    assert tmp_file.exists()
+
+
+def test_c_major_fretboard_no_nut():
+    config = {
+        "general": {
+            "show_nut": False,
+        }
+    }
+    fretboard_config = FretBoardConfig.from_dict(config)
+    fretboard = FretBoard(config=fretboard_config)
+    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    fretboard.add_notes(scale=c_major)
+    os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
+    tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal_no_nut.svg"
+    remove_test_file(tmp_file)
+    assert not tmp_file.exists()
+    fretboard.export(tmp_file)
+    assert tmp_file.exists()
+
+
+def test_c_major_fretboard_neck_dot_odd():
+    config = {
+        "general": {
+            "first_fret": 3,
+            "last_fret": 12,
+        }
+    }
+    fretboard_config = FretBoardConfig.from_dict(config)
+    fretboard = FretBoard(config=fretboard_config)
+    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    fretboard.add_notes(scale=c_major)
+    os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
+    tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal_fretboard_neck_dot_odd.svg"
     remove_test_file(tmp_file)
     assert not tmp_file.exists()
     fretboard.export(tmp_file)

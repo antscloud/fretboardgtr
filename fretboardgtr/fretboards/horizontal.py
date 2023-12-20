@@ -29,7 +29,10 @@ class HorizontalFretBoard:
         )
 
     def get_background_dimensions(self) -> Tuple[float, float]:
-        number_of_frets = self.config.general.last_fret - self.config.general.first_fret
+        # We add 1 as it is one-indexed for first fret
+        number_of_frets = (
+            self.config.general.last_fret - self.config.general.first_fret
+        ) + 1
         width = (number_of_frets) * (self.config.general.fret_width)
         height = (len(self.tuning) - 1) * self.config.general.fret_height
         return width, height
@@ -37,7 +40,7 @@ class HorizontalFretBoard:
     def get_neck_dot_position(self, dot: int) -> List[Tuple[float, float]]:
         x = (
             self.config.general.x_start
-            + (0.5 + dot - self.config.general.first_fret)
+            + (0.5 + dot - self.config.general.first_fret + 1)
             * self.config.general.fret_width
         )
         y = (
@@ -80,7 +83,7 @@ class HorizontalFretBoard:
         x_start = self.config.general.x_start + open_fret_width
         x_end = self.config.general.x_start + (
             self.config.general.fret_width
-            + (self.config.general.last_fret - self.config.general.first_fret)
+            + (self.config.general.last_fret - self.config.general.first_fret + 1)
             * self.config.general.fret_width
         )
         start = (
@@ -98,7 +101,7 @@ class HorizontalFretBoard:
     def get_nut_position(
         self,
     ) -> Optional[Tuple[Tuple[float, float], Tuple[float, float]]]:
-        if self.config.general.first_fret != 0 or not self.config.general.show_nut:
+        if self.config.general.first_fret != 1 or not self.config.general.show_nut:
             return None
         open_fret_width = self.config.general.fret_width
 
@@ -115,7 +118,7 @@ class HorizontalFretBoard:
 
     def get_fret_number_position(self, dot: int) -> Tuple[float, float]:
         x = self.config.general.x_start + self.config.general.fret_width * (
-            1 / 2 + dot - self.config.general.first_fret
+            1 / 2 + dot - self.config.general.first_fret + 1
         )
         y = self.config.general.y_start + self.config.general.fret_height * (
             len(self.tuning)
@@ -125,7 +128,7 @@ class HorizontalFretBoard:
     def get_tuning_position(self, string_no: int) -> Tuple[float, float]:
         x = self.config.general.x_start + (
             self.config.general.fret_width
-            * (self.config.general.last_fret - self.config.general.first_fret + 3 / 2)
+            * (self.config.general.last_fret - self.config.general.first_fret + 5 / 2)
         )
         y = self.config.general.y_start + self.config.general.fret_height * (string_no)
         return x, y
@@ -153,7 +156,10 @@ class HorizontalFretBoard:
         Tuple[float, float]
             Width and heigth
         """
-        number_of_frets = self.config.general.last_fret - self.config.general.first_fret
+        # We add 1 as it is one-indexed for first fret
+        number_of_frets = (
+            self.config.general.last_fret - self.config.general.first_fret
+        ) + 1
         width = (
             self.config.general.x_start
             + self.config.general.fret_width * (number_of_frets + 2)
@@ -180,7 +186,10 @@ class HorizontalFretBoard:
             Lower right corner x coordinate, lower right corner y coordinate
         """
         open_fret_width = self.config.general.fret_width
-        number_of_frets = self.config.general.last_fret - self.config.general.first_fret
+        # We add 1 as it is one-indexed for first fret
+        number_of_frets = (
+            self.config.general.last_fret - self.config.general.first_fret
+        ) + 1
         upper_left_x = self.config.general.x_start
         upper_left_y = self.config.general.y_start
         lower_right_x = (

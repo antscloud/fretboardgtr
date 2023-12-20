@@ -27,7 +27,7 @@ def default_config():
             y_start=30.0,
             fret_height=50,
             fret_width=70,
-            first_fret=0,
+            first_fret=1,
             last_fret=12,
             show_tuning=True,
             show_frets=True,
@@ -326,7 +326,7 @@ def test_fretboard_get_nut(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_nut_not_first_fret(default_config: FretBoardConfig):
-    default_config.general.first_fret = 1
+    default_config.general.first_fret = 2
     fretboard = FretBoard(config=default_config)
     fretboard.add_nut()
 

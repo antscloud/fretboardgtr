@@ -220,7 +220,7 @@ def test_fretboard_get_nut(default_config: FretBoardConfig):
 
 
 def test_fretboard_get_nut_not_first_fret(default_config: FretBoardConfig):
-    default_config.general.first_fret = 1
+    default_config.general.first_fret = 2
     fretboard = FretBoard(config=default_config, vertical=True)
     fretboard.add_nut()
 

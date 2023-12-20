@@ -38,7 +38,7 @@ def build_config(config: Optional[Union[Dict, FretBoardConfig]]) -> FretBoardCon
     elif isinstance(config, FretBoardConfig):
         return config
     else:
-        msg = "Invalid config type {type(config)}."
+        msg = f"Invalid config type {type(config)}."
         msg += "Need a dictionnary or FretBoardConfig instance"
         raise ValueError(msg)
 
@@ -52,7 +52,7 @@ class FretBoard(FretBoardLike):
     ):
         self.tuning = tuning if tuning is not None else STANDARD_TUNING
 
-        self.config = build_config(config)
+        self.config = build_config(config).validate()
         self.elements = FretBoardElements()
         self.fretboard: Union[HorizontalFretBoard, VerticalFretBoard] = (
             HorizontalFretBoard(tuning, self.config)
@@ -103,13 +103,12 @@ class FretBoard(FretBoardLike):
 
     def add_frets(self) -> None:
         """Build and add fret elements."""
-        show_nut = self.config.general.show_nut
-        number_of_frets = self.config.general.last_fret - self.config.general.first_fret
+        # We add 1 as it is one-indexed for first fret
+        number_of_frets = (
+            self.config.general.last_fret - self.config.general.first_fret
+        ) + 1
 
-        # Skip the open virtual fret
-        first_fret = 0
-        if show_nut:
-            first_fret = 1
+        first_fret = 1
 
         # +2 is to close the last fret of fretboard
         for fret_no in range(first_fret, number_of_frets + 2):
@@ -218,11 +217,17 @@ class FretBoard(FretBoardLike):
         # Note when fret == 0
         string_root = self.fretboard.get_list_in_good_order(self.tuning)[string_no]
         # Note when fret == N
-        string_root = get_note_from_index(self.config.general.first_fret, string_root)
+        string_root = get_note_from_index(
+            self.config.general.first_fret - 1, string_root
+        )
         # Index of the note from root
         _idx = chromatic_position_from_root(note, string_root)
         indices = []
-        while _idx <= self.config.general.last_fret - self.config.general.first_fret:
+        # We add 1 as it is one-indexed for first fret
+        number_of_frets = (
+            self.config.general.last_fret - self.config.general.first_fret
+        ) + 1
+        while _idx <= number_of_frets:
             indices.append(_idx)
             _idx += 12
 
@@ -251,7 +256,8 @@ class FretBoard(FretBoardLike):
                 self.fretboard.get_list_in_good_order(self.tuning)[string_no],
             )
             if finger_position > 0:
-                finger_position -= self.config.general.first_fret
+                # We add 1 as it is one-indexed
+                finger_position = finger_position - self.config.general.first_fret + 1
                 if finger_position <= 0:
                     return None
 

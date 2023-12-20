@@ -23,7 +23,7 @@ class FretBoardGeneralConfig(ConfigIniter):
     y_end_offset: float = 0.0
     fret_height: int = 50
     fret_width: int = 70
-    first_fret: int = 0
+    first_fret: int = 1
     last_fret: int = 12
     show_tuning: bool = True
     show_frets: bool = True
@@ -67,3 +67,10 @@ class FretBoardConfig(ConfigIniter):
     open_notes: OpenNoteConfig = field(default_factory=OpenNoteConfig)
     fretted_notes: FrettedNoteConfig = field(default_factory=FrettedNoteConfig)
     cross: CrossConfig = field(default_factory=CrossConfig)
+
+    def validate(self) -> "FretBoardConfig":
+        if self.general.first_fret <= 0:
+            self.general.first_fret = 1
+        if self.general.last_fret < self.general.first_fret:
+            self.general.last_fret = self.general.first_fret
+        return self

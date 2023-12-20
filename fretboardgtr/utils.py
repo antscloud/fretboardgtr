@@ -1,12 +1,12 @@
-from typing import Collection, List
+from typing import Collection, List, Tuple
 
 from fretboardgtr.constants import (
-    ALTERATIONS,
     CHROMATICS_INTERVALS,
     CHROMATICS_NOTES,
     DOTS_POSITIONS,
     ENHARMONICS,
-    SHARPY_ALTERATIONS,
+    FLAT_ALTERATIONS,
+    SHARP_ALTERATIONS,
 )
 
 
@@ -55,15 +55,15 @@ def get_note_from_index(index: int, root: str) -> str:
 
 def to_sharp_note(note: str) -> str:
     """Get note by replacing it by its corresponding sharp note."""
-    if note in ALTERATIONS:
-        note = ALTERATIONS[note]
+    if note in FLAT_ALTERATIONS:
+        note = FLAT_ALTERATIONS[note]
     return note
 
 
 def to_flat_note(note: str) -> str:
     """Get note by replacing it by its corresponding flat note."""
-    if note in SHARPY_ALTERATIONS:
-        note = SHARPY_ALTERATIONS[note]
+    if note in SHARP_ALTERATIONS:
+        note = SHARP_ALTERATIONS[note]
     return note
 
 
@@ -79,11 +79,11 @@ def chromatic_position_from_root(note: str, root: str) -> int:
 
 def scale_to_sharp(scale: List[str]) -> List[str]:
     """Get scale replacing each note by its sharp correspondant note."""
-    flat_scale = list(scale)
+    sharp_scale = list(scale)
     for i, note in enumerate(scale):
         sharp_note = to_sharp_note(note)
-        flat_scale[i] = sharp_note
-    return flat_scale
+        sharp_scale[i] = sharp_note
+    return sharp_scale
 
 
 def scale_to_flat(scale: List[str]) -> List[str]:
@@ -120,18 +120,48 @@ def scale_to_intervals(scale: List[str], root: str) -> List[int]:
     return intervals
 
 
-def scale_to_enharmonic(scale: List[str]) -> List[str]:
-    """Modify the scale in order to not repeat note.
+def resolve_high_alterations_in_scale(scale: List[str]) -> List[str]:
+    """Resolve multiple flat or sharp in scale."""
+    for i, note in enumerate(scale):
+        if len(note) <= 2:
+            continue
+        base_note, high_alterations = note[0:1], note[2:]
+        new_note = base_note
+        if "b" in high_alterations:
+            new_note = CHROMATICS_NOTES[
+                (CHROMATICS_NOTES.index(base_note) - (len(high_alterations) + 1)) % 12
+            ]
+        elif "#" in high_alterations:
+            new_note = CHROMATICS_NOTES[
+                (CHROMATICS_NOTES.index(base_note) + (len(high_alterations) + 1)) % 12
+            ]
+        scale[i] = new_note
 
-    Turns into enharmonic way if possible. Otherwise return the original scale.
+    return scale
 
-    >>> scale_to_enharmonic(['A#', 'C', 'D', 'D#', 'F', 'G', 'A'])
-        ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']
-    >>> scale_to_enharmonic(["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"])
-        ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
-    >>> scale_to_enharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
-        ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F']
-    """
+
+def sort_scale(scale: List[str]) -> List[str]:
+    def _sort_scale(item: str) -> Tuple[str, int]:
+        letter = item[0]
+        modifier = item[1:]
+
+        if modifier == "b":
+            return (letter, 0)
+        elif modifier == "#":
+            return (letter, 2)
+        else:
+            return (letter, 1)
+
+    return sorted(scale, key=_sort_scale)
+
+
+def _scale_to_enharmonic(scale: List[str]) -> List[str]:
+    # Resolve high alterations
+    scale = resolve_high_alterations_in_scale(scale)
+    # Remove duplicates
+    scale = list(set(scale))
+    # Sort scale
+    scale = sort_scale(scale)
     # Try to make all flat notes unique
     flat_scale = scale_to_flat(scale)
     unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
@@ -173,5 +203,19 @@ def scale_to_enharmonic(scale: List[str]) -> List[str]:
         unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
         if len(unique_sharp_notes) == len(sharp_scale):
             return sharp_scale
-
     return scale
+
+
+def scale_to_enharmonic(scale: List[str]) -> List[str]:
+    """Modify the scale in order to not repeat note.
+
+    Turns into enharmonic way if possible. Otherwise return the original scale.
+
+    >>> scale_to_enharmonic(['A#', 'C', 'D', 'D#', 'F', 'G', 'A'])
+        ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']
+    >>> scale_to_enharmonic(["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"])
+        ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+    >>> scale_to_enharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
+        ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F']
+    """
+    return sort_scale(_scale_to_enharmonic(scale))

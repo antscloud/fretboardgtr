@@ -4,10 +4,12 @@ from fretboardgtr.utils import (
     chromatics_from_root,
     note_to_interval,
     note_to_interval_name,
+    resolve_high_alterations_in_scale,
     scale_to_enharmonic,
     scale_to_flat,
     scale_to_intervals,
     scale_to_sharp,
+    sort_scale,
     to_flat_note,
     to_sharp_note,
 )
@@ -96,11 +98,71 @@ def test_scale_to_intervals():
     assert [0, 4, 7] == scale_to_intervals(scale, root="C")
 
 
+def test_resolve_high_alterations_in_scale():
+    scale = [
+        "A",
+        "Ab",
+        "Abb",
+        "A#",
+        "A##",
+    ]
+    assert [
+        "A",
+        "Ab",
+        "G",
+        "A#",
+        "B",
+    ] == resolve_high_alterations_in_scale(scale)
+    scale = ["A############"]
+    assert [
+        "A",
+    ] == resolve_high_alterations_in_scale(scale)
+
+
+def test_sort_scale():
+    scale = [
+        "C",
+        "D",
+        "G",
+        "C#",
+        "Db",
+        "F#",
+        "A",
+        "Ab",
+    ]
+    assert [
+        "Ab",
+        "A",
+        "C",
+        "C#",
+        "Db",
+        "D",
+        "F#",
+        "G",
+    ] == sort_scale(scale)
+
+
 def test_scale_to_enharmonic():
-    scale = ["G", "A", "B", "C", "D", "E", "Gb"]
-    assert ["G", "A", "B", "C", "D", "E", "F#"] == scale_to_enharmonic(scale)
+    scale = [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Gb",
+        "G",
+    ]
+    assert ["A", "B", "C", "D", "E", "F#", "G"] == scale_to_enharmonic(scale)
     scale = ["A#", "C", "D", "D#", "F", "G", "A"]
-    assert ["Bb", "C", "D", "Eb", "F", "G", "A"] == scale_to_enharmonic(scale)
+    assert [
+        "A",
+        "Bb",
+        "C",
+        "D",
+        "Eb",
+        "F",
+        "G",
+    ] == scale_to_enharmonic(scale)
     scale = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
     assert [
         "A",
@@ -117,6 +179,14 @@ def test_scale_to_enharmonic():
         "G#",
     ] == scale_to_enharmonic(scale)
     scale = ["F#", "G#", "A#", "B", "C#", "D#", "F"]
-    assert ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"] == scale_to_enharmonic(scale)
+    assert ["Ab", "Bb", "Cb", "Db", "Eb", "F", "Gb"] == scale_to_enharmonic(scale)
     c_dorian_scale = ["C", "D", "D#", "F", "G", "A", "A#"]
-    assert ["C", "D", "Eb", "F", "G", "A", "Bb"] == scale_to_enharmonic(c_dorian_scale)
+    assert [
+        "A",
+        "Bb",
+        "C",
+        "D",
+        "Eb",
+        "F",
+        "G",
+    ] == scale_to_enharmonic(c_dorian_scale)

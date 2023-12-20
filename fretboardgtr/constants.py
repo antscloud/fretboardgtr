@@ -260,7 +260,7 @@ class LongInterval(str, Enum):
 CHROMATICS_NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 CHROMATICS_INTERVALS = ["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"]
 
-ALTERATIONS = {
+FLAT_ALTERATIONS = {
     "Bb": "A#",
     "Db": "C#",
     "Eb": "D#",
@@ -268,7 +268,8 @@ ALTERATIONS = {
     "Ab": "G#",
 }
 
-SHARPY_ALTERATIONS = {value: key for (key, value) in ALTERATIONS.items()}
+SHARP_ALTERATIONS = {value: key for (key, value) in FLAT_ALTERATIONS.items()}
+FULL_ALTERATIONS = {**FLAT_ALTERATIONS, **SHARP_ALTERATIONS}
 ENHARMONICS = {
     "A#": "Bb",
     "B": "Cb",

@@ -156,6 +156,35 @@ for i, fingering in enumerate(fingerings):
 
 ```
 
+Will give you :
+
+```{image} ../assets/C_M/C_M_position_0.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
+
+
+```{image} ../assets/C_M/C_M_position_1.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
+
+
+```{image} ../assets/C_M/C_M_position_2.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
+
+```{image} ../assets/C_M/C_M_position_3.svg
+:alt: My vertical fretboard
+:width: 200px
+:align: center
+```
+And so on.
+
 ### Generate all the classic positions for A minor pentatonic scale
 
 ```python
@@ -183,3 +212,27 @@ for i, scale_position in enumerate(scale_positions):
         f"./{ROOT}_{MODE.value}/{ROOT}_{MODE.value}_position_{i}.svg", format="svg"
     )
 ```
+
+Will give you :
+
+```{image} ../assets/A_Minorpentatonic/A_Minorpentatonic_position_0.svg
+:alt: My vertical fretboard
+:width: 80%
+:align: center
+```
+
+
+```{image} ../assets/A_Minorpentatonic/A_Minorpentatonic_position_1.svg
+:alt: My vertical fretboard
+:width: 80%
+:align: center
+```
+
+
+```{image} ../assets/A_Minorpentatonic/A_Minorpentatonic_position_2.svg
+:alt: My vertical fretboard
+:width: 80%
+:align: center
+```
+
+And so on.

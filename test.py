@@ -1,7 +1,7 @@
-from typing import List
+from fretboardgtr import FretBoard
+from fretboardgtr.notes_creators import ScaleFromName
 
-from fretboardgtr.fretboard import FretBoard, FretBoardConfig
-
+TUNING = ["E", "A", "D", "G", "B", "E"]
 config = {
     "general": {
         "first_fret": 0,
@@ -11,8 +11,8 @@ config = {
         "show_degree_name": False,
     }
 }
-fretboard_config = FretBoardConfig.from_dict(config)
-fretboard = FretBoard(config=fretboard_config, vertical=True)
-c_major: List[int | None] = [0, 3, 2, 0, 1, 0]
-fretboard.add_fingering(c_major, root="C")
-fretboard.export("chords_fretboard.svg", format="svg")
+fretboard = FretBoard(config=config)
+c_scale = ScaleFromName(root="C", mode="Ionian").build().get_scale(TUNING)
+c_scale[-1] = []
+fretboard.add_scale(c_scale, root="C")
+fretboard.export("c_scale.svg", format="svg")

@@ -286,20 +286,28 @@ class FretBoard(FretBoardLike):
                 self.add_note(string_no, note, scale.root)
 
     def add_fingering(
-        self,
-        fingering: List[Optional[int]],
-        root: Optional[str] = None,
+        self, fingering: List[Optional[int]], root: Optional[str] = None
     ) -> None:
         """Add fingering starting with upper string to lower string.
 
-        This function automatically calculate the note names or
-        intervals if the root is given Display them in the way described
-        in configuration
+        Parameters
+        ----------
+        fingering : List[Optional[int]]
+            List of finger positions for each string.
+        root : Optional[str], optional
+            The root note to use for calculating note names or intervals,
+            by default None.
+
+        Raises
+        ------
+        ValueError
+            If the size of the fingering list is not the same as the size of
+            the tuning list.
         """
         if len(fingering) != len(self.tuning):
             raise ValueError(
-                f"Fingering has not the same size as tuning."
-                f" Got {len(fingering)} expected {len(self.tuning)}"
+                f"Fingering size does not match tuning size. Got {len(fingering)}"
+                f", expected {len(self.tuning)}"
             )
         for string_no, finger_position in enumerate(
             self.fretboard.get_list_in_good_order(fingering)
@@ -312,11 +320,22 @@ class FretBoard(FretBoardLike):
         root: Optional[str] = None,
         repeat_over_fretboard: bool = False,
     ) -> None:
-        """Add scale starting with upper string to lower string.
+        """Add scale to the fretboard.
 
-        This function automatically calculate the note names or
-        intervals if the root is given Display them in the way described
-        in configuration
+        Parameters
+        ----------
+        scale : List[List[Optional[int]]]
+            The scale to be added.
+        root : Optional[str], optional
+            The root note of the scale, by default None.
+        repeat_over_fretboard : bool, optional
+            Whether to repeat the scale over the entire fretboard,
+            by default False.
+
+        Raises
+        ------
+        ValueError
+            If the scale has a different size than the tuning.
         """
         if len(scale) != len(self.tuning):
             raise ValueError(

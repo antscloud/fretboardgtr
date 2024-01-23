@@ -210,7 +210,7 @@ class FretBoard(FretBoardLike):
         self.elements.notes.append(_note)
 
     def add_note(self, string_no: int, note: str, root: Optional[str] = None) -> None:
-        """Build and add background element."""
+        """Build and add notes element."""
         if string_no < 0 or string_no > len(self.tuning):
             raise ValueError(f"String number is invalid. Tuning is {self.tuning}")
 
@@ -244,23 +244,30 @@ class FretBoard(FretBoardLike):
         self._add_single_note(string_no, index, note, root)
 
     def _add_cross_or_note(
-        self, root: Optional[str], string_no: int, finger_position: Optional[int]
+        self,
+        root: Optional[str],
+        string_no: int,
+        finger_position: Optional[int],
+        repeat_over_fretboard: bool = False,
     ) -> None:
         if finger_position is None:
             position = self.fretboard.get_cross_position(string_no)
             cross = Cross(position, config=self.config.cross)
             self.elements.crosses.append(cross)
-        else:
-            string_note = get_note_from_index(
-                finger_position,
-                self.fretboard.get_list_in_good_order(self.tuning)[string_no],
-            )
-            if finger_position > 0:
-                # We add 1 as it is one-indexed
-                finger_position = finger_position - self.config.general.first_fret + 1
-                if finger_position <= 0:
-                    return None
+            return None
 
+        string_note = get_note_from_index(
+            finger_position,
+            self.fretboard.get_list_in_good_order(self.tuning)[string_no],
+        )
+        if finger_position > 0:
+            # We add 1 as it is one-indexed
+            finger_position = finger_position - self.config.general.first_fret + 1
+            if finger_position <= 0:
+                return None
+        if repeat_over_fretboard:
+            self.add_note(string_no, string_note, root)
+        else:
             self._add_single_note(string_no, finger_position, string_note, root)
 
     def add_notes(self, scale: NotesContainer) -> None:
@@ -279,7 +286,9 @@ class FretBoard(FretBoardLike):
                 self.add_note(string_no, note, scale.root)
 
     def add_fingering(
-        self, fingering: List[Optional[int]], root: Optional[str] = None
+        self,
+        fingering: List[Optional[int]],
+        root: Optional[str] = None,
     ) -> None:
         """Add fingering starting with upper string to lower string.
 
@@ -298,7 +307,10 @@ class FretBoard(FretBoardLike):
             self._add_cross_or_note(root, string_no, finger_position)
 
     def add_scale(
-        self, scale: List[List[Optional[int]]], root: Optional[str] = None
+        self,
+        scale: List[List[Optional[int]]],
+        root: Optional[str] = None,
+        repeat_over_fretboard: bool = False,
     ) -> None:
         """Add scale starting with upper string to lower string.
 
@@ -316,7 +328,9 @@ class FretBoard(FretBoardLike):
             self.fretboard.get_list_in_good_order(scale)
         ):
             for finger_position in finger_positions:
-                self._add_cross_or_note(root, string_no, finger_position)
+                self._add_cross_or_note(
+                    root, string_no, finger_position, repeat_over_fretboard
+                )
 
     def add_note_element(self, note: Union[OpenNote, FrettedNote]) -> None:
         """Add a note element to the fretboard.

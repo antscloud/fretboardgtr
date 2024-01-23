@@ -43,7 +43,7 @@ from fretboardgtr.fretboard import FretBoard
 from fretboardgtr.notes_creators import ScaleFromName
 
 fretboard = FretBoard()
-c_major = ScaleFromName(root="C", mode="Ionian").get()
+c_major = ScaleFromName(root="C", mode="Ionian").build()
 fretboard.add_notes(scale=c_major)
 fretboard.export("my_fretboard.svg", format="svg")
 ```

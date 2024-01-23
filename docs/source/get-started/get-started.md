@@ -21,7 +21,7 @@ from fretboardgtr.fretboard import FretBoard
 from fretboardgtr.notes_creators import ScaleFromName
 
 fretboard = FretBoard()
-c_major = ScaleFromName(root="C", mode="Ionian").get()
+c_major = ScaleFromName(root="C", mode="Ionian").build()
 fretboard.add_notes(scale=c_major)
 fretboard.export("my_fretboard.svg", format="svg")
 ```
@@ -59,7 +59,7 @@ config = {
 
 fretboard_config = FretBoardConfig.from_dict(config)
 fretboard = FretBoard(config=fretboard_config)
-c_major = ScaleFromName(root="A", mode="Ionian").get()
+c_major = ScaleFromName(root="A", mode="Ionian").build()
 fretboard.add_notes(scale=c_major)
 fretboard.export("my_custom_fretboard.svg", format="svg")
 ```
@@ -75,7 +75,7 @@ from fretboardgtr.fretboard import FretBoard
 from fretboardgtr.notes_creators import ScaleFromName
 
 fretboard = FretBoard(vertical=True)
-c_major = ScaleFromName(root="C", mode="Ionian").get()
+c_major = ScaleFromName(root="C", mode="Ionian").build()
 fretboard.add_notes(scale=c_major)
 fretboard.export("my_vertical_fretboard.svg", format="svg")
 ```
@@ -126,7 +126,7 @@ ROOT = "C"
 QUALITY = Chord.MAJOR
 
 fingerings = (
-    ChordFromName(root=ROOT, quality=QUALITY).get().get_chord_fingerings(TUNING)
+    ChordFromName(root=ROOT, quality=QUALITY).build().get_chord_fingerings(TUNING)
 )
 for i, fingering in enumerate(fingerings):
     _cleaned_fingering = [pos for pos in fingering if pos is not None and pos != 0]
@@ -168,7 +168,7 @@ ROOT = "A"
 MODE = Mode.MINOR_PENTATONIC
 
 scale_positions = (
-    ScaleFromName(root=ROOT, mode=MODE).get().get_scale_positions(TUNING, max_spacing=4)
+    ScaleFromName(root=ROOT, mode=MODE).build().get_scale_positions(TUNING, max_spacing=4)
 )
 config = {
     "general": {

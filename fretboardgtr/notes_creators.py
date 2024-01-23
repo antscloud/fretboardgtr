@@ -19,7 +19,7 @@ class NotesContainer:
     root: str
     notes: List[str]
 
-    def _get_scale(self, tuning: List[str], max_spacing: int = 5) -> List[List[int]]:
+    def get_scale(self, tuning: List[str], max_spacing: int = 5) -> List[List[int]]:
         """Get the scale of each string in the given tuning.
 
         Goes from 0 up to (12 + max_spacing - 1) on the fretboard
@@ -80,7 +80,7 @@ class NotesContainer:
         List[List[Optional[int]]]
             List of propably possible fingerings
         """
-        scale = self._get_scale(tuning, max_spacing)
+        scale = self.get_scale(tuning, max_spacing)
 
         fingerings = []
         for combination in product(*scale):
@@ -138,7 +138,7 @@ class NotesContainer:
         List[List[List[Optional[int]]]]
             List of all possible scale positions
         """
-        scale = self._get_scale(tuning, max_spacing)
+        scale = self.get_scale(tuning, max_spacing)
         fingerings: List[List[List[Optional[int]]]] = []
         for first_string_pos in scale[0]:
             fingering: List[List[Optional[int]]] = []
@@ -167,9 +167,9 @@ class ScaleFromName:
 
     Example
     -------
-    >>> ScaleFromName(root='C',mode='Dorian').get()
+    >>> ScaleFromName(root='C',mode='Dorian').build()
         NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
-    >>> ScaleFromName(root=Note.C,mode=Mode.DORIAN).get()
+    >>> ScaleFromName(root=Note.C,mode=Mode.DORIAN).build()
         NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
     """
 
@@ -177,7 +177,7 @@ class ScaleFromName:
         self.root = root
         self.mode = mode
 
-    def get(self) -> NotesContainer:
+    def build(self) -> NotesContainer:
         index = CHROMATICS_NOTES.index(self.root)
         mode_idx = SCALES_DICT[self.mode]
         scale = []
@@ -197,9 +197,9 @@ class ChordFromName:
 
     Example
     -------
-    >>> ChordFromName(root='C',quality='M').get()
+    >>> ChordFromName(root='C',quality='M').build()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
-    >>> ChordFromName(root=Note.C,quality=Chord.MAJOR).resultget()
+    >>> ChordFromName(root=Note.C,quality=Chord.MAJOR).build()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
     """
 
@@ -207,7 +207,7 @@ class ChordFromName:
         self.root = root
         self.quality = quality
 
-    def get(self) -> NotesContainer:
+    def build(self) -> NotesContainer:
         index = CHROMATICS_NOTES.index(self.root)
 
         quality_idx = CHORDS_DICT_ESSENTIAL[self.quality]

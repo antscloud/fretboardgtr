@@ -1,23 +1,18 @@
-from fretboardgtr.constants import Mode
-from fretboardgtr.fretboard import FretBoard
-from fretboardgtr.notes_creators import ScaleFromName
+from typing import List
 
-TUNING = ["E", "A", "D", "G", "B", "E"]
-ROOT = "A"
-MODE = Mode.MINOR_PENTATONIC
+from fretboardgtr.fretboard import FretBoard, FretBoardConfig
 
-scale_positions = (
-    ScaleFromName(root=ROOT, mode=MODE).get().get_scale_positions(TUNING, max_spacing=4)
-)
 config = {
     "general": {
+        "first_fret": 0,
         "last_fret": 16,
+        "fret_width": 50,
+        "show_note_name": True,
+        "show_degree_name": False,
     }
 }
-
-for i, scale_position in enumerate(scale_positions):
-    fretboard = FretBoard(config=config, tuning=TUNING)
-    fretboard.add_scale(scale_position, root=ROOT)
-    fretboard.export(
-        f"./{ROOT}_{MODE.value}/{ROOT}_{MODE.value}_position_{i}.svg", format="svg"
-    )
+fretboard_config = FretBoardConfig.from_dict(config)
+fretboard = FretBoard(config=fretboard_config, vertical=True)
+c_major: List[int | None] = [0, 3, 2, 0, 1, 0]
+fretboard.add_fingering(c_major, root="C")
+fretboard.export("chords_fretboard.svg", format="svg")

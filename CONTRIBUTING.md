@@ -159,6 +159,16 @@ git push origin master --tags
 
 This will then deploy the package in PyPI if tests pass and a tag is set, otherwise it will deployed on test-pipy.
 
+## Changelogs
+The changelogs are generated using [git cliff][https://git-cliff.org/]. This is a rust utility tool that can be downloaded with `cargo`.
+
+The configuration file for this tool is `cliff.toml`.
+
+After modifying the `_version.py` file as described above please simply run :
+```
+ git cliff -o CHANGELOG.md
+```
+
 ## Further words
 
 ### `pre-commit`

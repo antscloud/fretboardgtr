@@ -15,7 +15,7 @@ def remove_test_file(path: Path):
 
 def test_c_major_fretboard():
     fretboard = FretBoard()
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal.svg"
@@ -27,7 +27,7 @@ def test_c_major_fretboard():
 
 def test_c_major_vertical_fretboard():
     fretboard = FretBoard(vertical=True)
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "vertical.svg"
@@ -47,7 +47,7 @@ def test_c_major_fretboard_starting_at_5():
 
     fretboard_config = FretBoardConfig.from_dict(config)
     fretboard = FretBoard(config=fretboard_config)
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal_starting_at_5.svg"
@@ -67,7 +67,7 @@ def test_c_major_vertical_fretboard_starting_at_5():
 
     fretboard_config = FretBoardConfig.from_dict(config)
     fretboard = FretBoard(config=fretboard_config, vertical=True)
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "vertical_starting_at_5.svg"
@@ -169,7 +169,7 @@ def test_c_major_fretboard_no_nut():
     }
     fretboard_config = FretBoardConfig.from_dict(config)
     fretboard = FretBoard(config=fretboard_config)
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal_no_nut.svg"
@@ -188,7 +188,7 @@ def test_c_major_fretboard_neck_dot_odd():
     }
     fretboard_config = FretBoardConfig.from_dict(config)
     fretboard = FretBoard(config=fretboard_config)
-    c_major = ScaleFromName(root="C", mode="Ionian").get()
+    c_major = ScaleFromName(root="C", mode="Ionian").build()
     fretboard.add_notes(scale=c_major)
     os.makedirs(OUTPUTS_ARTIFACT_FOLDER, exist_ok=True)
     tmp_file = OUTPUTS_ARTIFACT_FOLDER / "horizontal_fretboard_neck_dot_odd.svg"

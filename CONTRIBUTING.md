@@ -167,6 +167,9 @@ The configuration file for this tool is `cliff.toml`.
 After modifying the `_version.py` file as described above please simply run :
 ```
  git cliff -o CHANGELOG.md
+ git add CHANGELOG.md
+ git commit -m "docs: Auto-generated changelog"
+ git push origin master
 ```
 
 ## Further words

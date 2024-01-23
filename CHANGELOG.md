@@ -2,12 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.2.7] - 2024-01-23
+
+### Bug Fixes
+
+- Scale_to_enharmonic function and make it more logical
 
 ### Documentation
 
 - Auto-generated changelog
 - Update contributing for changelogs
+- Auto-generated changelog
 
 ## [0.2.6] - 2024-01-23
 

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- Update docs with figure
+- Add note class to handle sharps, flats and stuffs
+- Add better docstring
+
+### Refactor
+
+- Make creation of notes clearer and add option to continue all over the board the fretboard notes for add_scale
+- Change enums names
+
 ## [0.2.5] - 2023-12-20
 
 ### Features

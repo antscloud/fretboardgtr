@@ -123,7 +123,7 @@ from fretboardgtr.notes_creators import ChordFromName
 
 TUNING = ["E", "A", "D", "G", "B", "E"]
 ROOT = "C"
-QUALITY = Chord.MAJOR
+QUALITY = ChordName.MAJOR
 
 fingerings = (
     ChordFromName(root=ROOT, quality=QUALITY).build().get_chord_fingerings(TUNING)
@@ -190,11 +190,11 @@ And so on.
 ```python
 from fretboardgtr.fretboard import FretBoardConfig, FretBoard
 from fretboardgtr.notes_creators import ScaleFromName
-from fretboardgtr.constants import Mode
+from fretboardgtr.constants import ModeName
 
 TUNING = ["E", "A", "D", "G", "B", "E"]
 ROOT = "A"
-MODE = Mode.MINOR_PENTATONIC
+MODE = ModeName.MINOR_PENTATONIC
 
 scale_positions = (
     ScaleFromName(root=ROOT, mode=MODE).build().get_scale_positions(TUNING, max_spacing=4)

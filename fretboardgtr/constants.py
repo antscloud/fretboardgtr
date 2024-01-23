@@ -3,11 +3,11 @@ from __future__ import absolute_import
 from enum import Enum
 
 
-class Mode(str, Enum):
+class ModeName(str, Enum):
     """Makes it easier to list and select a mode.
 
-    One can use auto-completion Mode.MIXOLYDIAN can be used instead of
-    the 'Mixolydian' literal string.
+    One can use auto-completion ModeName.MIXOLYDIAN can be used instead
+    of the 'Mixolydian' literal string.
     """
 
     AEOLIAN = "Aeolian"
@@ -78,13 +78,13 @@ SCALES_DICT = {
 }
 
 
-class Chord(str, Enum):
+class ChordName(str, Enum):
     """Makes it easier to list and select a chord.
 
-    One can use auto-completion Chord.MAJOR can be used instead of the 'M'
+    One can use auto-completion ChordName.MAJOR can be used instead of the 'M'
     literal string.
 
-    Not every defined Chord from CHORDS_DICT_ESSENTIAL is defined as an
+    Not every defined ChordName from CHORDS_DICT_ESSENTIAL is defined as an
     enum here, only the most common ones.
     """
 
@@ -187,11 +187,11 @@ CHORDS_DICT_ESSENTIAL = {
 }
 
 
-class Note(str, Enum):
+class NoteName(str, Enum):
     """Makes it easier to list and select a note.
 
-    One can use auto-completion Note.A_SHARP instead of the 'A#' literal
-    string.
+    One can use auto-completion NoteName.A_SHARP instead of the 'A#'
+    literal string.
     """
 
     A = "A"

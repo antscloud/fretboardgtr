@@ -162,14 +162,14 @@ class ScaleFromName:
     Given a root name and a mode name, get the resulting scale.
 
     Also :
-    Mode name can be given thanks to the constants.Mode enum as well as string
-    Note name can be given thanks to the constants.Note enum as well as string
+    Mode name can be given thanks to the constants.ModeName enum as well as string
+    Note name can be given thanks to the constants.NoteName enum as well as string
 
     Example
     -------
     >>> ScaleFromName(root='C',mode='Dorian').build()
         NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
-    >>> ScaleFromName(root=Note.C,mode=Mode.DORIAN).build()
+    >>> ScaleFromName(root=Name.C,mode=ModeName.DORIAN).build()
         NotesContainer(root= 'C', scale = ['C', 'D', 'D#', 'F', 'G', 'A', 'A#'])
     """
 
@@ -192,14 +192,14 @@ class ChordFromName:
     Given a root name and a quality name, get the resulting scale.
 
     Also :
-    Mode name can be given thanks to the constants.Chord enum as well as string
-    Note name can be given thanks to the constants.Note enum as well as string
+    Mode name can be given thanks to the constants.ChordName enum as well as string
+    Note name can be given thanks to the constants.NoteName enum as well as string
 
     Example
     -------
     >>> ChordFromName(root='C',quality='M').build()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
-    >>> ChordFromName(root=Note.C,quality=Chord.MAJOR).build()
+    >>> ChordFromName(root=NoteName.C,quality=ChordName.MAJOR).build()
         NotesContainer(root= 'C', scale = ['C', 'E', 'G'])
     """
 

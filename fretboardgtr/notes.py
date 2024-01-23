@@ -15,6 +15,9 @@ class Note:
     def __str__(self) -> str:
         return self.name
 
+    def __repr__(self) -> str:
+        return self.name
+
     def base_note(self) -> str:
         return self.name[0]
 

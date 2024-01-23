@@ -1,10 +1,11 @@
+import pytest
+
 from fretboardgtr.utils import (
     _contains_duplicates,
     chromatic_position_from_root,
     chromatics_from_root,
     note_to_interval,
     note_to_interval_name,
-    resolve_high_alterations_in_scale,
     scale_to_enharmonic,
     scale_to_flat,
     scale_to_intervals,
@@ -98,27 +99,6 @@ def test_scale_to_intervals():
     assert [0, 4, 7] == scale_to_intervals(scale, root="C")
 
 
-def test_resolve_high_alterations_in_scale():
-    scale = [
-        "A",
-        "Ab",
-        "Abb",
-        "A#",
-        "A##",
-    ]
-    assert [
-        "A",
-        "Ab",
-        "G",
-        "A#",
-        "B",
-    ] == resolve_high_alterations_in_scale(scale)
-    scale = ["A############"]
-    assert [
-        "A",
-    ] == resolve_high_alterations_in_scale(scale)
-
-
 def test_sort_scale():
     scale = [
         "C",
@@ -142,51 +122,43 @@ def test_sort_scale():
     ] == sort_scale(scale)
 
 
-def test_scale_to_enharmonic():
-    scale = [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Gb",
-        "G",
-    ]
-    assert ["A", "B", "C", "D", "E", "F#", "G"] == scale_to_enharmonic(scale)
-    scale = ["A#", "C", "D", "D#", "F", "G", "A"]
-    assert [
-        "A",
-        "Bb",
-        "C",
-        "D",
-        "Eb",
-        "F",
-        "G",
-    ] == scale_to_enharmonic(scale)
-    scale = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
-    assert [
-        "A",
-        "A#",
-        "B",
-        "C",
-        "C#",
-        "D",
-        "D#",
-        "E",
-        "F",
-        "F#",
-        "G",
-        "G#",
-    ] == scale_to_enharmonic(scale)
-    scale = ["F#", "G#", "A#", "B", "C#", "D#", "F"]
-    assert ["Ab", "Bb", "Cb", "Db", "Eb", "F", "Gb"] == scale_to_enharmonic(scale)
-    c_dorian_scale = ["C", "D", "D#", "F", "G", "A", "A#"]
-    assert [
-        "A",
-        "Bb",
-        "C",
-        "D",
-        "Eb",
-        "F",
-        "G",
-    ] == scale_to_enharmonic(c_dorian_scale)
+# fmt: off
+@pytest.mark.parametrize(
+    "scale, expected_result",
+    [
+        (
+            ["A#", "C", "D", "D#", "F", "G", "A"],
+            ["Bb", "C", "D", "Eb", "F", "G", "A"],
+        ),
+        (
+            ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"],
+            ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"],
+        ),
+        (
+            ["A", "B", "C", "D", "E", "Gb", "G"],
+            ["A", "B", "C", "D", "E", "F#", "G"],
+        ),
+        (
+            ["F#", "G#", "A#", "B", "C#", "D#", "F"],
+            ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
+        ),
+        (
+            ["A#", "C", "D", "D#", "F", "G", "A"],
+            ["Bb", "C", "D", "Eb", "F", "G", "A"],
+        ),
+        (
+            ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"],
+            ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"],
+        ),
+        (
+            ["F#", "G#", "A#", "B", "C#", "D#", "F"],
+            ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
+        ),
+        (
+            ["C", "D", "D#", "F", "G", "A", "A#"],
+            ["C", "D", "Eb", "F", "G", "A", "Bb"],
+        ),
+    ],
+)
+def test_scale_to_enharmonic(scale, expected_result):
+    assert scale_to_enharmonic(scale) == expected_result

@@ -1,13 +1,13 @@
-from typing import Collection, List, Tuple
+from typing import Collection, Dict, List, Tuple
 
 from fretboardgtr.constants import (
     CHROMATICS_INTERVALS,
     CHROMATICS_NOTES,
     DOTS_POSITIONS,
-    ENHARMONICS,
     FLAT_ALTERATIONS,
     SHARP_ALTERATIONS,
 )
+from fretboardgtr.notes import Note
 
 
 def get_valid_dots(first_fret: int, last_fret: int) -> List[int]:
@@ -120,26 +120,6 @@ def scale_to_intervals(scale: List[str], root: str) -> List[int]:
     return intervals
 
 
-def resolve_high_alterations_in_scale(scale: List[str]) -> List[str]:
-    """Resolve multiple flat or sharp in scale."""
-    for i, note in enumerate(scale):
-        if len(note) <= 2:
-            continue
-        base_note, high_alterations = note[0:1], note[2:]
-        new_note = base_note
-        if "b" in high_alterations:
-            new_note = CHROMATICS_NOTES[
-                (CHROMATICS_NOTES.index(base_note) - (len(high_alterations) + 1)) % 12
-            ]
-        elif "#" in high_alterations:
-            new_note = CHROMATICS_NOTES[
-                (CHROMATICS_NOTES.index(base_note) + (len(high_alterations) + 1)) % 12
-            ]
-        scale[i] = new_note
-
-    return scale
-
-
 def sort_scale(scale: List[str]) -> List[str]:
     def _sort_scale(item: str) -> Tuple[str, int]:
         letter = item[0]
@@ -155,55 +135,70 @@ def sort_scale(scale: List[str]) -> List[str]:
     return sorted(scale, key=_sort_scale)
 
 
-def _scale_to_enharmonic(scale: List[str]) -> List[str]:
-    # Resolve high alterations
-    scale = resolve_high_alterations_in_scale(scale)
-    # Remove duplicates
-    scale = list(set(scale))
-    # Sort scale
-    scale = sort_scale(scale)
-    # Try to make all flat notes unique
-    flat_scale = scale_to_flat(scale)
-    unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
-    if len(unique_flat_scale) == len(flat_scale):
-        return flat_scale
-    # Try to replace E with Fb if there is still duplicates
-    if "E" in flat_scale:
-        flat_scale = [ENHARMONICS["E"] if note == "E" else note for note in flat_scale]
-        unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
-        if len(unique_flat_scale) == len(flat_scale):
-            return flat_scale
-    # Try to replace B with Cb if there is still duplicates
-    if "B" in flat_scale:
-        flat_scale = [ENHARMONICS["B"] if note == "B" else note for note in flat_scale]
-        unique_flat_scale = set(note.split("b")[0] for note in flat_scale)
-        if len(unique_flat_scale) == len(flat_scale):
-            return flat_scale
+def _enharmonic_duplicates(scale: List[str]) -> Dict[str, List[Tuple[str, int]]]:
+    base_notes_scale = [note[0] for note in scale]
+    duplicates: Dict[str, List[Tuple[str, int]]] = {}
+    for idx, (real_note, base_note) in enumerate(zip(scale, base_notes_scale)):
+        if base_note in duplicates:
+            duplicates[base_note].append((real_note, idx))
+        else:
+            duplicates[base_note] = [(real_note, idx)]
 
-    # Try to make all sharp notes unique
-    sharp_scale = scale_to_sharp(scale)
-    unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
-    if len(unique_sharp_notes) == len(sharp_scale):
-        return sharp_scale
+    # Remove key if there is only one note
+    duplicates = {key: value for key, value in duplicates.items() if len(value) > 1}
+    return duplicates
 
-    # Try to replace F with E# if there is still duplicates
-    if "F" in sharp_scale:
-        sharp_scale = [
-            ENHARMONICS["F"] if note == "F" else note for note in sharp_scale
-        ]
-        unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
-        if len(unique_sharp_notes) == len(sharp_scale):
-            return sharp_scale
 
-    # Try to replace C with B# if there is still duplicates
-    if "C" in sharp_scale:
-        sharp_scale = [
-            ENHARMONICS["C"] if note == "C" else note for note in sharp_scale
-        ]
-        unique_sharp_notes = set(note.split("#")[0] for note in sharp_scale)
-        if len(unique_sharp_notes) == len(sharp_scale):
-            return sharp_scale
-    return scale
+def _tuple_note_custom_sort(item: Tuple[str, int]) -> Tuple[str, int]:
+    """Sort b prefix first, then no prefix, then # prefix."""
+    note = item[0]
+    letter = note[0]
+    modifier = note[1:]
+
+    if modifier == "b":
+        return (letter, 0)
+    elif modifier == "#":
+        return (letter, 2)
+    else:
+        return (letter, 1)
+
+
+def __scale_to_enharmonic_sharp(
+    duplicates: Dict[str, List[Tuple[str, int]]], _scale: List[Note]
+) -> List[Note]:
+    # We choose to take '#'-suffix duplicated first to flatten
+    # If not availale take without prefix
+    # Let's say we have these duplicates
+    # ["G", "G#"] Then take G#
+    # ["Gb", "G", "G#"] Then take G#
+    # ["Gb", "G"] Then take G
+    # Once taken use the flat_enharmonic function to get the flat equivalent
+    # Of the given note
+    for _, notes in duplicates.items():
+        sorted_notes = sorted(notes, key=_tuple_note_custom_sort)
+        _, idx = sorted_notes[-1]
+        _scale[idx] = _scale[idx].flat_enharmonic()
+        break
+    return _scale
+
+
+def __scale_to_enharmonic_flat(
+    duplicates: Dict[str, List[Tuple[str, int]]], _scale: List[Note]
+) -> List[Note]:
+    # We choose to take 'b'-suffix duplicated first to flatten
+    # If not availale take without prefix
+    # Let's say we have these duplicates
+    # ["G", "G#"] Then take G
+    # ["Gb", "G", "G#"] Then take Gb
+    # ["Gb", "G"] Then take Gb
+    # Once taken use the sharp_enharmonic function to get the sharp equivalent
+    # Of the given note
+    for _, notes in duplicates.items():
+        sorted_notes = sorted(notes, key=_tuple_note_custom_sort)
+        _, idx = sorted_notes[0]
+        _scale[idx] = _scale[idx].sharp_enharmonic()
+        break
+    return _scale
 
 
 def scale_to_enharmonic(scale: List[str]) -> List[str]:
@@ -218,4 +213,65 @@ def scale_to_enharmonic(scale: List[str]) -> List[str]:
     >>> scale_to_enharmonic(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'])
         ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F']
     """
-    return sort_scale(_scale_to_enharmonic(scale))
+    # Not possible to get enharmonic scale if there is more than 7 notes
+    if len(scale) > 7:
+        return scale
+    # 7 times the max scale seems pretty good as we cover all the possible alterations
+    MAX_RETRY = 7 * 7
+
+    # Attempt to convert duplicate notes in the scale to their sharp enharmonic
+    # equivalents until there are no more duplicates or the maximum number of
+    # retries is reached.
+    # It is kind of recursive, so we can get C####### in some case for example
+    sharp_duplicates = _enharmonic_duplicates(scale)
+    sharp_tries = 0
+    sharp_scale: List[Note] = [Note(note) for note in scale]
+    while sharp_duplicates:
+        sharp_scale = __scale_to_enharmonic_sharp(sharp_duplicates, sharp_scale)
+        sharp_duplicates = _enharmonic_duplicates([note.name for note in sharp_scale])
+        sharp_tries += 1
+        if sharp_tries > MAX_RETRY:
+            break
+
+    # Attempt to convert duplicate notes in the scale to their flat enharmonic
+    # equivalents until there are no more duplicates or the maximum number
+    # of retries is reached.
+    # It is kind of recursive, so we can get Cbbbbbbb in some case for example
+    flat_duplicates = _enharmonic_duplicates(scale)
+    flat_scale: List[Note] = [Note(note) for note in scale]
+    flat_tries = 0
+    while flat_duplicates:
+        flat_scale = __scale_to_enharmonic_flat(flat_duplicates, flat_scale)
+        flat_duplicates = _enharmonic_duplicates([note.name for note in flat_scale])
+        flat_tries += 1
+        if flat_tries > MAX_RETRY:
+            break
+
+    # After attempting enharmonic conversions, determine the optimal scale to use.
+    # If both sharp and flat scales have no duplicates, we compare them based on the
+    # total number of alterations (sharps or flats) and select the one with fewer
+    # alterations.
+    # In case of a tie, we avoid scales with unusual alterations like E# or Cb.
+    if len(sharp_duplicates) == 0 and len(flat_duplicates) == 0:
+        # Count total number of alteration
+        sharp_alterations = sum([len(note.name[1:]) for note in sharp_scale])
+        flat_alterations = sum([len(note.name[1:]) for note in flat_scale])
+        # Choose scale with fewer alterations
+        if sharp_alterations == flat_alterations:
+            sharp_weird_alteration = "E#" in sharp_scale or "B#" in sharp_scale
+            flat_weird_alteration = "Cb" in flat_scale or "Fb" in flat_scale
+            if sharp_weird_alteration:
+                return [note.name for note in flat_scale]
+            if flat_weird_alteration:
+                return [note.name for note in sharp_scale]
+
+        elif sharp_alterations < flat_alterations:
+            return [note.name for note in sharp_scale]
+        else:
+            return [note.name for note in flat_scale]
+    # If only one of the scales (sharp or flat) has no duplicates, return that scale.
+    if not sharp_duplicates:
+        return [note.name for note in sharp_scale]
+    if not flat_duplicates:
+        return [note.name for note in flat_scale]
+    return scale

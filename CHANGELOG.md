@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Documentation
+
+- Auto-generated changelog
+- Update contributing for changelogs
+
+## [0.2.6] - 2024-01-23
+
 ### Features
 
 - Update docs with figure

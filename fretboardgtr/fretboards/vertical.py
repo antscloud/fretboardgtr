@@ -21,6 +21,9 @@ class VerticalFretBoard:
     def get_list_in_good_order(self, _list: List[Any]) -> List[Any]:
         return _list
 
+    def get_string_with_good_index(self, _string: int) -> int:
+        return _string
+
     def get_background_start_position(self) -> Tuple[float, float]:
         open_fret_height = self.config.general.fret_height
         return (
@@ -200,3 +203,27 @@ class VerticalFretBoard:
             + (number_of_frets) * (self.config.general.fret_height)
         )
         return ((upper_left_x, upper_left_y), (lower_right_x, lower_right_y))
+
+    def get_bounding_box(
+        self,
+        position_1 : Tuple[float, float],
+        position_2 : Tuple[float, float],
+        radius : float
+    ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+        """Get the size of the bounding box for two elements with given radius.
+
+        This is used to calculate correct box layout for vertical and horizontal rectangles, e.g. for barres
+
+        Returns
+        -------
+        Tuple[Tuple[float, float], Tuple[float, float]]
+            Upper left corner x coordinate, upper left corner y coordinate
+            Width of bounding box, Height of bounding box
+        """
+
+        x = position_2[0]-radius
+        y = position_2[1]-radius
+        width =  position_1[0]-position_2[0]+2*radius
+        height = 2*radius
+        
+        return ((x,y), (width, height))

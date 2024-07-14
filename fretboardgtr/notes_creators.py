@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from itertools import product
 from typing import List, Optional
 
-from fretboardgtr.constants import CHORDS_DICT_ESSENTIAL, CHROMATICS_NOTES, SCALES_DICT
+from fretboardgtr.constants import CHORDS_DICT_ESSENTIAL, CHROMATICS_NOTES, SCALES_DICT, STANDARD_TUNING
 from fretboardgtr.utils import chromatic_position_from_root, get_note_from_index
 
 
@@ -121,7 +121,7 @@ class NotesContainer:
 
     def get_scale_positions(
         self,
-        tuning: List[str],
+        tuning: List[str] = STANDARD_TUNING,
         max_spacing: int = 5,
     ) -> List[List[List[Optional[int]]]]:
         """Get all possible scale positions for a specific tuning.
